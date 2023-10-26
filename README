@@ -1,0 +1,2 @@
+请在链接器FLAG中添加该标志： -nostartfiles 
+mtune=i386 -m32 
