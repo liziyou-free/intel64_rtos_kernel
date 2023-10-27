@@ -85,12 +85,12 @@ typedef union x86_selector{
 
 uint64_t x86_generate_segment_descriptor(uint32_t addr_s,
                                          uint32_t segment_len,
-                                         x86_dt_type_t type,
-                                         x86_dt_privilege_t level);
+										 uint8_t type,
+										 uint8_t level);
 
 uint64_t x86_generate_task_gate_descriptor(uint16_t selector,
-                                           x86_dt_type_t type,
-                                           x86_dt_privilege_t dpl);
+		                                   uint8_t type,
+		                                   uint8_t dpl);
 
 /**
  * \brief  get interrupt or trap gate descriptor
@@ -104,8 +104,8 @@ uint64_t x86_generate_task_gate_descriptor(uint16_t selector,
  */
 uint64_t x86_generate_int_trap_gate_descriptor(uint32_t offset,
                                                uint16_t selector,
-                                               x86_dt_type_t type,
-                                               x86_dt_privilege_t dpl);
+                                               uint8_t type,
+											   uint8_t dpl);
 
 void x86_add_item_to_gdt(x86_gdt_struct_t gdt[], uint16_t index, uint64_t item);
 

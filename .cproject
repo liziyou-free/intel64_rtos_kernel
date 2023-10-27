@@ -32,14 +32,14 @@
 								<option id="gnu.cpp.compiler.option.optimization.level.1357508737" name="Optimization Level" superClass="gnu.cpp.compiler.option.optimization.level" useByScannerDiscovery="false" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.debugging.level.310893427" name="Debug Level" superClass="gnu.cpp.compiler.option.debugging.level" useByScannerDiscovery="false" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
 							</tool>
-							<tool command="gcc  -nostartfiles  -m64 -march=x86-64  -TC:/Users/FreedomLi/Desktop/x86_64_prj/x86.lds  -Wl,-Map,C:/Users/FreedomLi/Desktop/x86_64_prj/x86.map" commandLinePattern="" id="cdt.managedbuild.tool.gnu.cross.c.linker.293868397" name="Cross GCC Linker" superClass="cdt.managedbuild.tool.gnu.cross.c.linker">
+							<tool command="gcc  -nostartfiles  -m64 -march=x86-64  -T${PRJ_ROOT}/x86.lds  -Wl,-Map,${PRJ_ROOT}/x86.map" commandLinePattern="" id="cdt.managedbuild.tool.gnu.cross.c.linker.293868397" name="Cross GCC Linker" superClass="cdt.managedbuild.tool.gnu.cross.c.linker">
 								<inputType id="cdt.managedbuild.tool.gnu.c.linker.input.1407675275" superClass="cdt.managedbuild.tool.gnu.c.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
 								</inputType>
 							</tool>
-							<tool id="cdt.managedbuild.tool.gnu.cross.cpp.linker.1019645262" name="Cross G++ Linker" superClass="cdt.managedbuild.tool.gnu.cross.cpp.linker"/>
-							<tool id="cdt.managedbuild.tool.gnu.cross.archiver.196813304" name="Cross GCC Archiver" superClass="cdt.managedbuild.tool.gnu.cross.archiver"/>
+							<tool command="gcc  -nostartfiles  -m64 -march=x86-64  -T${CWD}/../x86.lds  -Wl,-Map,${CDW}/../x86.map" id="cdt.managedbuild.tool.gnu.cross.cpp.linker.1019645262" name="Cross G++ Linker" superClass="cdt.managedbuild.tool.gnu.cross.cpp.linker"/>
+							<tool command="gcc  -nostartfiles  -m64 -march=x86-64  -T${CWD}/../x86.lds  -Wl,-Map,${CDW}/../x86.map" id="cdt.managedbuild.tool.gnu.cross.archiver.196813304" name="Cross GCC Archiver" superClass="cdt.managedbuild.tool.gnu.cross.archiver"/>
 							<tool command="gcc -std=c99 -march=x86-64 -m64 -O0 -g3 -Wall -c -fmessage-length=0" id="cdt.managedbuild.tool.gnu.cross.assembler.1985262317" name="Cross GCC Assembler" superClass="cdt.managedbuild.tool.gnu.cross.assembler">
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.1824359292" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>
@@ -81,14 +81,14 @@
 								<option id="gnu.cpp.compiler.option.optimization.level.1533069670" name="Optimization Level" superClass="gnu.cpp.compiler.option.optimization.level" useByScannerDiscovery="false" value="gnu.cpp.compiler.optimization.level.most" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.debugging.level.1141936502" name="Debug Level" superClass="gnu.cpp.compiler.option.debugging.level" useByScannerDiscovery="false" value="gnu.cpp.compiler.debugging.level.none" valueType="enumerated"/>
 							</tool>
-							<tool id="cdt.managedbuild.tool.gnu.cross.c.linker.427879488" name="Cross GCC Linker" superClass="cdt.managedbuild.tool.gnu.cross.c.linker">
+							<tool command="gcc  -nostartfiles  -m64 -march=x86-64  -T${CWD}/../x86.lds  -Wl,-Map,${CDW}/../x86.map" id="cdt.managedbuild.tool.gnu.cross.c.linker.427879488" name="Cross GCC Linker" superClass="cdt.managedbuild.tool.gnu.cross.c.linker">
 								<inputType id="cdt.managedbuild.tool.gnu.c.linker.input.465138206" superClass="cdt.managedbuild.tool.gnu.c.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
 								</inputType>
 							</tool>
-							<tool id="cdt.managedbuild.tool.gnu.cross.cpp.linker.600000542" name="Cross G++ Linker" superClass="cdt.managedbuild.tool.gnu.cross.cpp.linker"/>
-							<tool id="cdt.managedbuild.tool.gnu.cross.archiver.1566847275" name="Cross GCC Archiver" superClass="cdt.managedbuild.tool.gnu.cross.archiver"/>
+							<tool command="gcc  -nostartfiles  -m64 -march=x86-64  -T${CWD}/../x86.lds  -Wl,-Map,${CDW}/../x86.map" id="cdt.managedbuild.tool.gnu.cross.cpp.linker.600000542" name="Cross G++ Linker" superClass="cdt.managedbuild.tool.gnu.cross.cpp.linker"/>
+							<tool command="gcc  -nostartfiles  -m64 -march=x86-64  -T${CWD}/../x86.lds  -Wl,-Map,${CDW}/../x86.map" id="cdt.managedbuild.tool.gnu.cross.archiver.1566847275" name="Cross GCC Archiver" superClass="cdt.managedbuild.tool.gnu.cross.archiver"/>
 							<tool id="cdt.managedbuild.tool.gnu.cross.assembler.19650803" name="Cross GCC Assembler" superClass="cdt.managedbuild.tool.gnu.cross.assembler">
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.114707641" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>

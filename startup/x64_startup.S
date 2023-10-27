@@ -1,10 +1,28 @@
-
-
-#include "x64_asm_common.h"
+/*******************************************************************************
+*                                 AWorks
+*                       ----------------------------
+*                       innovating embedded platform
+*
+* Copyright (c) 2001-present Guangzhou ZHIYUAN Electronics Co., Ltd.
+* ALL rights reserved.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+*
+* The License of this software follows LGPL v2.1, See the LICENSE for more details:
+* https://opensource.org/licenses/LGPL-2.1
+*
+* Contact information:
+* web site:    http://www.zlg.cn/
+*******************************************************************************/
 #include "x64_startup.h"
+#include "x64_asm_common.h"
 #define  ASM_FILE
 #include "multiboot.h"
 #undef ASM_FILE
+#include "../x64_cpu_drivers/x64_arch_def.h"
+#include "../x64_cpu_drivers/x64_mmu.h"
 
 //#undef  __ELF__
 
@@ -37,6 +55,9 @@
 .global bss_end
 
 
+/*******************************************************************************
+  multiboot header
+*******************************************************************************/
 /*
  * An OS image must contain an additional header called Multiboot header, besid-
  * es the headers of the format used by the OS image. The Multiboot header must
@@ -68,31 +89,34 @@ multiboot_header:
         /* entry_addr */
         .long   multiboot_entry
 #else /* ! __ELF__ */
-        .long   0
-        .long   0
-        .long   0
-        .long   0
-        .long   0
+        .long    0
+        .long    0
+        .long    0
+        .long    0
+        .long    0
 #endif /* __ELF__ */
-        .long 0
-        .long 1024
-        .long 768
-        .long 32
+        .long    0
+        .long    1024
+        .long    768
+        .long    32
 
 
+
+/*******************************************************************************
+  32bit protect mode code
+*******************************************************************************/
     X64_CODE32_FUNC_BEGIN(multiboot_entry)
 multiboot_entry:
     /* Init stack pointer */
     movl   $stack_end, %esp
     /* Save multiboot infomation */
-    push  %ebx
-    push  %eax
+    push    %ebx
+    push    %eax
 
 	call    cmain
 
     /* Clear EFLAGS register, disable makeable interrupt. */
     pushl  $0
-    push   $(GET_SEGMENT_REG_VALUE(0,1,2))
     popf
 
     /* BSS fill zero */
@@ -116,15 +140,90 @@ copy_data_section:
     rep   movsb
 
 
-    /* X86 IDT init */
-//    call  x86_interrupt_except_init
+/* init 4-level page table */
 
-    /* X86 GDT init */
-//    call  x86_kerner_memory_space_init
+//    movl  ,    %edi
+//    movl  ,    %esi
 
-    /* X86 PIC i8259a init */
-//    mov   %esp, %ebp
-//    push  $1
-//    call  x86_pic_i8259a_init
 
-//X64_FUNC_END()
+X64_FUNC_END()
+
+
+
+
+/*******************************************************************************
+  ia-32e mode code (long mode)
+*******************************************************************************/
+
+
+
+
+/*******************************************************************************
+  GDT IDT
+*******************************************************************************/
+
+/* X86 Global Descriptor Table Loader */
+    .align     4
+X64_ASM_DATA(g_gdt)
+    .word    0  /* Limit = Total-bytes - 1 */
+    .long    0  /* GDT base address */
+
+
+
+/* X86 Interrupt Descriptor Table Loader */
+    .align     4
+X64_ASM_DATA(g_idt)
+    .word    0    /* Limit = Total-bytes - 1 */
+    .long    0    /* IDT base address */
+
+
+
+
+/*******************************************************************************
+  build 4-level paging
+*******************************************************************************/
+	.align  4096
+X64_ASM_DATA(x64_pml4e_table)
+    .quad    (x64_pdpte_table + X64_PML4E_PRESENT_BIT + X64_PML4E_RW_BIT)
+
+
+	.align  4096
+X64_ASM_DATA(x64_pdpte_table)
+    .quad    (x64_pde0_table + X64_PDPTE_PDE_PRESENT_BIT + X64_PDPTE_PDE_RW_BIT)
+    .quad    (x64_pde1_table + X64_PDPTE_PDE_PRESENT_BIT + X64_PDPTE_PDE_RW_BIT)
+    .quad    (x64_pde2_table + X64_PDPTE_PDE_PRESENT_BIT + X64_PDPTE_PDE_RW_BIT)
+    .quad    (x64_pde3_table + X64_PDPTE_PDE_PRESENT_BIT + X64_PDPTE_PDE_RW_BIT)
+    /* Reserve space, but do not use it for the time being */
+    .fill    (512 - 4), X86_MMU_PAGE_ENTRY_SIZE, 0
+
+	.align  4096
+X64_ASM_DATA(x64_pde0_table)
+    .fill    512,  X86_MMU_PAGE_ENTRY_SIZE,  0
+
+
+	.align  4096
+X64_ASM_DATA(x64_pde1_table)
+    .fill    512,  X86_MMU_PAGE_ENTRY_SIZE,  0
+
+	.align  4096
+X64_ASM_DATA(x64_pde2_table)
+    .fill    512,  X86_MMU_PAGE_ENTRY_SIZE,  0
+
+
+	.align  4096
+X64_ASM_DATA(x64_pde3_table)
+    .fill    512,  X86_MMU_PAGE_ENTRY_SIZE,  0
+
+
+	.align  4096
+X64_ASM_DATA(x64_pt_table)
+    .fill    (512 * 512),  X86_MMU_PAGE_ENTRY_SIZE,  0
+    .fill    (512 * 512),  X86_MMU_PAGE_ENTRY_SIZE,  0
+    .fill    (512 * 512),  X86_MMU_PAGE_ENTRY_SIZE,  0
+    .fill    (512 * 512),  X86_MMU_PAGE_ENTRY_SIZE,  0
+
+
+
+
+
+

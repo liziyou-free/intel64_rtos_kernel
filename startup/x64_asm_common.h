@@ -3,24 +3,22 @@
 #define  __X64_ASM_COMMON_HEADER__
 
 
-#define X64_GDT(a,b,c) (a << 1 | b << 3 | c>>2)
-
-#define X64_LOCAL_BSS_DATA(name)           .section .bss.name;         \
+#define X64_ASM_LOCAL_BSS_DATA(name)       .section .bss.name;         \
                                            .type name, %object;        \
                                             name:                      \
 
 
-#define X64_LOCAL_DATA(name)               .section .data.name;        \
+#define X64_ASM_BSS_DATA(name)              .global name;               \
+                                             X64_LOCAL_BSS_DATA(name)
+
+
+#define X64_ASM_LOCAL_DATA(name)           .section .data.name;        \
                                            .type name, %object;        \
                                             name:                      \
 
 
-#define X64_BSS_DATA(name)                 .global name;               \
-                                            X64_LOCAL_BSS_DATA(name)
-
-
-#define X64_DATA(name)                     .global name;               \
-                                            X64_LOCAL_DATA(name)
+#define X64_ASM_DATA(name)                 .global name;               \
+                                            X64_ASM_LOCAL_DATA(name)
 
 
 #define X64_CODE32_LOCAL_FUNC_BEGIN(name)  .section .text.name;        \

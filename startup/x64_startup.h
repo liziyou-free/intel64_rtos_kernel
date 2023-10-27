@@ -35,7 +35,7 @@
 #define  KERNEL_STACK_GDT_INDEX       3
 #define  KERNEL_INT_EXCEPT_GDT_INDEX  4
 
-                              )
+
 
 
 #endif /* STARTUP_X64_STARTUP_H_ */
