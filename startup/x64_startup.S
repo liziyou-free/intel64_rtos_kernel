@@ -142,8 +142,6 @@ copy_data_section:
 
 /* init 4-level page table */
 
-//    movl  ,    %edi
-//    movl  ,    %esi
 
 
 X64_FUNC_END()
@@ -180,12 +178,13 @@ X64_ASM_DATA(g_idt)
 
 
 /*******************************************************************************
-  build 4-level paging
+  build 4-level paging (MAX MAP:4GB)
 *******************************************************************************/
 	.align  4096
 X64_ASM_DATA(x64_pml4e_table)
     .quad    (x64_pdpte_table + X64_PML4E_PRESENT_BIT + X64_PML4E_RW_BIT)
-
+	/* Reserve space, but do not use it for the time being */
+	.fill    (512-1),  X86_MMU_PAGE_ENTRY_SIZE,  0
 
 	.align  4096
 X64_ASM_DATA(x64_pdpte_table)
@@ -216,12 +215,34 @@ X64_ASM_DATA(x64_pde3_table)
 
 
 	.align  4096
-X64_ASM_DATA(x64_pt_table)
+X64_ASM_DATA(x64_pte_table)
     .fill    (512 * 512),  X86_MMU_PAGE_ENTRY_SIZE,  0
     .fill    (512 * 512),  X86_MMU_PAGE_ENTRY_SIZE,  0
     .fill    (512 * 512),  X86_MMU_PAGE_ENTRY_SIZE,  0
     .fill    (512 * 512),  X86_MMU_PAGE_ENTRY_SIZE,  0
 
+
+
+    X64_CODE32_FUNC_BEGIN(mmu_translate_table_init)
+mmu_translate_table_init:
+    /* map: pte -> pde */
+    movl    x64_pte_table,    %esi
+    movl    x64_pde0_table,   %edi
+
+    movl    $(512 * 0x04),    %ecx
+//    movl    $(X64_PDE_PT_PRESENT_BIT|X64_PDE_PT_RW_BIT),    %eax
+_pde_loop:
+    movl    %esi,    %eax
+    add     $(X64_PDE_PT_PRESENT_BIT|X64_PDE_PT_RW_BIT),    %eax
+    movl    %eax,    0(%edi)
+    add     $(X86_MMU_PAGE_ENTRY_SIZE),    %edi
+
+
+
+    movl    $(X64_PT_4KB_PRESENT_BIT|X64_PT_4KB_RW_BIT),    %ebx
+
+
+X64_FUNC_END()
 
 
 
