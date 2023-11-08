@@ -4,7 +4,8 @@ ENTRY (_start)
 
 
 MEMORY
-{ 
+{   
+    MULTIBOOT(rwx)       : ORIGIN = 0x00000000, LENGTH = 1K
     CODE(rx)            : ORIGIN = 0x00100000, LENGTH = 16M
     RAM(rw)             : ORIGIN = 0x01100000, LENGTH = 64M
     HEAP (rw)           : ORIGIN = 0x05100000, LENGTH = 64M
@@ -23,17 +24,21 @@ MEMORY
 
 SECTIONS
 {
-  .text : 
+  .multiboot :
   {
-     __code_start = .;
-     . = ALIGN(4);
-     
+    . = 0;
    /* Ensure that this segment is within the 8K range, otherwise the executable 
     * file ''multiboot-elf" will not be recognized.
     */
     KEEP(*(.multiboot_header))
-    *(.multiboot_entry)
-    *(.text)
+  
+  }
+  
+  .text : 
+  {
+     __code_start = .;
+     . = ALIGN(4);
+     *(.text)
   } > CODE
   
   .isr_text : {

@@ -21,9 +21,10 @@
 #define X64_DRIVER_MMU_H_
 
 #define X64_MMU_32BIT_PAGE_ENTRIES        1024
-#define X64_MMU_PAE_PAGE_ENTRIES          2
 #define X64_MMU_4LEVEL_PAGE_ENTRIES       512
 #define X64_MMU_5LEVEL_PAGE_ENTRIES       512
+#define X64_MMU_PAE_PAGE_ENTRIES          2
+
 
 #define X64_MMU_PAGE_ALIGN                4096
 #define X86_MMU_PAGE_ENTRY_SIZE           8

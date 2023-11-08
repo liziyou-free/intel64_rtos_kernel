@@ -19,28 +19,10 @@
 #include "x64_startup.h"
 #include "x64_asm_common.h"
 #define  ASM_FILE
-#include "multiboot.h"
+#include "multiboot2.h"
 #undef ASM_FILE
 #include "../x64_cpu_drivers/x64_arch_def.h"
 #include "../x64_cpu_drivers/x64_mmu.h"
-
-//#undef  __ELF__
-
-
-/* X86 calling conventions: cdecl */
-
-
-#define  MULTIBOOT_HEADER_FLAFS  (MULTIBOOT_PAGE_ALIGN | \
-                                  MULTIBOOT_VIDEO_MODE | \
-                                  MULTIBOOT_MEMORY_INFO)
-
-/*
- * The field ‘checksum’ is a 32bit unsigned value which, when added to the other
- * magic fields (i.e. ‘magic’ and ‘flags’), must have a 32-bit unsigned sum of
- * zero.
- */
-#define MULTIBOOT_CHECK_SUM   -(MULTIBOOT_HEADER_FLAFS + MULTIBOOT_HEADER_MAGIC)
-
 
 /* Set stack size */
 #define STACKSIZE    0x10000
@@ -55,6 +37,25 @@
 .global bss_end
 
 
+
+
+/*  C symbol format. HAVE_ASM_USCORE is defined by configure. */
+#ifdef HAVE_ASM_USCORE
+# define EXT_C(sym)                     _ ## sym
+#else
+# define EXT_C(sym)                     sym
+#endif
+
+/*  The size of our stack (16KB). */
+#define STACK_SIZE                      0x4000
+
+/*  The flags for the Multiboot header. */
+#ifdef __ELF__
+# define AOUT_KLUDGE 0
+#else
+# define AOUT_KLUDGE MULTIBOOT_AOUT_KLUDGE
+#endif
+
 /*******************************************************************************
   multiboot header
 *******************************************************************************/
@@ -66,58 +67,81 @@
  * and may be embedded in the beginning of the text segment after the real exec-
  * utable header.
  */
-    .global _start, stack_start,
-    .section  .multiboot_header, "ax"
-    .code32
-_start:
-    /* Force the cpu to clear the pipeline */
-    jmp  multiboot_entry
-    .align 4
-multiboot_header:
-    .long  MULTIBOOT_HEADER_MAGIC
-    .long  MULTIBOOT_HEADER_FLAFS
-    .long  MULTIBOOT_CHECK_SUM
-#ifndef __ELF__
-        /* header_addr */
-        .long   multiboot_header
-        /* load_addr */
-        .long   _start
-        /* load_end_addr */
-        .long   _edata
-        /* bss_end_addr */
-        .long   _end
-        /* entry_addr */
-        .long   multiboot_entry
-#else /* ! __ELF__ */
-        .long    0
-        .long    0
-        .long    0
-        .long    0
-        .long    0
-#endif /* __ELF__ */
-        .long    0
-        .long    1024
-        .long    768
-        .long    32
 
+    .global _start, stack_start,
+    .section .multiboot_header,  "ax"
+    .align  8
+
+        /*  Align 64 bits boundary. */
+        .align  8
+
+        /*  Multiboot header. */
+multiboot_header:
+        /*  magic */
+        .long   MULTIBOOT2_HEADER_MAGIC
+        /*  ISA: i386 */
+        .long   MULTIBOOT_ARCHITECTURE_I386
+        /*  Header length. */
+        .long   multiboot_header_end - multiboot_header
+        /*  checksum */
+        .long   -(MULTIBOOT2_HEADER_MAGIC + MULTIBOOT_ARCHITECTURE_I386 + (multiboot_header_end - multiboot_header))
+    .align  8
+#ifndef __ELF__
+address_tag_start:
+        .short MULTIBOOT_HEADER_TAG_ADDRESS
+        .short MULTIBOOT_HEADER_TAG_OPTIONAL
+        .long address_tag_end - address_tag_start
+        /*  header_addr */
+        .long   multiboot_header
+        /*  load_addr */
+        .long   _start
+        /*  load_end_addr */
+        .long   _edata
+        /*  bss_end_addr */
+        .long   _end
+address_tag_end:
+entry_address_tag_start:
+        .short MULTIBOOT_HEADER_TAG_ENTRY_ADDRESS
+        .short MULTIBOOT_HEADER_TAG_OPTIONAL
+        .long entry_address_tag_end - entry_address_tag_start
+        /*  entry_addr */
+        .long multiboot_entry
+entry_address_tag_end:
+#endif /*  __ELF__ */
+framebuffer_tag_start:
+        .short MULTIBOOT_HEADER_TAG_FRAMEBUFFER
+        .short MULTIBOOT_HEADER_TAG_OPTIONAL
+        .long framebuffer_tag_end - framebuffer_tag_start
+        .long 1024
+        .long 768
+        .long 32
+framebuffer_tag_end:
+        .short MULTIBOOT_HEADER_TAG_END
+        .short 0
+        .long 8
+multiboot_header_end:
 
 
 /*******************************************************************************
   32bit protect mode code
 *******************************************************************************/
     X64_CODE32_FUNC_BEGIN(multiboot_entry)
-multiboot_entry:
+start:
+_start:
+    jmp     multiboot_entry
     /* Init stack pointer */
     movl   $stack_end, %esp
-    /* Save multiboot infomation */
-    push    %ebx
-    push    %eax
-
-	call    cmain
 
     /* Clear EFLAGS register, disable makeable interrupt. */
     pushl  $0
     popf
+
+        /* Save multiboot infomation */
+    push    %ebx
+    push    %eax
+	call    cmain
+
+    call    mmu_translate_table_init
 
     /* BSS fill zero */
     movl  $bss_start,  %eax
@@ -138,13 +162,36 @@ copy_data_section:
     movl  $load_data_start,  %esi
     cld   /* incremented! */
     rep   movsb
+X64_FUNC_END()
+
 
 
 /* init 4-level page table */
+    X64_CODE32_FUNC_BEGIN(mmu_translate_table_init)
+mmu_translate_table_init:
+    /* map: pte -> pde */
+    movl    x64_pte_table,    %esi
+    movl    x64_pde0_table,   %edi
 
+    movl    $(X64_MMU_4LEVEL_PAGE_ENTRIES * 0x04),    %ecx
+_pde_loop:
+    movl    %esi,    %eax
+    add     $(X64_PDE_PT_PRESENT_BIT|X64_PDE_PT_RW_BIT),    %eax
+    movl    %eax,    0(%edi)
+    add     $(X86_MMU_PAGE_ENTRY_SIZE),    %edi
 
-
+    movl    $X64_MMU_4LEVEL_PAGE_ENTRIES,    %ebx
+_pdt_loop:
+    movl    $(X64_PT_4KB_PRESENT_BIT|X64_PT_4KB_RW_BIT),    %eax
+    addl    $0x1000,    %edx    /* 4096bytes */
+    addl    %edx,       %eax
+    movl    %eax,       %esi
+    dec     %ebx
+    jne    _pdt_loop
+    dec     %ebx
+    jne    _pde_loop
 X64_FUNC_END()
+
 
 
 
@@ -193,56 +240,35 @@ X64_ASM_DATA(x64_pdpte_table)
     .quad    (x64_pde2_table + X64_PDPTE_PDE_PRESENT_BIT + X64_PDPTE_PDE_RW_BIT)
     .quad    (x64_pde3_table + X64_PDPTE_PDE_PRESENT_BIT + X64_PDPTE_PDE_RW_BIT)
     /* Reserve space, but do not use it for the time being */
-    .fill    (512 - 4), X86_MMU_PAGE_ENTRY_SIZE, 0
+    .fill    (X64_MMU_4LEVEL_PAGE_ENTRIES - 4), X86_MMU_PAGE_ENTRY_SIZE, 0
 
 	.align  4096
 X64_ASM_DATA(x64_pde0_table)
-    .fill    512,  X86_MMU_PAGE_ENTRY_SIZE,  0
+    .fill    X64_MMU_4LEVEL_PAGE_ENTRIES,  X86_MMU_PAGE_ENTRY_SIZE,  0
 
 
 	.align  4096
 X64_ASM_DATA(x64_pde1_table)
-    .fill    512,  X86_MMU_PAGE_ENTRY_SIZE,  0
+    .fill    X64_MMU_4LEVEL_PAGE_ENTRIES,  X86_MMU_PAGE_ENTRY_SIZE,  0
 
 	.align  4096
 X64_ASM_DATA(x64_pde2_table)
-    .fill    512,  X86_MMU_PAGE_ENTRY_SIZE,  0
+    .fill    X64_MMU_4LEVEL_PAGE_ENTRIES,  X86_MMU_PAGE_ENTRY_SIZE,  0
 
 
 	.align  4096
 X64_ASM_DATA(x64_pde3_table)
-    .fill    512,  X86_MMU_PAGE_ENTRY_SIZE,  0
+    .fill    X64_MMU_4LEVEL_PAGE_ENTRIES,  X86_MMU_PAGE_ENTRY_SIZE,  0
 
 
 	.align  4096
 X64_ASM_DATA(x64_pte_table)
-    .fill    (512 * 512),  X86_MMU_PAGE_ENTRY_SIZE,  0
-    .fill    (512 * 512),  X86_MMU_PAGE_ENTRY_SIZE,  0
-    .fill    (512 * 512),  X86_MMU_PAGE_ENTRY_SIZE,  0
-    .fill    (512 * 512),  X86_MMU_PAGE_ENTRY_SIZE,  0
+    .fill    (X64_MMU_4LEVEL_PAGE_ENTRIES * X64_MMU_4LEVEL_PAGE_ENTRIES),  X86_MMU_PAGE_ENTRY_SIZE,  0
+    .fill    (X64_MMU_4LEVEL_PAGE_ENTRIES * X64_MMU_4LEVEL_PAGE_ENTRIES),  X86_MMU_PAGE_ENTRY_SIZE,  0
+    .fill    (X64_MMU_4LEVEL_PAGE_ENTRIES * X64_MMU_4LEVEL_PAGE_ENTRIES),  X86_MMU_PAGE_ENTRY_SIZE,  0
+    .fill    (X64_MMU_4LEVEL_PAGE_ENTRIES * X64_MMU_4LEVEL_PAGE_ENTRIES),  X86_MMU_PAGE_ENTRY_SIZE,  0
 
 
-
-    X64_CODE32_FUNC_BEGIN(mmu_translate_table_init)
-mmu_translate_table_init:
-    /* map: pte -> pde */
-    movl    x64_pte_table,    %esi
-    movl    x64_pde0_table,   %edi
-
-    movl    $(512 * 0x04),    %ecx
-//    movl    $(X64_PDE_PT_PRESENT_BIT|X64_PDE_PT_RW_BIT),    %eax
-_pde_loop:
-    movl    %esi,    %eax
-    add     $(X64_PDE_PT_PRESENT_BIT|X64_PDE_PT_RW_BIT),    %eax
-    movl    %eax,    0(%edi)
-    add     $(X86_MMU_PAGE_ENTRY_SIZE),    %edi
-
-
-
-    movl    $(X64_PT_4KB_PRESENT_BIT|X64_PT_4KB_RW_BIT),    %ebx
-
-
-X64_FUNC_END()
 
 
 
