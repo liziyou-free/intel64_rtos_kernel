@@ -70,10 +70,9 @@
 
     .global _start, stack_start,
     .section .multiboot_header,  "ax"
-    .align  8
 
         /*  Align 64 bits boundary. */
-        .align  8
+        .align MULTIBOOT_TAG_ALIGN
 
         /*  Multiboot header. */
 multiboot_header:
@@ -85,10 +84,11 @@ multiboot_header:
         .long   multiboot_header_end - multiboot_header
         /*  checksum */
         .long   -(MULTIBOOT2_HEADER_MAGIC + MULTIBOOT_ARCHITECTURE_I386 + (multiboot_header_end - multiboot_header))
-    .align  8
 #ifndef __ELF__
 address_tag_start:
+        .align MULTIBOOT_TAG_ALIGN
         .short MULTIBOOT_HEADER_TAG_ADDRESS
+        .align MULTIBOOT_TAG_ALIGN
         .short MULTIBOOT_HEADER_TAG_OPTIONAL
         .long address_tag_end - address_tag_start
         /*  header_addr */
@@ -101,7 +101,9 @@ address_tag_start:
         .long   _end
 address_tag_end:
 entry_address_tag_start:
+        .align MULTIBOOT_TAG_ALIGN
         .short MULTIBOOT_HEADER_TAG_ENTRY_ADDRESS
+        .align MULTIBOOT_TAG_ALIGN
         .short MULTIBOOT_HEADER_TAG_OPTIONAL
         .long entry_address_tag_end - entry_address_tag_start
         /*  entry_addr */
@@ -109,8 +111,11 @@ entry_address_tag_start:
 entry_address_tag_end:
 #endif /*  __ELF__ */
 framebuffer_tag_start:
+        .align MULTIBOOT_TAG_ALIGN
         .short MULTIBOOT_HEADER_TAG_FRAMEBUFFER
+        .align MULTIBOOT_TAG_ALIGN
         .short MULTIBOOT_HEADER_TAG_OPTIONAL
+        .align MULTIBOOT_TAG_ALIGN
         .long framebuffer_tag_end - framebuffer_tag_start
         .long 1024
         .long 768

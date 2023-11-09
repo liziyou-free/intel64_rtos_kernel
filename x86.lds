@@ -1,11 +1,11 @@
 
-
+OUTPUT_FORMAT(elf32-x86-64)
 ENTRY (_start)
 
 
 MEMORY
 {   
-    MULTIBOOT(rwx)       : ORIGIN = 0x00000000, LENGTH = 1K
+    MULTIBOOT(r)        : ORIGIN = 0x00000800, LENGTH = 8K
     CODE(rx)            : ORIGIN = 0x00100000, LENGTH = 16M
     RAM(rw)             : ORIGIN = 0x01100000, LENGTH = 64M
     HEAP (rw)           : ORIGIN = 0x05100000, LENGTH = 64M
@@ -26,13 +26,12 @@ SECTIONS
 {
   .multiboot :
   {
-    . = 0;
    /* Ensure that this segment is within the 8K range, otherwise the executable 
     * file ''multiboot-elf" will not be recognized.
     */
+    . = ALIGN(4);
     KEEP(*(.multiboot_header))
-  
-  }
+  } AT > MULTIBOOT
   
   .text : 
   {

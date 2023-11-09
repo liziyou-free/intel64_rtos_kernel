@@ -10,7 +10,7 @@ Discarded input sections
 Memory Configuration
 
 Name             Origin             Length             Attributes
-MULTIBOOT        0x0000000000000000 0x0000000000000400 xrw
+MULTIBOOT        0x0000000000000800 0x0000000000002000 r
 CODE             0x0000000000100000 0x0000000001000000 xr
 RAM              0x0000000001100000 0x0000000004000000 rw
 HEAP             0x0000000005100000 0x0000000004000000 rw
@@ -26,11 +26,11 @@ LOAD /home/freedomli/APP/toolchain_linux-x86_64_x86_64-zephyr-elf/x86_64-zephyr-
 LOAD /home/freedomli/APP/toolchain_linux-x86_64_x86_64-zephyr-elf/x86_64-zephyr-elf/bin/../lib/gcc/x86_64-zephyr-elf/12.2.0/../../../../x86_64-zephyr-elf/lib/libc.a
 LOAD /home/freedomli/APP/toolchain_linux-x86_64_x86_64-zephyr-elf/x86_64-zephyr-elf/bin/../lib/gcc/x86_64-zephyr-elf/12.2.0/libgcc.a
 
-.multiboot      0x0000000000000000       0x2c
-                0x0000000000000000                . = 0x0
+.multiboot      0x0000000000000800       0x38
+                0x0000000000000800                . = ALIGN (0x4)
  *(.multiboot_header)
  .multiboot_header
-                0x0000000000000000       0x2c ./startup/x64_startup.o
+                0x0000000000000800       0x38 ./startup/x64_startup.o
 
 .text           0x0000000000100000      0xa44
                 0x0000000000100000                __code_start = .
@@ -42,9 +42,6 @@ LOAD /home/freedomli/APP/toolchain_linux-x86_64_x86_64-zephyr-elf/x86_64-zephyr-
                 0x000000000010077b                printf
  *fill*         0x0000000000100a42        0x2 
  .text          0x0000000000100a44        0x0 ./startup/x64_startup.o
-
-.iplt           0x0000000000100a44        0x0
- .iplt          0x0000000000100a44        0x0 ./x64_cpu_drivers/x64_mmu.o
 
 .text.multiboot_entry
                 0x0000000000100a44       0x44
@@ -78,12 +75,6 @@ LOAD /home/freedomli/APP/toolchain_linux-x86_64_x86_64-zephyr-elf/x86_64-zephyr-
 .eh_frame       0x0000000000100c58       0xb8
  .eh_frame      0x0000000000100c58       0xb8 ./startup/multiboot2.o
 
-.rela.dyn       0x0000000000100d10        0x0
- .rela.got      0x0000000000100d10        0x0 ./x64_cpu_drivers/x64_mmu.o
- .rela.iplt     0x0000000000100d10        0x0 ./x64_cpu_drivers/x64_mmu.o
- .rela.text.multiboot_entry
-                0x0000000000100d10        0x0 ./x64_cpu_drivers/x64_mmu.o
-
 .data           0x0000000001100000        0x0 load address 0x0000000009100000
                 0x0000000001100000                __data_start = .
  *(.data)
@@ -91,15 +82,6 @@ LOAD /home/freedomli/APP/toolchain_linux-x86_64_x86_64-zephyr-elf/x86_64-zephyr-
  .data          0x0000000001100000        0x0 ./startup/multiboot2.o
  .data          0x0000000001100000        0x0 ./startup/x64_startup.o
                 0x0000000001100000                __data_end = .
-
-.got            0x0000000001100000        0x0 load address 0x0000000009100000
- .got           0x0000000001100000        0x0 ./x64_cpu_drivers/x64_mmu.o
-
-.got.plt        0x0000000001100000        0x0 load address 0x0000000009100000
- .got.plt       0x0000000001100000        0x0 ./x64_cpu_drivers/x64_mmu.o
-
-.igot.plt       0x0000000001100000        0x0 load address 0x0000000009100000
- .igot.plt      0x0000000001100000        0x0 ./x64_cpu_drivers/x64_mmu.o
 
 .data.g_gdt     0x0000000001100000        0x8 load address 0x0000000009100000
  .data.g_gdt    0x0000000001100000        0x8 ./startup/x64_startup.o
@@ -175,7 +157,7 @@ LOAD /home/freedomli/APP/toolchain_linux-x86_64_x86_64-zephyr-elf/x86_64-zephyr-
                 0x0000000001908010                PROVIDE (bss_end = __bss_end)
                 0x0000000001908010                PROVIDE (stack_start = __stack_start)
                 0x0000000001908010                PROVIDE (stack_end = __stack_end)
-OUTPUT(x86_64_prj.elf elf64-x86-64)
+OUTPUT(x86_64_prj.elf elf32-x86-64)
 
 .debug_info     0x0000000000000000      0x842
  .debug_info    0x0000000000000000       0x22 ./x64_cpu_drivers/x64_mmu.o
@@ -207,28 +189,23 @@ OUTPUT(x86_64_prj.elf elf64-x86-64)
  .debug_line    0x000000000000003f      0x444 ./startup/multiboot2.o
  .debug_line    0x0000000000000483       0x85 ./startup/x64_startup.o
 
-.debug_str      0x0000000000000000     0x3d96
+.debug_str      0x0000000000000000     0x68f0
  .debug_str     0x0000000000000000     0x3264 ./x64_cpu_drivers/x64_mmu.o
- .debug_str     0x0000000000003264      0xadb ./startup/multiboot2.o
-                                       0x3635 (size before relaxing)
- .debug_str     0x0000000000003d3f       0x57 ./startup/x64_startup.o
+ .debug_str     0x0000000000003264     0x3635 ./startup/multiboot2.o
+ .debug_str     0x0000000000006899       0x57 ./startup/x64_startup.o
 
 .debug_line_str
-                0x0000000000000000       0xaa
+                0x0000000000000000      0x1b9
  .debug_line_str
-                0x0000000000000000       0x6c ./x64_cpu_drivers/x64_mmu.o
-                                         0xb2 (size before relaxing)
+                0x0000000000000000       0xb2 ./x64_cpu_drivers/x64_mmu.o
  .debug_line_str
-                0x000000000000006c       0x30 ./startup/multiboot2.o
-                                         0xae (size before relaxing)
+                0x00000000000000b2       0xae ./startup/multiboot2.o
  .debug_line_str
-                0x000000000000009c        0xe ./startup/x64_startup.o
-                                         0x59 (size before relaxing)
+                0x0000000000000160       0x59 ./startup/x64_startup.o
 
-.comment        0x0000000000000000       0x20
- .comment       0x0000000000000000       0x20 ./x64_cpu_drivers/x64_mmu.o
-                                         0x21 (size before relaxing)
- .comment       0x0000000000000020       0x21 ./startup/multiboot2.o
+.comment        0x0000000000000000       0x42
+ .comment       0x0000000000000000       0x21 ./x64_cpu_drivers/x64_mmu.o
+ .comment       0x0000000000000021       0x21 ./startup/multiboot2.o
 
 .debug_rnglists
                 0x0000000000000000       0x21
