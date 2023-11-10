@@ -1,11 +1,11 @@
 
-OUTPUT_FORMAT(elf32-x86-64)
+
 ENTRY (_start)
 
 
 MEMORY
 {   
-    MULTIBOOT(r)        : ORIGIN = 0x00000800, LENGTH = 8K
+    MULTIBOOT(r)        : ORIGIN = 0x00001000, LENGTH = 8K
     CODE(rx)            : ORIGIN = 0x00100000, LENGTH = 16M
     RAM(rw)             : ORIGIN = 0x01100000, LENGTH = 64M
     HEAP (rw)           : ORIGIN = 0x05100000, LENGTH = 64M
@@ -31,7 +31,7 @@ SECTIONS
     */
     . = ALIGN(4);
     KEEP(*(.multiboot_header))
-  } AT > MULTIBOOT
+  } > MULTIBOOT
   
   .text : 
   {
@@ -54,6 +54,7 @@ SECTIONS
   {
     __rodata_start = .;
     *(.rodata)
+    *(.rodata.*)
     __rodata_end = .;
   } > CODE
   
@@ -66,6 +67,7 @@ SECTIONS
   {
     __data_start = .;
     *(.data)
+    *(.data.*)
     __data_end = .;
   } > RAM AT > DATA_ROM
   
@@ -74,6 +76,7 @@ SECTIONS
     __bss_start = .;
     *(COMMON)
     *(.bss)
+    *(.bss.*)
     __bss_end = .;
   } > RAM
  

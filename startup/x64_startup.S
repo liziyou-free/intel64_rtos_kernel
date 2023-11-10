@@ -57,12 +57,12 @@
 #endif
 
 /*******************************************************************************
-  multiboot header
+  multiboot2 header
 *******************************************************************************/
 /*
  * An OS image must contain an additional header called Multiboot header, besid-
  * es the headers of the format used by the OS image. The Multiboot header must
- * be contained completely within the first 8192 bytes of the OS image, and must
+ * be contained completely within the first 32768 bytes of the OS image, and must
  * be longword (32bit) aligned. In general, it should come as early as possible,
  * and may be embedded in the beginning of the text segment after the real exec-
  * utable header.
@@ -71,59 +71,63 @@
     .global _start, stack_start,
     .section .multiboot_header,  "ax"
 
-        /*  Align 64 bits boundary. */
-        .align MULTIBOOT_TAG_ALIGN
+start:
+_start:
+    jmp     multiboot_entry
 
-        /*  Multiboot header. */
+    /*  Align 64 bits boundary. */
+    .align MULTIBOOT_TAG_ALIGN
+
+    /*  Multiboot header. */
 multiboot_header:
-        /*  magic */
-        .long   MULTIBOOT2_HEADER_MAGIC
-        /*  ISA: i386 */
-        .long   MULTIBOOT_ARCHITECTURE_I386
-        /*  Header length. */
-        .long   multiboot_header_end - multiboot_header
-        /*  checksum */
-        .long   -(MULTIBOOT2_HEADER_MAGIC + MULTIBOOT_ARCHITECTURE_I386 + (multiboot_header_end - multiboot_header))
+    /*  magic */
+    .long   MULTIBOOT2_HEADER_MAGIC
+    /*  ISA: i386 */
+    .long   MULTIBOOT_ARCHITECTURE_I386
+    /*  Header length. */
+    .long   multiboot_header_end - multiboot_header
+    /*  checksum */
+    .long   -(MULTIBOOT2_HEADER_MAGIC + MULTIBOOT_ARCHITECTURE_I386 + (multiboot_header_end - multiboot_header))
 #ifndef __ELF__
 address_tag_start:
-        .align MULTIBOOT_TAG_ALIGN
-        .short MULTIBOOT_HEADER_TAG_ADDRESS
-        .align MULTIBOOT_TAG_ALIGN
-        .short MULTIBOOT_HEADER_TAG_OPTIONAL
-        .long address_tag_end - address_tag_start
-        /*  header_addr */
-        .long   multiboot_header
-        /*  load_addr */
-        .long   _start
-        /*  load_end_addr */
-        .long   _edata
-        /*  bss_end_addr */
-        .long   _end
+    .align MULTIBOOT_TAG_ALIGN
+    .short MULTIBOOT_HEADER_TAG_ADDRESS
+    .align MULTIBOOT_TAG_ALIGN
+    .short MULTIBOOT_HEADER_TAG_OPTIONAL
+    .long address_tag_end - address_tag_start
+    /*  header_addr */
+    .long   multiboot_header
+    /*  load_addr */
+    .long   _start
+    /*  load_end_addr */
+    .long   _edata
+    /*  bss_end_addr */
+    .long   _end
 address_tag_end:
 entry_address_tag_start:
-        .align MULTIBOOT_TAG_ALIGN
-        .short MULTIBOOT_HEADER_TAG_ENTRY_ADDRESS
-        .align MULTIBOOT_TAG_ALIGN
-        .short MULTIBOOT_HEADER_TAG_OPTIONAL
-        .long entry_address_tag_end - entry_address_tag_start
-        /*  entry_addr */
-        .long multiboot_entry
+    .align MULTIBOOT_TAG_ALIGN
+    .short MULTIBOOT_HEADER_TAG_ENTRY_ADDRESS
+    .align MULTIBOOT_TAG_ALIGN
+    .short MULTIBOOT_HEADER_TAG_OPTIONAL
+    .long entry_address_tag_end - entry_address_tag_start
+    /*  entry_addr */
+    .long multiboot_entry
 entry_address_tag_end:
 #endif /*  __ELF__ */
 framebuffer_tag_start:
-        .align MULTIBOOT_TAG_ALIGN
-        .short MULTIBOOT_HEADER_TAG_FRAMEBUFFER
-        .align MULTIBOOT_TAG_ALIGN
-        .short MULTIBOOT_HEADER_TAG_OPTIONAL
-        .align MULTIBOOT_TAG_ALIGN
-        .long framebuffer_tag_end - framebuffer_tag_start
-        .long 1024
-        .long 768
-        .long 32
+    .align MULTIBOOT_TAG_ALIGN
+    .short MULTIBOOT_HEADER_TAG_FRAMEBUFFER
+    .align MULTIBOOT_TAG_ALIGN
+    .short MULTIBOOT_HEADER_TAG_OPTIONAL
+    .align MULTIBOOT_TAG_ALIGN
+    .long framebuffer_tag_end - framebuffer_tag_start
+    .long 480
+    .long 480
+    .long 32
 framebuffer_tag_end:
-        .short MULTIBOOT_HEADER_TAG_END
-        .short 0
-        .long 8
+    .short MULTIBOOT_HEADER_TAG_END
+    .short 0
+    .long 8
 multiboot_header_end:
 
 
@@ -131,9 +135,7 @@ multiboot_header_end:
   32bit protect mode code
 *******************************************************************************/
     X64_CODE32_FUNC_BEGIN(multiboot_entry)
-start:
-_start:
-    jmp     multiboot_entry
+
     /* Init stack pointer */
     movl   $stack_end, %esp
 
@@ -141,32 +143,42 @@ _start:
     pushl  $0
     popf
 
-        /* Save multiboot infomation */
-    push    %ebx
-    push    %eax
-	call    cmain
+    /* Save multiboot infomation */
+    /*
+    movl    %ebx,    %esi
+    movl    %eax,    %edi
 
-    call    mmu_translate_table_init
+	call    cmain
+    */
 
     /* BSS fill zero */
     movl  $bss_start,  %eax
     movl  $bss_end,    %ebx
 clean_bss_section:
-    cmp   %eax,  %ebx
-    je    copy_data_section
-    movb  $0,  (%eax)
-    add   $1,  %eax
-    jne   clean_bss_section
+    cmp     %eax,    %ebx
+    je      copy_data_section
+    movb    $0,      (%eax)
+    add     $1,      %eax
+    jne     clean_bss_section
 
 
     /* Init data section */
 copy_data_section:
-    movl  $data_start,       %edi
-    movl  $data_end,         %ecx
-    sub   $data_start,       %ecx
-    movl  $load_data_start,  %esi
-    cld   /* incremented! */
-    rep   movsb
+    movl    $data_start,         %edi
+    movl    $data_end,           %ecx
+    sub     $data_start,         %ecx
+    movl    $load_data_start,    %esi
+    cld      /* incremented! */
+    rep      movsb
+
+    /* Init MMU translate table */
+    call    mmu_translate_table_init
+
+    /* Write MMU translate-table-base-address to CR3 */
+    movl    $x64_pml4e_table,    %eax
+    movl    %eax,    %cr3
+
+
 X64_FUNC_END()
 
 
@@ -175,8 +187,9 @@ X64_FUNC_END()
     X64_CODE32_FUNC_BEGIN(mmu_translate_table_init)
 mmu_translate_table_init:
     /* map: pte -> pde */
-    movl    x64_pte_table,    %esi
-    movl    x64_pde0_table,   %edi
+    movl    $x64_pte_table,    %esi
+    movl    $x64_pde0_table,   %edi
+    movl    $0,                %edx
 
     movl    $(X64_MMU_4LEVEL_PAGE_ENTRIES * 0x04),    %ecx
 _pde_loop:
@@ -190,7 +203,8 @@ _pdt_loop:
     movl    $(X64_PT_4KB_PRESENT_BIT|X64_PT_4KB_RW_BIT),    %eax
     addl    $0x1000,    %edx    /* 4096bytes */
     addl    %edx,       %eax
-    movl    %eax,       %esi
+    movl    %eax,       0(%esi)
+    addl    $8,         %esi
     dec     %ebx
     jne    _pdt_loop
     dec     %ebx
