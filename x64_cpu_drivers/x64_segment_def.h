@@ -21,6 +21,15 @@
 #define X64_SEGMENT_DEF_H_
 
 
+#define X64_FLAT_SEGMENT_BASE       0x00000u
+#define X64_FLAT_SEGMENT_LIMIT      0xFFFFFu
+
+
+#define X64_DEFAULT_CODE32_INDEX    0x01u
+#define X64_DEFAULT_CODE64_INDEX    0x02u
+#define X64_DEFAULT_DATA_INDEX      0x03u
+
+
 /**
  *\brief x86_dt_type_t
  *\note  distinguishes between various kinds of descriptors.
@@ -52,11 +61,14 @@
  * -r: readable
  * -c: conforming
  */
-#define APP_CODE_X_SEGMENT          0x18,
-#define APP_CODE_XR_SEGMENT         0x1a,
-#define APP_CODE_XC_SEGMENT         0x1c,
-#define APP_CODE_XRC_SEGMENT        0x1e,
-
+#define APP_CODE32_X_SEGMENT          0x18
+#define APP_CODE32_XR_SEGMENT         0x1a
+#define APP_CODE32_XC_SEGMENT         0x1c
+#define APP_CODE32_XRC_SEGMENT        0x1e
+#define APP_CODE64_X_SEGMENT          (0x18 | (1u << 52))
+#define APP_CODE64_XR_SEGMENT         (0x1a | (1u << 52))
+#define APP_CODE64_XC_SEGMENT         (0x1c | (1u << 52))
+#define APP_CODE64_XRC_SEGMENT        (0x1e | (1u << 52))
 
 /**
  *\brief x86_dt_privilege_t
@@ -86,22 +98,20 @@
  *
  * \retval selector
  */
-#define GET_SEGMENT_REG_VALUE_FOR_PM(index, ti, rpl) \
-	                       ((index << 3) | (ti << 2) | rpl)
-
+#define GET_SEGMENT_REG_VALUE(index, ti, rpl)  ((index << 3) | (ti << 2) | rpl)
 
 
 #define __CREATE_GDT_ITEM__(addr, len, type, level, unit)        \
-                           (((len & 0x0000ffffull) << 0)       | \
+                           ( ((len & 0x0000ffffull) << 0)      | \
                            ((addr & 0x0000ffffull) << 16)      | \
                            (((addr >> 16) & 0x00ffull) << 32)  | \
                            (type << 40)                        | \
                            (level << 45)                       | \
                            (1ull << 47)                        | \
-                           (((len >> 16) & 0x0full) << 48)     | \
+                           (((len >> 16) & 0x0f) << 48)        | \
                            (1ull << 54)                        | \
                            (unit << 55)                        | \
-                           ((addr >> 24) << 56))
+                           ((addr >> 24) << 56) )
 
 /**
  * \brief Generates a segment descriptor by passing in arguments.
@@ -114,7 +124,7 @@
  * \retval segment-descriptor
  */
 #define CREATE_GDT_ITEM_UNIT_BYTE(addr, seg_len, type, level)    \
-                         __CREATE_GDT_ITEM__(addr, len, type, level, 0ull)
+                         __CREATE_GDT_ITEM__(addr, seg_len, type, level, 0ull)
 
 
 /**
@@ -128,9 +138,7 @@
  * \retval segment-descriptor
  */
 #define CREATE_GDT_ITEM_UNIT_4KB(addr, seg_len, type, level)    \
-                         __CREATE_GDT_ITEM__(addr, len, type, level, 1ull)
-
-
+                         __CREATE_GDT_ITEM__(addr, seg_len, type, level, 1)
 
 #endif /* X64_SEGMENT_DEF_H_ */
 

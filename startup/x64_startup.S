@@ -21,8 +21,10 @@
 #define  ASM_FILE
 #include "multiboot2.h"
 #undef ASM_FILE
-#include "../x64_cpu_drivers/x64_arch_def.h"
 #include "../x64_cpu_drivers/x64_mmu.h"
+#include "../x64_cpu_drivers/x64_arch_def.h"
+#include "../x64_cpu_drivers/x64_segment_def.h"
+
 
 /* Set stack size */
 #define STACKSIZE    0x10000
@@ -147,7 +149,6 @@ multiboot_header_end:
     /*
     movl    %ebx,    %esi
     movl    %eax,    %edi
-
 	call    cmain
     */
 
@@ -161,7 +162,6 @@ clean_bss_section:
     add     $1,      %eax
     jne     clean_bss_section
 
-
     /* Init data section */
 copy_data_section:
     movl    $data_start,         %edi
@@ -174,16 +174,36 @@ copy_data_section:
     /* Init MMU translate table */
     call    mmu_translate_table_init
 
+    /* PAE  must be set before entering IA-32e mode */
+    movl    %cr4,    %eax
+    or      $(X64_CR4_PAE_BIT | X64_CR4_PGE_BIT),    %eax
+    movl    %eax,    %cr4
+
     /* Write MMU translate-table-base-address to CR3 */
     movl    $x64_pml4e_table,    %eax
     movl    %eax,    %cr3
 
+    /* Enable IA32_EFER_MSR.LME */
+    movl    $IA32_EFER_MSR,    %ecx
+    rdmsr
+    or      $IA32_EFER_MSR_LME,    %eax
+    wrmsr
+
+    /* Enabe CR0.PG */
+    movl    %cr0,    %eax
+    or      $(X64_CR0_PE_BIT | X64_CR0_PG_BIT),    %eax
+    movl    %eax,    %cr0
+
+    lgdt    g_x64_gdtr_loader
+
+    ljmp    $0x10,    $x64_start
 
 X64_FUNC_END()
 
 
-
-/* init 4-level page table */
+/*
+ * init 4-level page table
+ */
     X64_CODE32_FUNC_BEGIN(mmu_translate_table_init)
 mmu_translate_table_init:
     /* map: pte -> pde */
@@ -201,42 +221,60 @@ _pde_loop:
     movl    $X64_MMU_4LEVEL_PAGE_ENTRIES,    %ebx
 _pdt_loop:
     movl    $(X64_PT_4KB_PRESENT_BIT|X64_PT_4KB_RW_BIT),    %eax
-    addl    $0x1000,    %edx    /* 4096bytes */
     addl    %edx,       %eax
     movl    %eax,       0(%esi)
+    addl    $0x1000,    %edx    /* 4096bytes */
     addl    $8,         %esi
     dec     %ebx
-    jne    _pdt_loop
-    dec     %ebx
-    jne    _pde_loop
-X64_FUNC_END()
+    jnz    _pdt_loop
+    dec     %ecx
+    jnz    _pde_loop
+    ret
+    X64_FUNC_END()
+
+
+
+/*******************************************************************************
+  64bit mode code
+*******************************************************************************/
+    X64_CODE64_FUNC_BEGIN(x64_start)
+
+    cli
+    mov    %rax,    %rbx
+    add    $8,      %rax
+
+    X64_FUNC_END()
 
 
 
 
 
 /*******************************************************************************
-  ia-32e mode code (long mode)
+  GDT and IDT
 *******************************************************************************/
 
+/* X86 Global Descriptor Table */
+    .align     16
+X64_ASM_DATA(g_x64_gdt)
+_gdt_start:
+    .quad    0    /* Must is 0! */
+    .quad    CREATE_GDT_ITEM_UNIT_4KB(0, 0xfffff, APP_CODE32_XRC_SEGMENT, PRIVILEGE_LEVEL_0)
+    .quad    CREATE_GDT_ITEM_UNIT_4KB(0, 0xfffff, APP_CODE64_XRC_SEGMENT, PRIVILEGE_LEVEL_0)
+    .quad    CREATE_GDT_ITEM_UNIT_4KB(0, 0xfffff, APP_DATA_RW_SEGMENT, PRIVILEGE_LEVEL_0)
+_gdt_end:
 
-
-
-/*******************************************************************************
-  GDT IDT
-*******************************************************************************/
 
 /* X86 Global Descriptor Table Loader */
     .align     4
-X64_ASM_DATA(g_gdt)
-    .word    0  /* Limit = Total-bytes - 1 */
-    .long    0  /* GDT base address */
+X64_ASM_DATA(g_x64_gdtr_loader)
+    .word    _gdt_end - _gdt_start -1  /* Limit = Total-bytes - 1 */
+    .quad    _gdt_start                /* GDT base address */
 
 
 
 /* X86 Interrupt Descriptor Table Loader */
     .align     4
-X64_ASM_DATA(g_idt)
+X64_ASM_DATA(g_idtr)
     .word    0    /* Limit = Total-bytes - 1 */
     .long    0    /* IDT base address */
 
