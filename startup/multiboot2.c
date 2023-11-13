@@ -62,7 +62,7 @@ cmain (unsigned long magic, unsigned long addr)
       return;
     }
 
-  if (addr & 7)
+  if (addr & 0x7ull)
     {
       printf ("Unaligned mbi: 0x%x\n", addr);
       return;

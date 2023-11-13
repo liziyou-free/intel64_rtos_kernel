@@ -1,4 +1,5 @@
-
+OUTPUT_ARCH(i386:x86-64)
+OUTPUT_FORMAT(elf64-x86-64)
 
 ENTRY (_start)
 
@@ -83,7 +84,7 @@ SECTIONS
   
   __stack_start = .;
   .stack : {
-    *(kernel_stack)
+    KEEP(*(.kernel.stack))
   } > RAM
   __stack_end = .;
 }

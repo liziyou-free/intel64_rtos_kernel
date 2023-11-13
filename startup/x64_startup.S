@@ -138,19 +138,18 @@ multiboot_header_end:
 *******************************************************************************/
     X64_CODE32_FUNC_BEGIN(multiboot_entry)
 
-    /* Init stack pointer */
-    movl   $stack_end, %esp
+    /* Init stack pointer, 4byte align */
+    movl    $stack_end,    %esp
+    andl    $(~(4-1)),     %esp
 
     /* Clear EFLAGS register, disable makeable interrupt. */
     pushl  $0
     popf
 
     /* Save multiboot infomation */
-    /*
-    movl    %ebx,    %esi
-    movl    %eax,    %edi
-	call    cmain
-    */
+    pushl    %ebx
+    pushl    %eax
+
 
     /* BSS fill zero */
     movl  $bss_start,  %eax
@@ -240,8 +239,16 @@ _pdt_loop:
     X64_CODE64_FUNC_BEGIN(x64_start)
 
     cli
-    mov    %rax,    %rbx
-    add    $8,      %rax
+    mov     $0x10,   %eax
+    and     $7,      %eax
+    test    %eax,    %eax
+    jne      __end
+    pop     %rdi
+    pop     %rsi
+    call    cmain
+__end:
+    pushf
+    pushf
 
     X64_FUNC_END()
 
@@ -327,7 +334,13 @@ X64_ASM_DATA(x64_pte_table)
 
 
 
-
-
+/*******************************************************************************
+  stack
+*******************************************************************************/
+    .section  .kernel.stack
+    .align  64
+    .global  g_kernel_stack
+g_kernel_stack:
+    .fill    2048,    1,    0
 
 
