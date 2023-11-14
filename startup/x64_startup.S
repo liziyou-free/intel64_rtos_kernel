@@ -237,8 +237,10 @@ _pdt_loop:
   64bit mode code
 *******************************************************************************/
     X64_CODE64_FUNC_BEGIN(x64_start)
-
+    .global x64_idt_init
     cli
+    call    x64_idt_init
+
     mov     $0x10,   %eax
     and     $7,      %eax
     test    %eax,    %eax
@@ -262,21 +264,20 @@ __end:
 
 /* X86 Global Descriptor Table */
     .align     16
-X64_ASM_DATA(g_x64_gdt)
+    X64_ASM_DATA(g_x64_gdt)
 _gdt_start:
     .quad    0    /* Must is 0! */
-    .quad    CREATE_GDT_ITEM_UNIT_4KB(0, 0xfffff, APP_CODE32_XRC_SEGMENT, PRIVILEGE_LEVEL_0)
-    .quad    CREATE_GDT_ITEM_UNIT_4KB(0, 0xfffff, APP_CODE64_XRC_SEGMENT, PRIVILEGE_LEVEL_0)
-    .quad    CREATE_GDT_ITEM_UNIT_4KB(0, 0xfffff, APP_DATA_RW_SEGMENT, PRIVILEGE_LEVEL_0)
+    .quad    X64_CREATE_GDT_ITEM_UNIT_4KB(0, 0xfffff, APP_CODE32_XRC_SEGMENT, PRIVILEGE_LEVEL_0)
+    .quad    X64_CREATE_GDT_ITEM_UNIT_4KB(0, 0xfffff, APP_CODE64_XRC_SEGMENT, PRIVILEGE_LEVEL_0)
+    .quad    X64_CREATE_GDT_ITEM_UNIT_4KB(0, 0xfffff, APP_DATA_RW_SEGMENT, PRIVILEGE_LEVEL_0)
 _gdt_end:
 
 
 /* X86 Global Descriptor Table Loader */
     .align     4
-X64_ASM_DATA(g_x64_gdtr_loader)
+    X64_ASM_DATA(g_x64_gdtr_loader)
     .word    _gdt_end - _gdt_start -1  /* Limit = Total-bytes - 1 */
     .quad    _gdt_start                /* GDT base address */
-
 
 
 /* X86 Interrupt Descriptor Table Loader */
@@ -341,6 +342,6 @@ X64_ASM_DATA(x64_pte_table)
     .align  64
     .global  g_kernel_stack
 g_kernel_stack:
-    .fill    2048,    1,    0
+    .fill    STACKSIZE,    1,    0
 
 

@@ -366,3 +366,14 @@ printf (const char *format, ...)
         }
     }
 }
+
+
+int sumab(int a, int b) {
+  int c = 0;
+  c = a * b + 10;
+  return c;
+}
+
+
+
+
