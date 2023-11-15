@@ -16,13 +16,11 @@
 //x86_gdt_struct_t g_x86_gdt[64]__attribute__((aligned(16)));
 
 
-/*
- * The IDT may contain any of three kinds of descriptor:
- *  -Task gates
- *  -Interrupt gates
- *  -Trap gates
+/**
+ *\note The base addresses of the IDT should be aligned on an 8-byte boundary
+ * to maximize performance of cache line fills.
  */
-uint64_t g_x86_idt[256 * 2]__attribute__((aligned(16)));
+uint64_t g_x86_idt[256 * 2]__attribute__((aligned(8)));
 
 
 
@@ -36,152 +34,25 @@ void irq_handle(void) {
 
 void x64_idt_init(void) {
 
-  uint64_t addr = (uint64_t)irq_handle;
+  x64_idt_int_trap_gate_t  obj;
+  uint16_t idt_elements = sizeof(g_x86_idt) / 16; /* a descriptor:16bytes */
 
-  for(int j = 0; j < (sizeof(g_x86_idt)/sizeof(uint64_t)); j++) {
+  for (int j = 0; j < idt_elements; j++) {
       if (j < 32) {
-          uint64_t item[2] = {X64_CREATE_TRAP_GATE_ITEM(addr, 1ULL, 0ULL)};
-          g_x86_idt[j*2] = item[0];
-          g_x86_idt[j*2+1] = item[1];
+          /* exception */
+          x64_create_gate_descriptor(&obj, irq_handle, 1, TRAP_GATE_386, PRIVILEGE_LEVEL_0);
       } else {
-          int64_t item[2] = {X64_CREATE_INTERRUPT_GATE_ITEM(addr, 1ULL, 0ULL)};
-          g_x86_idt[j*2] = item[0];
-          g_x86_idt[j*2+1] = item[1];
+          /* interrupt */
+          x64_create_gate_descriptor(&obj, irq_handle, 1, INTERRUPT_GATE_386, PRIVILEGE_LEVEL_0);
       }
+      x64_add_descriptor_to_idt(&obj, &g_x86_idt[0], j);
   }
+  /* Update to IDTR register */
+  x64_flush_idtr_register(g_x86_idt, sizeof(g_x86_idt) - 1);
+
+  return;
 }
 
 
 
 
-
-
-///* Except handle  */
-//extern void (*x86_except_handle_array[16])(void *);
-//
-///* Interrupt handle  */
-//extern void (*x86_interrupt_handle_array[16])(void *);
-//
-//
-//
-//static __inline__ void set_segment_register(uint16_t cs, uint16_t ds, uint16_t ss) {
-//
-//    /**
-//      * Modify ss,ds,es,gs,fs register using the mov instruction,
-//      * Modify the cs register using the lret instruction.
-//      */
-//    __asm__  __volatile__("mov    %0,    %%ss\n\t"
-//                          "mov    %1,    %%ds\n\t"
-//                          "mov    %1,    %%es\n\t"
-//                          "mov    %1,    %%gs\n\t"
-//                          "mov    %1,    %%fs\n\t"
-//                          "push   %2         \n\t"
-//                          "pushl  $set_cs    \n\t"
-//                          "lret              \n\t"
-//                          "set_cs:           \n\t"
-//                          "nop"
-//                          :
-//                          :"r"(ss), "r"(ds), "r"(cs));
-//    return;
-//}
-//
-//
-//void x86_kerner_memory_space_init(){
-//
-//    uint64_t    descriptor;
-//    uint16_t    ss, cs, ds;
-//
-//    g_x86_gdt[0].u64 = 0x00;
-//
-//    /* Kernel code segment descriptor init */
-//    descriptor = x86_generate_segment_descriptor(KERNEL_CODE_ADDRESS_START,
-//                                                 KERNEL_CODE_ADDRESS_SIZE,
-//                                                 app_code_xrc_segment,
-//                                                 privilege_level_0);
-//
-//    x86_add_item_to_gdt(g_x86_gdt, KERNEL_CODE_GDT_INDEX, descriptor);
-//
-//    /* Kernel data segment descriptor init */
-//    descriptor = x86_generate_segment_descriptor(KERNEL_DATA_ADDRESS_START,
-//                                                 KERNEL_DATA_ADDRESS_SIZE,
-//                                                 app_data_rw_segment,
-//                                                 privilege_level_0);
-//    x86_add_item_to_gdt(g_x86_gdt, KERNEL_DATA_GDT_INDEX, descriptor);
-//
-//    /* Kernel stack segment descriptor init */
-//    descriptor = x86_generate_segment_descriptor(KERNEL_STACK_ADDRESS_START,
-//                                                 KERNEL_STACK_ADDRESS_SIZE,
-//                                                 app_data_rwe_segment,
-//                                                 privilege_level_0);
-//    x86_add_item_to_gdt(g_x86_gdt, KERNEL_STACK_GDT_INDEX, descriptor);
-//
-//    /* Kernel interrupt descriptor init */
-//    descriptor = x86_generate_segment_descriptor(KERNEL_ISR_ADDRESS_START,
-//                                                 KERNEL_ISR_ADDRESS_SIZE,
-//                                                 app_code_xrc_segment,
-//                                                 privilege_level_0);
-//    x86_add_item_to_gdt(g_x86_gdt, KERNEL_INT_EXCEPT_GDT_INDEX, descriptor);
-//
-//
-//    cs = x86_generate_selector(KERNEL_CODE_GDT_INDEX,
-//                               table_indicator_gdt,
-//                               privilege_level_0);
-//
-//    ds = x86_generate_selector(KERNEL_DATA_GDT_INDEX,
-//                               table_indicator_gdt,
-//                               privilege_level_0);
-//
-//    ss = x86_generate_selector(KERNEL_STACK_GDT_INDEX,
-//                               table_indicator_gdt,
-//                               privilege_level_0);
-//
-//    x86_gdtr_flush((uint32_t *)&g_x86_gdt[0], sizeof(g_x86_gdt) - 1);
-//
-//    set_segment_register(cs, ds, ss);
-//
-//    return;
-//}
-//
-//
-//void x86_exit0_isr(void *p) {
-//    //printf("This is my first extern interrupt function! --@FreedomLi, come on!");
-//    x86_serial_send(x86_serial_receive());
-//}
-//
-//
-//
-//void x86_interrupt_except_init() {
-//
-//    uint64_t    descriptor = 0;
-//    uint16_t    selector   = 0;
-//
-//    selector = x86_generate_selector(KERNEL_INT_EXCEPT_GDT_INDEX,
-//                                     table_indicator_gdt,
-//                                     privilege_level_0);
-//
-//    for (uint8_t index = 0; index < 16; index++) {
-//
-//        descriptor = x86_generate_int_trap_gate_descriptor((uint32_t)x86_except_handle_array[index],
-//                                                           selector,
-//                                                           trap_gate_386,
-//                                                           privilege_level_0);
-//        x86_add_item_to_idt(g_x86_idt, index, descriptor);
-//    }
-//
-//    for (uint8_t index = 0; index < 16; index++) {
-//
-//        descriptor = x86_generate_int_trap_gate_descriptor((uint32_t)x86_interrupt_handle_array[index],
-//                                                           selector,
-//                                                           interrupt_gate_386,
-//                                                           privilege_level_0);
-//        x86_add_item_to_idt(g_x86_idt, index + 32, descriptor);
-//    }
-//
-//    x86_idtr_flush((uint32_t *)g_x86_idt, sizeof(g_x86_idt) - 1);
-//}
-//
-//
-//
-//
-//
-//

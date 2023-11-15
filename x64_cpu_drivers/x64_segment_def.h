@@ -17,12 +17,26 @@
 * web site:    http://www.zlg.cn/
 *******************************************************************************/
 
+/**
+ *\file  x64_segment_def.h
+ *\note  If this file is included in the assembly, please use the following format:
+ * #define COMPILER_ASM_FILE
+ * #include "x64_segment_def.h"
+ * #undef COMPILER_ASM_FILE
+ */
+
 #ifndef X64_SEGMENT_DEF_H_
 #define X64_SEGMENT_DEF_H_
 
 
-#define X64_FLAT_SEGMENT_BASE       0x00000u
-#define X64_FLAT_SEGMENT_LIMIT      0xFFFFFu
+#ifndef COMPILER_ASM_FILE
+#define __BIGNUM__(x)    x##ULL
+#else
+#define __BIGNUM__(x)    x
+#endif
+
+#define X64_FLAT_SEGMENT_BASE       0x00000
+#define X64_FLAT_SEGMENT_LIMIT      0xFFFFF
 
 
 #define X64_DEFAULT_CODE32_INDEX    0x01
@@ -67,11 +81,11 @@
 #define APP_CODE32_XR_SEGMENT         0x1a
 #define APP_CODE32_XC_SEGMENT         0x1c
 #define APP_CODE32_XRC_SEGMENT        0x1e
-//64bit code segment
-#define APP_CODE64_X_SEGMENT          (0x18 | (1 << 52))
-#define APP_CODE64_XR_SEGMENT         (0x1a | (1 << 52))
-#define APP_CODE64_XC_SEGMENT         (0x1c | (1 << 52))
-#define APP_CODE64_XRC_SEGMENT        (0x1e | (1 << 52))
+//64bit code segment (extra enable 'L' bit)
+#define APP_CODE64_X_SEGMENT          0x2018
+#define APP_CODE64_XR_SEGMENT         0x201a
+#define APP_CODE64_XC_SEGMENT         0x201c
+#define APP_CODE64_XRC_SEGMENT        0x201e
 
 
 /**
@@ -106,20 +120,22 @@
                              ((index << 3) | (ti << 2) | rpl)
 
 
-#define __CREATE_GDT_ITEM__(addr, len, type, level, unit)        \
-                           ( ((len & 0x0000ffffull) << 0)      | \
-                           ((addr & 0x0000ffffull) << 16)      | \
-                           (((addr >> 16) & 0x00ffull) << 32)  | \
-                           (type << 40)                        | \
-                           (level << 45)                       | \
-                           (1ull << 47)                        | \
-                           (((len >> 16) & 0x0f) << 48)        | \
-                           (1ull << 54)                        | \
-                           (unit << 55)                        | \
+#define __CREATE_GDT_ITEM__(addr, len, type, level, unit)     \
+                           ( ((len & 0x0000ffff) << 0)      | \
+                           ((addr & 0x0000ffff) << 16)      | \
+                           (((addr >> 16) & 0x00ff) << 32)  | \
+                           (type << 40)                     | \
+                           (level << 45)                    | \
+                           (1 << 47)                        | \
+                           (((len >> 16) & 0x0f) << 48)     | \
+                           (1 << 54)                        | \
+                           (unit << 55)                     | \
                            ((addr >> 24) << 56) )
 
 /**
  * \brief Generates a segment descriptor by passing in arguments.
+ *
+ * \note  All parameters type must be uint64_t.
  *
  * \param addr[in]  segment base address (linear address space)
  * \param len[in]   size of the segment (In units of one byte, MAX:1MB)
@@ -128,9 +144,12 @@
  *
  * \retval segment-descriptor
  */
-#define X64_CREATE_GDT_ITEM_UNIT_BYTE(addr, seg_len, type, level)    \
-                         __CREATE_GDT_ITEM__(addr##ULL, seg_len##ULL,\
-                                             type##ULL, level##ULL, 0ULL)
+#define X64_CREATE_GDT_ITEM_UNIT_BYTE(addr, seg_len, type, dpl)  \
+                         __CREATE_GDT_ITEM__(__BIGNUM__(addr),     \
+                                             __BIGNUM__(seg_len),  \
+                                             __BIGNUM__(type),     \
+                                             __BIGNUM__(dpl),    \
+                                             __BIGNUM__(0))
 
 
 /**
@@ -146,99 +165,93 @@
  * \retval segment descriptor
  */
 #define X64_CREATE_GDT_ITEM_UNIT_4KB(addr, seg_len, type, dpl)    \
-                         __CREATE_GDT_ITEM__(addr, seg_len, type, dpl, 1)
+                         __CREATE_GDT_ITEM__(__BIGNUM__(addr),     \
+                                             __BIGNUM__(seg_len),  \
+                                             __BIGNUM__(type),     \
+                                             __BIGNUM__(dpl),    \
+                                             __BIGNUM__(1))
 
 
-
-
-
-
-
-
-
-
-
+#ifndef COMPILER_ASM_FILE
+#pragma pack(push)
+#pragma pack(1)
 /**
  * \brief IDT(64bit mode): interrupt gate and trap gate.
  */
-typedef union x86_idt_int_trap_gate{
+typedef struct x64_idt_int_trap_gate{
+    uint16_t    offset_low16;
+    uint16_t    segment_selector;
     struct {
-        uint64_t    offset_low16:16;   /* offset[0:15] */
-        uint64_t    selector:16;       /* selector */
-        uint64_t    :5;                /* unused */
-        uint64_t    always0:3;         /* always 0 */
-        uint64_t    type:5;            /* Reference: @ x86_dt_type_t */
-        uint64_t    dpl:2;             /* Reference: @ x86_dt_privilege_t */
-        uint64_t    p:1;               /*  */
-        uint64_t    offset_high16:16;  /* offset[16:31] */
-    } detail;
-    uint64_t    u64;
-}x86_idt_int_trap_gate_t;
-
-
-
-
-
-
-
-
-
-#define __CREATE_IDT_ITEM__(handle, selector, ist, type, dpl, p)   \
-                           ( ((handle & 0xffff) << 0)            | \
-                           ((selector & 0xffff) << 16)           | \
-                           ((ist & 0x0007) << 32)                | \
-                           ((type & 0x000f) << 40)               | \
-                           ((dpl & 0x0003) << 45)                | \
-                           ((p & 0x0001) << 47)                  | \
-                           (((handle >> 16) & 0xffff) << 48) ), (handle >> 32)
+        uint16_t    ist:3;
+        uint16_t    :5;
+        uint16_t    type:4;
+        uint16_t    :1;
+        uint16_t    dpl:2;
+        uint16_t    present:1;
+    }fields;
+    uint16_t    offset_middle16;
+    uint32_t    offset_hight32;
+    uint32_t    reserve_zero;
+}x64_idt_int_trap_gate_t;
 
 
 /**
- * \brief Generates a trap gate descriptor by passing in arguments.
- *
- * \note  All parameters type must be uint64_t.
- *
- * \param irqh[in]  irq handle
- * \param idx[in]   index of interrupt stack table
- * \param dpl[in]   descriptor privilege level: @ dt_privilege_t
- *
- * \retval trap gate descriptor (uint64_t, uint64_t)
+ * \brief IDTR register define(64bit mode).
  */
-#define X64_CREATE_TRAP_GATE_ITEM(irqh, ist, dpl)                            \
-                         __CREATE_IDT_ITEM__(irqh,                           \
-                                             X64_GET_SEGMENT_SELECTOR_VALUE( \
-                                                 X64_DEFUALT_GATE_INDEX,     \
-                                                 TABLE_INDICATOR_GDT,        \
-                                                 PRIVILEGE_LEVEL_0),         \
-                                             ist,                            \
-                                             TRAP_GATE_386,                  \
-                                             dpl,                            \
-                                             1ULL )
+typedef struct {
+    uint16_t    limit;
+    uint64_t    idt_addr;
+}x64_idtr_t;
+
+#pragma pack(pop)
 
 
 /**
- * \brief Generates a interrupt gate descriptor by passing in arguments.
+ * \brief Generate an interrupt or trap gate descriptor in ia-32e mode.
  *
- * \note  All parameters type must be uint64_t.
+ * \param p_obj[out]  interrupt or trap gate descriptor
+ * \param gp_isrh[in] interrupt or exception handle function
+ * \param ist[in]     index of interrupt stack table
+ * \param type[in]    descriptor type: INTERRUPT_GATE_386 or TRAP_GATE_386
+ * \param dpl[in]     descriptor privilege level: @ dt_privilege_t
  *
- * \param irqh[in]  irq handle
- * \param idx[in]   index of interrupt stack table
- * \param dpl[in]   kdescriptor privilege level: @ dt_privilege_t
- *
- * \retval interrupt gate descriptor (uint64_t, uint64_t)
+ * \retval 0:success
+ * \retval 1:fail
  */
-#define X64_CREATE_INTERRUPT_GATE_ITEM(irqh, ist, dpl)                       \
-                         __CREATE_IDT_ITEM__(irqh,                           \
-                                             X64_GET_SEGMENT_SELECTOR_VALUE( \
-                                                 X64_DEFUALT_GATE_INDEX,     \
-                                                 TABLE_INDICATOR_GDT,        \
-                                                 PRIVILEGE_LEVEL_0),         \
-                                             ist,                            \
-                                             INTERRUPT_GATE_386,             \
-                                             dpl,                            \
-                                             1ULL )
+uint8_t x64_create_gate_descriptor(x64_idt_int_trap_gate_t *p_obj,
+                                   void(*gp_isrh)(void),
+                                   uint8_t ist,
+                                   uint8_t type,
+                                   uint8_t rpl);
 
 
+/**
+ * \brief Add an interrupt or trap gate descriptor to IDT in ia-32e mode.
+ *
+ * \param p_obj[in]  descriptor
+ * \param p_idt[out] the base address of IDT
+ * \param index[in]  indicates where to add to IDT
+ *
+ * \retval 0:success
+ * \retval 1:fail
+ */
+uint8_t x64_add_descriptor_to_idt(x64_idt_int_trap_gate_t *p_obj,
+                                  void* p_idt,
+                                  uint16_t index);
+
+
+/**
+ * \brief Update idtr register.
+ *
+ * \param p_idt_addr[in] the base address of IDT
+ * \param limit[in]      IDT total bytes - 1
+ *
+ * \retval none
+ */
+void x64_flush_idtr_register(void *p_idt_addr, uint16_t limit);
+
+
+#endif /* COMPILER_ASM_FILE */
 #endif /* X64_SEGMENT_DEF_H_ */
 
 

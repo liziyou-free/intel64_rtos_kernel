@@ -18,12 +18,12 @@
 *******************************************************************************/
 #include "x64_startup.h"
 #include "x64_asm_common.h"
-#define  ASM_FILE
+#define  COMPILER_ASM_FILE
 #include "multiboot2.h"
-#undef ASM_FILE
+#include "../x64_cpu_drivers/x64_segment_def.h"
+#undef COMPILER_ASM_FILE
 #include "../x64_cpu_drivers/x64_mmu.h"
 #include "../x64_cpu_drivers/x64_arch_def.h"
-#include "../x64_cpu_drivers/x64_segment_def.h"
 
 
 /* Set stack size */
@@ -195,7 +195,10 @@ copy_data_section:
 
     lgdt    g_x64_gdtr_loader
 
-    ljmp    $0x10,    $x64_start
+    ljmp    $X64_GET_SEGMENT_SELECTOR_VALUE(X64_DEFAULT_CODE64_INDEX,\
+                                            PRIVILEGE_LEVEL_0, \
+                                            TABLE_INDICATOR_GDT),\
+                                            $x64_start
 
 X64_FUNC_END()
 
@@ -240,7 +243,7 @@ _pdt_loop:
     .global x64_idt_init
     cli
     call    x64_idt_init
-
+    int     $6
     mov     $0x10,   %eax
     and     $7,      %eax
     test    %eax,    %eax
@@ -263,13 +266,14 @@ __end:
 *******************************************************************************/
 
 /* X86 Global Descriptor Table */
-    .align     16
+    .align     8
     X64_ASM_DATA(g_x64_gdt)
 _gdt_start:
     .quad    0    /* Must is 0! */
     .quad    X64_CREATE_GDT_ITEM_UNIT_4KB(0, 0xfffff, APP_CODE32_XRC_SEGMENT, PRIVILEGE_LEVEL_0)
     .quad    X64_CREATE_GDT_ITEM_UNIT_4KB(0, 0xfffff, APP_CODE64_XRC_SEGMENT, PRIVILEGE_LEVEL_0)
     .quad    X64_CREATE_GDT_ITEM_UNIT_4KB(0, 0xfffff, APP_DATA_RW_SEGMENT, PRIVILEGE_LEVEL_0)
+    .quad    X64_CREATE_GDT_ITEM_UNIT_4KB(0, 0xfffff, APP_CODE64_XRC_SEGMENT, PRIVILEGE_LEVEL_0)
 _gdt_end:
 
 

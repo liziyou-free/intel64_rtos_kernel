@@ -47,7 +47,7 @@
 					</folderInfo>
 					<sourceEntries>
 						<entry excluding="x86_driver|app|startup/x86_startup.c|startup/startup.S|x64_cpu_drivers|startup/x64_isr.S|startup/x64_startup.c|startup/x86_isr.S" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
-						<entry excluding="x64_dt.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="x64_cpu_drivers"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="x64_cpu_drivers"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -96,7 +96,7 @@
 					</folderInfo>
 					<sourceEntries>
 						<entry excluding="x86_driver|app|startup/x86_startup.c|startup/startup.S|x64_cpu_drivers|startup/x64_isr.S|startup/x64_startup.c|startup/x86_isr.S" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
-						<entry excluding="x64_dt.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="x64_cpu_drivers"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="x64_cpu_drivers"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
