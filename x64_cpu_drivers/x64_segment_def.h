@@ -29,27 +29,12 @@
 #define X64_SEGMENT_DEF_H_
 
 
-#ifndef COMPILER_ASM_FILE
-#define __BIGNUM__(x)    x##ULL
-#else
-#define __BIGNUM__(x)    x
-#endif
-
-#define X64_FLAT_SEGMENT_BASE       0x00000
-#define X64_FLAT_SEGMENT_LIMIT      0xFFFFF
-
-
-#define X64_DEFAULT_CODE32_INDEX    0x01
-#define X64_DEFAULT_CODE64_INDEX    0x02
-#define X64_DEFAULT_DATA_INDEX      0x03
-#define X64_DEFUALT_GATE_INDEX      0x04
-
-
 /**
  *\brief x86_dt_type_t
  *\note  distinguishes between various kinds of descriptors.
  */
-/* system, interrupt and trap gate segment descriptor type */
+
+/* IA-32 Mode: system segment and gate-descriptor type */
 #define AVAILABLE_286_TSS           1
 #define LOCAL_DESCRIPTOT_TABLE      2
 #define BUSY_286_TSS                3
@@ -62,6 +47,16 @@
 #define CALL_GATE_386               12
 #define INTERRUPT_GATE_386          14
 #define TRAP_GATE_386               15
+
+/* IA-32e Mode: system segment and gate-descriptor type */
+#define LOCAL_DESCRIPTOT_TABLE      2
+#define AVAILABLE_64BIT_TSS         9
+#define BUSY_64BIT_TSS              11
+#define CALL_GATE_64BIT             12
+#define INTERRUPT_GATE_64BIT        14
+#define TRAP_GATE_64BIT             15
+
+
 /* data segment descriptor type
  * -r: readable
  * -w: writable
@@ -108,7 +103,6 @@
 
 /**
  * \brief Generates a selector by passing in arguments.
- * \note  for protected mode.
  *
  * \param index[in] the processor looks up the GDT by this index value
  * \param ti[in]    table Indicator: @ table_indicator_type_t
@@ -132,10 +126,12 @@
                            (unit << 55)                     | \
                            ((addr >> 24) << 56) )
 
+
 /**
  * \brief Generates a segment descriptor by passing in arguments.
  *
- * \note  All parameters type must be uint64_t.
+ * \note  All parameters must be uint64_t!!!
+ * \note  Not applicable to TSS and LDT descriptor.
  *
  * \param addr[in]  segment base address (linear address space)
  * \param len[in]   size of the segment (In units of one byte, MAX:1MB)
@@ -145,17 +141,14 @@
  * \retval segment-descriptor
  */
 #define X64_CREATE_GDT_ITEM_UNIT_BYTE(addr, seg_len, type, dpl)  \
-                         __CREATE_GDT_ITEM__(__BIGNUM__(addr),     \
-                                             __BIGNUM__(seg_len),  \
-                                             __BIGNUM__(type),     \
-                                             __BIGNUM__(dpl),    \
-                                             __BIGNUM__(0))
+                         __CREATE_GDT_ITEM__(addr, seg_len, type, dpl, 0)
 
 
 /**
  * \brief Generates a segment descriptor by passing in arguments.
  *
- * \note  All parameters type must be uint64_t.
+ * \note  All parameters must be uint64_t!!!
+ * \note  Not applicable to TSS and LDT descriptor.
  *
  * \param addr[in]  segment base address (linear address space)
  * \param len[in]   size of the segment (In units of 4 Kilobytes, MAX:4GB)
@@ -165,18 +158,15 @@
  * \retval segment descriptor
  */
 #define X64_CREATE_GDT_ITEM_UNIT_4KB(addr, seg_len, type, dpl)    \
-                         __CREATE_GDT_ITEM__(__BIGNUM__(addr),     \
-                                             __BIGNUM__(seg_len),  \
-                                             __BIGNUM__(type),     \
-                                             __BIGNUM__(dpl),    \
-                                             __BIGNUM__(1))
+                         __CREATE_GDT_ITEM__(addr, seg_len, type, dpl, 0)
 
 
 #ifndef COMPILER_ASM_FILE
 #pragma pack(push)
 #pragma pack(1)
+
 /**
- * \brief IDT(64bit mode): interrupt gate and trap gate.
+ * \brief IDT(ia-32e mode): interrupt gate and trap gate.
  */
 typedef struct x64_idt_int_trap_gate{
     uint16_t    offset_low16;
@@ -196,12 +186,79 @@ typedef struct x64_idt_int_trap_gate{
 
 
 /**
- * \brief IDTR register define(64bit mode).
+ * \brief TSS (or LDT) descriptor in IA-32e mode.
+ */
+typedef struct x64_tss_ldt_dt {
+    uint16_t    limit_low16;        /* segment limit: 0~15 bit */
+    uint16_t    base_addr_0_15;     /* segment base: 0~15 bit */
+    uint8_t     base_addr_16_23;    /* segment base: 16~23 bit */
+    struct {
+        uint16_t    type:4;         /* descriptor type */
+        uint16_t    :1;
+        uint16_t    dpl:2;          /* description privilege level */
+        uint16_t    present:1;      /* segment present flag */
+        uint16_t    limit_high4;    /* segment limit: 16~19bit */
+        uint16_t    avl:1;          /* use by systems programmers */
+        uint16_t    :2;
+        uint16_t    g:1;            /* 0:limit unit is byte 1:limit unit is 4KB */
+    }fields;
+    uint8_t     base_addr_24_31;    /* segment base: 24~31 bit */
+    uint32_t    base_addr_32_63;    /* segment base: 32~63 bit */
+    uint32_t    reserved;
+} x64_tss_ldt_dt_t;
+
+
+/**
+ * \brief TSS format(64bit mode)
  */
 typedef struct {
+    uint32_t reserved0;
+    uint64_t rsp0;        /* stack for ring 0 */
+    uint64_t rsp1;        /* stack for ring 1 */
+    uint64_t rsp2;        /* stack for ring 2 */
+    uint64_t reserved1;
+    uint64_t ist1;        /* interrupt or exception stack 1 */
+    uint64_t ist2;        /* interrupt or exception stack 2 */
+    uint64_t ist3;        /* interrupt or exception stack 3 */
+    uint64_t ist4;        /* interrupt or exception stack 4 */
+    uint64_t ist5;        /* interrupt or exception stack 5 */
+    uint64_t ist6;        /* interrupt or exception stack 6 */
+    uint64_t ist7;        /* interrupt or exception stack 7 */
+    uint64_t reserved2;
+    uint16_t reserved3;
+    uint16_t io_map_ba;   /* I/O map base address */
+}x64_tss_t;
+
+
+struct x64_dtr_str {
     uint16_t    limit;
     uint64_t    idt_addr;
-}x64_idtr_t;
+};
+
+
+/**
+ * \brief GDTR register define(64bit mode).
+ */
+typedef struct x64_dtr_str x64_gdtr_t;
+
+
+/**
+ * \brief IDTR register define(64bit mode).
+ */
+typedef struct x64_dtr_str x64_idtr_t;
+
+
+/**
+ * \brief LDTR register define(Compatible with all modes).
+ */
+typedef uint16_t x64_ldtr_t;
+
+
+/**
+ * \brief TR register define(Compatible with all modes).
+ */
+typedef uint16_t x64_tr_t;
+
 
 #pragma pack(pop)
 
@@ -218,11 +275,11 @@ typedef struct {
  * \retval 0:success
  * \retval 1:fail
  */
-uint8_t x64_create_gate_descriptor(x64_idt_int_trap_gate_t *p_obj,
-                                   void(*gp_isrh)(void),
-                                   uint8_t ist,
-                                   uint8_t type,
-                                   uint8_t rpl);
+uint8_t x64_create_gate_descriptor (x64_idt_int_trap_gate_t *p_obj,
+                                    void(*gp_isrh)(void),
+                                    uint8_t ist,
+                                    uint8_t type,
+                                    uint8_t rpl);
 
 
 /**
@@ -235,9 +292,9 @@ uint8_t x64_create_gate_descriptor(x64_idt_int_trap_gate_t *p_obj,
  * \retval 0:success
  * \retval 1:fail
  */
-uint8_t x64_add_descriptor_to_idt(x64_idt_int_trap_gate_t *p_obj,
-                                  void* p_idt,
-                                  uint16_t index);
+uint8_t x64_add_descriptor_to_idt (x64_idt_int_trap_gate_t *p_obj,
+                                   x64_idt_int_trap_gate_t* p_idt,
+                                   uint16_t index);
 
 
 /**
@@ -246,9 +303,23 @@ uint8_t x64_add_descriptor_to_idt(x64_idt_int_trap_gate_t *p_obj,
  * \param p_idt_addr[in] the base address of IDT
  * \param limit[in]      IDT total bytes - 1
  *
- * \retval none
+ * \retval 0:success
+ * \retval 1:fail
  */
-void x64_flush_idtr_register(void *p_idt_addr, uint16_t limit);
+uint8_t x64_flush_idtr_register (void *p_idt_addr, uint16_t limit);
+
+
+/**
+ * \brief Update tr register.
+ *
+ * \param tr[in] segment selector
+ *
+ * \retval 0:success
+ * \retval 1:fail
+ */
+uint8_t x64_flush_tr_register(x64_tr_t tr);
+
+
 
 
 #endif /* COMPILER_ASM_FILE */

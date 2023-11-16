@@ -1,9 +1,21 @@
-/*
- * x86_startup.h
- *
- *  Created on: 2023年9月8日
- *      Author: liziyou
- */
+/*******************************************************************************
+*                                 AWorks
+*                       ----------------------------
+*                       innovating embedded platform
+*
+* Copyright (c) 2001-present Guangzhou ZHIYUAN Electronics Co., Ltd.
+* ALL rights reserved.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+*
+* The License of this software follows LGPL v2.1, See the LICENSE for more details:
+* https://opensource.org/licenses/LGPL-2.1
+*
+* Contact information:
+* web site:    http://www.zlg.cn/
+*******************************************************************************/
 
 #ifndef STARTUP_X64_STARTUP_H_
 #define STARTUP_X64_STARTUP_H_
@@ -16,25 +28,20 @@
 #define X86_IDT_NUM  256
 
 
+/* Can not be modified! */
+#define X64_FLAT_SEGMENT_BASE           0x00000
+#define X64_FLAT_SEGMENT_LIMIT          0xFFFFF
 
-/* Kernel use 'Flat' memory model */
-#define  KERNEL_CODE_ADDRESS_START    0x00
-#define  KERNEL_CODE_ADDRESS_SIZE     ((4u*1024*1024*1024)-1) /* 4GB */
+/* Can not be modified! */
+#define X64_INTERRUPT_IST_INDEX         0x01
 
-#define  KERNEL_DATA_ADDRESS_START    0x00
-#define  KERNEL_DATA_ADDRESS_SIZE     ((4u*1024*1024*1024)-1) /* 4GB */
 
-#define  KERNEL_STACK_ADDRESS_START   0x00
-#define  KERNEL_STACK_ADDRESS_SIZE    (1u*1024u)-1 /* 4GB */
-
-#define  KERNEL_ISR_ADDRESS_START     0x00
-#define  KERNEL_ISR_ADDRESS_SIZE      ((4u*1024*1024*1024)-1) /* 4GB */
-
-#define  KERNEL_CODE_GDT_INDEX        1
-#define  KERNEL_DATA_GDT_INDEX        2
-#define  KERNEL_STACK_GDT_INDEX       3
-#define  KERNEL_INT_EXCEPT_GDT_INDEX  4
-
+/* Can not be modified! */
+#define X64_GDT_CODE32_INDEX            0x01
+#define X64_GDT_CODE64_INDEX            0x02
+#define X64_GDT_DATA_INDEX              0x03
+#define X64_GDT_INT_TRAP_GATE_INDEX     0x04
+#define X64_GDT_TSS_INDEX               0x05
 
 
 
