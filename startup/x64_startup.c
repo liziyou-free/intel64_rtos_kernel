@@ -38,7 +38,7 @@
  *\note The base addresses of the IDT should be aligned on an 8-byte boundary
  * to maximize performance of cache line fills.
  */
-x64_idt_int_trap_gate_t g_x86_idt[256]__attribute__((aligned(8)));
+x64_idt_int_trap_gate_t g_x64_idt[256]__attribute__((aligned(8)));
 
 
 /* stack for interrupt */
@@ -104,7 +104,7 @@ void x64_tss_init (void) {
 void x64_idt_init (void)
 {
   x64_idt_int_trap_gate_t  obj;
-  uint16_t idt_elements = sizeof(g_x86_idt) / 16; /* a descriptor:16bytes */
+  uint16_t idt_elements = sizeof(g_x64_idt) / 16; /* a descriptor:16bytes */
 
   for (int j = 0; j < idt_elements; j++) {
       if (j < 32) {
@@ -116,11 +116,11 @@ void x64_idt_init (void)
           x64_create_gate_descriptor(&obj, irq_handle, X64_INTERRUPT_IST_INDEX, \
                                      INTERRUPT_GATE_64BIT, PRIVILEGE_LEVEL_0);
       }
-      x64_add_descriptor_to_idt(&obj, &g_x86_idt[0], j);
+      x64_add_descriptor_to_idt(&obj, &g_x64_idt[0], j);
   }
 
   /* Update to IDTR register */
-  x64_flush_idtr_register(g_x86_idt, sizeof(g_x86_idt) - 1);
+  x64_flush_idtr_register(g_x64_idt, sizeof(g_x64_idt) - 1);
 
   return;
 }
