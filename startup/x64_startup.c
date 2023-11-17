@@ -56,7 +56,6 @@ void irq_handle (void) {
 }
 
 
-/*------------------------------------------------------------------------------*/
 void x64_tss_init (void) {
 
     x64_tr_t tr;
@@ -74,6 +73,15 @@ void x64_tss_init (void) {
     /* Init TSS */
     memset((void *)&g_x64_tss_obj, 0, sizeof(x64_tss_t));
     g_x64_tss_obj.ist1 = irq_stack_top;
+    g_x64_tss_obj.ist2 = irq_stack_top;
+    g_x64_tss_obj.ist3 = irq_stack_top;
+    g_x64_tss_obj.ist4 = irq_stack_top;
+    g_x64_tss_obj.ist5 = irq_stack_top;
+    g_x64_tss_obj.ist6 = irq_stack_top;
+    g_x64_tss_obj.ist7 = irq_stack_top;
+    g_x64_tss_obj.rsp0 = irq_stack_top;
+    g_x64_tss_obj.rsp1 = irq_stack_top;
+    g_x64_tss_obj.rsp2 = irq_stack_top;
 
     /* Init TSS descriptor in GDT */
     ba = (uint64_t)&g_x64_tss_obj;
@@ -83,7 +91,7 @@ void x64_tss_init (void) {
     p_tss_descriptor->limit_low16 = tss_limit & 0x0000ffff;
     p_tss_descriptor->fields.limit_high4 = (tss_limit >> 16) & 0x000f;
     p_tss_descriptor->base_addr_0_15 = ba & 0x0000ffff;
-    p_tss_descriptor->base_addr_16_23 = (ba >> 16) & 0x000f;
+    p_tss_descriptor->base_addr_16_23 = (ba >> 16) & 0x00ff;
     p_tss_descriptor->base_addr_24_31 = (ba >> 24) & 0x00ff;
     p_tss_descriptor->base_addr_32_63 = ba >> 32;
     p_tss_descriptor->fields.avl = 0;
@@ -108,12 +116,12 @@ void x64_idt_init (void)
 
   for (int j = 0; j < idt_elements; j++) {
       if (j < 32) {
-          /* exception */
-          x64_create_gate_descriptor(&obj, irq_handle, X64_INTERRUPT_IST_INDEX, \
+          /* exception */ //X64_INTERRUPT_IST_INDEX
+          x64_create_gate_descriptor(&obj, irq_handle, 0, \
                                      TRAP_GATE_64BIT, PRIVILEGE_LEVEL_0);
       } else {
           /* interrupt */
-          x64_create_gate_descriptor(&obj, irq_handle, X64_INTERRUPT_IST_INDEX, \
+          x64_create_gate_descriptor(&obj, irq_handle, 0, \
                                      INTERRUPT_GATE_64BIT, PRIVILEGE_LEVEL_0);
       }
       x64_add_descriptor_to_idt(&obj, &g_x64_idt[0], j);
@@ -124,6 +132,7 @@ void x64_idt_init (void)
 
   return;
 }
+
 
 int divided_zero (void) {
   int a = 0, b = 0;

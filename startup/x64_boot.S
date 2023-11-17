@@ -147,7 +147,10 @@ multiboot_header_end:
     popf
 
     /* Save multiboot infomation */
+    //push
+    pushl    $0
     pushl    %ebx
+    pushl    $0
     pushl    %eax
 
 
@@ -194,12 +197,10 @@ copy_data_section:
     movl    %eax,    %cr0
 
     lgdt    g_x64_gdtr_loader
-
     ljmp    $X64_GET_SEGMENT_SELECTOR_VALUE(X64_GDT_CODE64_INDEX, \
                                             PRIVILEGE_LEVEL_0, \
                                             TABLE_INDICATOR_GDT), \
                                             $x64_start
-
 X64_FUNC_END()
 
 
@@ -244,30 +245,31 @@ _pdt_loop:
     .global divided_zero
     X64_CODE64_FUNC_BEGIN(x64_start)
     cli
+
     lgdt    g_x64_gdtr_loader
+
     // Set Segement Registers for proper iret, etc. operation
     mov    $X64_GET_SEGMENT_SELECTOR_VALUE(X64_GDT_DATA_INDEX, \
-                                            PRIVILEGE_LEVEL_0, \
-                                            TABLE_INDICATOR_GDT), \
-                                            %ax
+                                           PRIVILEGE_LEVEL_0, \
+                                           TABLE_INDICATOR_GDT), \
+                                           %ax
     mov     %ax,    %ss
     mov     %ax,    %ds
     mov     %ax,    %es
     mov     %ax,    %fs
     mov     %ax,    %gs
 
-    pushf
-
-    call    x64_idt_init
-    call    x64_tss_init
-    call    divided_zero
-    nop
     pop     %rdi
     pop     %rsi
     call    cmain
+    call    x64_idt_init
+    call    x64_tss_init
+    int     $36
+    call    divided_zero
 
-    pushf
-    pushf
+_loop_:
+    nop
+    jmp    _loop_
 
     X64_FUNC_END()
 
@@ -281,16 +283,28 @@ _pdt_loop:
 
 /* X86 Global Descriptor Table */
     .align     8
-    .global    g_gdt_tss_pos
+    .global    g_gdt_tss_pos, g_x64_tss_obj_test
     X64_ASM_DATA(g_x64_gdt)
 _gdt_start:
+
     .quad    0    /* Must is 0! */
     .quad    X64_CREATE_GDT_ITEM_UNIT_4KB(X64_FLAT_SEGMENT_BASE, X64_FLAT_SEGMENT_LIMIT, APP_CODE32_XRC_SEGMENT, PRIVILEGE_LEVEL_0)
-    .quad    X64_CREATE_GDT_ITEM_UNIT_4KB(X64_FLAT_SEGMENT_BASE, X64_FLAT_SEGMENT_LIMIT, APP_CODE64_XRC_SEGMENT, PRIVILEGE_LEVEL_0)
     .quad    X64_CREATE_GDT_ITEM_UNIT_4KB(X64_FLAT_SEGMENT_BASE, X64_FLAT_SEGMENT_LIMIT, APP_DATA_RW_SEGMENT, PRIVILEGE_LEVEL_0)
-    .quad    X64_CREATE_GDT_ITEM_UNIT_4KB(X64_FLAT_SEGMENT_BASE, X64_FLAT_SEGMENT_LIMIT, APP_CODE64_XRC_SEGMENT, PRIVILEGE_LEVEL_0)
+    .quad    X64_CREATE_GDT_ITEM_CODE64(APP_CODE64_X_SEGMENT, PRIVILEGE_LEVEL_0, 0)
+//    .word 0,      0, 0x9800, 0x0020	/* 0x18: 64-bit kernel code */
+
+//	.word 0,      0, 0,      0	/* 0x00: null descriptor */
+//	.word 0xFFFF, 0, 0x9A00, 0x00CF	/* 0x08: 32-bit kernel code */
+//	.word 0xFFFF, 0, 0x9200, 0x00CF	/* 0x10: 32-bit kernel data */
+//	.word 0,      0, 0x9800, 0x0020	/* 0x18: 64-bit kernel code */
+//	.word 0,      0, 0x9200, 0x0000	/* 0x20: 64-bit kernel data */
+//	.word 0xFFFF, 0, 0xFA00, 0x00CF /* 0x28: 32-bit user code (unused) */
+//	.word 0,      0, 0xF200, 0x0000	/* 0x30: 64-bit user data */
+//	.word 0,      0, 0xF800, 0x0020	/* 0x38: 64-bit user code */
+
 g_gdt_tss_pos:
     .quad    0, 0    /* Reserve position, initialize TSS in C code */
+    .quad    0x12345678
 _gdt_end:
 
 

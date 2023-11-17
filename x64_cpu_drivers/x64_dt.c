@@ -71,14 +71,14 @@ uint8_t x64_add_descriptor_to_idt (x64_idt_int_trap_gate_t *p_obj,
 
 uint8_t x64_flush_idtr_register (void *p_idt_addr, uint16_t limit)
 {
-    x64_idtr_t    idtr = {0, 0};
+    x64_idtr_t idtr = {0, 0};
 
     if (p_idt_addr == NULL) {
         return -1;
     }
     idtr.limit = limit;
     idtr.idt_addr = (uint64_t)p_idt_addr;
-    __asm__ __volatile__("lidt %0"::"m"(idtr):"memory");
+    __asm__ __volatile__("lidt  %0"::"m"(idtr):"memory");
     return 0;
 }
 
@@ -88,7 +88,7 @@ uint8_t x64_flush_tr_register(x64_tr_t tr)
     if (tr == 0) {
         return -1;
     }
-    __asm__ __volatile__("ltr    %0"::"R"(tr));
+    __asm__ __volatile__("ltr  %0"::"R"(tr));
     return 0;
 }
 

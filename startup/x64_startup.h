@@ -33,15 +33,15 @@
 #define X64_FLAT_SEGMENT_LIMIT          0xFFFFF
 
 /* Can not be modified! */
-#define X64_INTERRUPT_IST_INDEX         0x01
+#define X64_INTERRUPT_IST_INDEX         0x05
 
 
 /* Can not be modified! */
 #define X64_GDT_CODE32_INDEX            0x01
-#define X64_GDT_CODE64_INDEX            0x02
-#define X64_GDT_DATA_INDEX              0x03
-#define X64_GDT_INT_TRAP_GATE_INDEX     0x04
-#define X64_GDT_TSS_INDEX               0x05
+#define X64_GDT_DATA_INDEX              0x02
+#define X64_GDT_CODE64_INDEX            0x03
+#define X64_GDT_INT_TRAP_GATE_INDEX     0x03
+#define X64_GDT_TSS_INDEX               0x04
 
 
 
