@@ -291,20 +291,8 @@ _gdt_start:
     .quad    X64_CREATE_GDT_ITEM_UNIT_4KB(X64_FLAT_SEGMENT_BASE, X64_FLAT_SEGMENT_LIMIT, APP_CODE32_XRC_SEGMENT, PRIVILEGE_LEVEL_0)
     .quad    X64_CREATE_GDT_ITEM_UNIT_4KB(X64_FLAT_SEGMENT_BASE, X64_FLAT_SEGMENT_LIMIT, APP_DATA_RW_SEGMENT, PRIVILEGE_LEVEL_0)
     .quad    X64_CREATE_GDT_ITEM_CODE64(APP_CODE64_X_SEGMENT, PRIVILEGE_LEVEL_0, 0)
-//    .word 0,      0, 0x9800, 0x0020	/* 0x18: 64-bit kernel code */
-
-//	.word 0,      0, 0,      0	/* 0x00: null descriptor */
-//	.word 0xFFFF, 0, 0x9A00, 0x00CF	/* 0x08: 32-bit kernel code */
-//	.word 0xFFFF, 0, 0x9200, 0x00CF	/* 0x10: 32-bit kernel data */
-//	.word 0,      0, 0x9800, 0x0020	/* 0x18: 64-bit kernel code */
-//	.word 0,      0, 0x9200, 0x0000	/* 0x20: 64-bit kernel data */
-//	.word 0xFFFF, 0, 0xFA00, 0x00CF /* 0x28: 32-bit user code (unused) */
-//	.word 0,      0, 0xF200, 0x0000	/* 0x30: 64-bit user data */
-//	.word 0,      0, 0xF800, 0x0020	/* 0x38: 64-bit user code */
-
 g_gdt_tss_pos:
     .quad    0, 0    /* Reserve position, initialize TSS in C code */
-    .quad    0x12345678
 _gdt_end:
 
 

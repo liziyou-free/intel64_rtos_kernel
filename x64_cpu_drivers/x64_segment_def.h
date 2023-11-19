@@ -202,7 +202,7 @@ typedef struct x64_tss_ldt_dt {
         uint16_t    :1;
         uint16_t    dpl:2;          /* description privilege level */
         uint16_t    present:1;      /* segment present flag */
-        uint16_t    limit_high4;    /* segment limit: 16~19bit */
+        uint16_t    limit_high4:4;    /* segment limit: 16~19bit */
         uint16_t    avl:1;          /* use by systems programmers */
         uint16_t    :2;
         uint16_t    g:1;            /* 0:limit unit is byte 1:limit unit is 4KB */
