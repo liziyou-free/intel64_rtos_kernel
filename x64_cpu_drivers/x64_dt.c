@@ -41,6 +41,11 @@ uint8_t x64_create_gate_descriptor(x64_idt_int_trap_gate_t *p_obj,
     p_obj->offset_low16 = handle_addr & 0x0000ffff;
     p_obj->offset_middle16 = (handle_addr >> 16) & 0x0000ffff;
     p_obj->offset_hight32 = handle_addr >> 32;
+    /* The target code segment referenced by the interrupt gate must be a
+     * 64-bit code segment (CS.L = 1, CS.D = 0). If the target is not a
+     * 64-bit code segment, a general-protection exception (#GP) is gene-
+     * rated with the IDT vector number reported as the error code.
+     */
     p_obj->segment_selector = X64_GET_SEGMENT_SELECTOR_VALUE( \
                                 X64_GDT_INT_TRAP_GATE_INDEX, \
                                 dpl, \

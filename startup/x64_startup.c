@@ -68,7 +68,8 @@ void x64_tss_init (void) {
     irq_stack_top = ((uint64_t)&g_interrupt_stack[0]) +  \
                     sizeof(g_interrupt_stack) - 1;
 
-    irq_stack_top = ALIGNED(irq_stack_top, 8);
+    /* Aligned to 16 bytes to maximize XMM register performance. */
+    irq_stack_top = ALIGNED(irq_stack_top, 16);
 
     /* Init TSS */
     memset((void *)&g_x64_tss_obj, 0, sizeof(x64_tss_t));
@@ -87,9 +88,7 @@ void x64_tss_init (void) {
     ba = (uint64_t)&g_x64_tss_obj;
     tss_limit = sizeof(g_x64_tss_obj) - 1;
     p_tss_descriptor = (x64_tss_ldt_dt_t *)g_gdt_tss_pos;
-    if (p_tss_descriptor->base_addr_32_63 == 0x12345678) {
-        memset((void *)p_tss_descriptor, 0, sizeof(x64_tss_ldt_dt_t));
-    }
+    memset((void *)p_tss_descriptor, 0, sizeof(x64_tss_ldt_dt_t));
     p_tss_descriptor->limit_low16 = tss_limit & 0x0000ffff;
     p_tss_descriptor->fields.limit_high4 = (tss_limit >> 16) & 0x000f;
     p_tss_descriptor->base_addr_0_15 = ba & 0x0000ffff;
@@ -118,13 +117,19 @@ void x64_idt_init (void)
 
   for (int j = 0; j < idt_elements; j++) {
       if (j < 32) {
-          /* exception */ //X64_INTERRUPT_IST_INDEX
-          x64_create_gate_descriptor(&obj, irq_handle, X64_INTERRUPT_IST_INDEX, \
-                                     TRAP_GATE_64BIT, PRIVILEGE_LEVEL_0);
+          /* exception */
+          x64_create_gate_descriptor(&obj, \
+                                     irq_handle, \
+                                     X64_INTERRUPT_IST_INDEX, \
+                                     TRAP_GATE_64BIT, \
+                                     PRIVILEGE_LEVEL_0);
       } else {
           /* interrupt */
-          x64_create_gate_descriptor(&obj, irq_handle, X64_INTERRUPT_IST_INDEX, \
-                                     INTERRUPT_GATE_64BIT, PRIVILEGE_LEVEL_0);
+          x64_create_gate_descriptor(&obj, \
+                                     irq_handle, \
+                                     X64_INTERRUPT_IST_INDEX, \
+                                     INTERRUPT_GATE_64BIT, \
+                                     PRIVILEGE_LEVEL_0);
       }
       x64_add_descriptor_to_idt(&obj, &g_x64_idt[0], j);
   }

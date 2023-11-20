@@ -76,11 +76,16 @@
 #define APP_CODE32_XR_SEGMENT         0x1a
 #define APP_CODE32_XC_SEGMENT         0x1c
 #define APP_CODE32_XRC_SEGMENT        0x1e
-//64bit code segment (extra enable 'L' bit)
+//IA-32e 64bit-mode code segment (extra enable 'L' bit)
 #define APP_CODE64_X_SEGMENT          0x2018
 #define APP_CODE64_XR_SEGMENT         0x201a
 #define APP_CODE64_XC_SEGMENT         0x201c
 #define APP_CODE64_XRC_SEGMENT        0x201e
+//IA-32e compatibility-mode code segment (extra enable 'L' and 'D' bit)
+#define APP_COMPATIBLE_X_SEGMENT      0x6018
+#define APP_COMPATIBLE_XR_SEGMENT     0x601a
+#define APP_COMPATIBLE_XC_SEGMENT     0x601c
+#define APP_COMPATIBLE_XRC_SEGMENT    0x601e
 
 
 /**
@@ -122,7 +127,6 @@
                            (level << 45)                    | \
                            (1 << 47)                        | \
                            (((len >> 16) & 0x0f) << 48)     | \
-                           (1 << 54)                        | \
                            (unit << 55)                     | \
                            ((addr >> 24) << 56) )
 
@@ -158,7 +162,7 @@
  * \retval segment descriptor
  */
 #define X64_CREATE_GDT_ITEM_UNIT_4KB(addr, seg_len, type, dpl) \
-                         __CREATE_GDT_ITEM__(addr, seg_len, type, dpl, 0)
+                         __CREATE_GDT_ITEM__(addr, seg_len, type, dpl, 1)
 
 
 
