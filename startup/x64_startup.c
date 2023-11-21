@@ -66,7 +66,7 @@ extern uint16_t g_interrupt_handler_table_bytes;
                     (*((uint16_t*)&g_interrupt_handler_table_bytes))
 
 
-typedef void (pf_isr_handler_t)(void);
+typedef void (*pf_isr_handler_t)(void);
 
 
 
@@ -136,25 +136,39 @@ void x64_idt_init (void)
     idt_elements = sizeof(g_x64_idt) / 16; /* a descriptor:16bytes */
     interrupt_table_elements = __INTERRUPT_TABLE_BYTES__ / 8;
     exceptiont_table_elements = __EXCEPTION_TABLE_BYTES__ / 8;
-    pf_interrupt_table = (pf_isr_handler_t *)__INTERRUPT_TABLE_ADDR__;
-    pf_exception_table = (pf_isr_handler_t *)__EXCEPTION_TABLE_ADDR__;
+    pf_interrupt_table = ((pf_isr_handler_t*)__INTERRUPT_TABLE_ADDR__);
+    pf_exception_table = ((pf_isr_handler_t*)__EXCEPTION_TABLE_ADDR__);
 
     for (int j = 0; j < idt_elements; j++) {
         if (j < 32) {
             /* exception */
-            x64_create_gate_descriptor(&obj, \
-                                       pf_exception_table++, \
-                                       X64_INTERRUPT_IST_INDEX, \
-                                       TRAP_GATE_64BIT, \
-                                       PRIVILEGE_LEVEL_0);
-        } else {
-            /* interrupt */
-            x64_create_gate_descriptor(&obj, \
-                                       pf_interrupt_table++, \
-                                       X64_INTERRUPT_IST_INDEX, \
-                                       INTERRUPT_GATE_64BIT, \
-                                       PRIVILEGE_LEVEL_0);
+            if (exceptiont_table_elements) {
+                x64_create_gate_descriptor(&obj, \
+                                           *pf_exception_table++, \
+                                           X64_INTERRUPT_IST_INDEX, \
+                                           TRAP_GATE_64BIT, \
+                                           PRIVILEGE_LEVEL_0);
+                --exceptiont_table_elements;
+            }
+            else {
+                continue;
+            }
         }
+        else if (j >= 32) {
+            /* interrupt */
+            if (interrupt_table_elements) {
+                x64_create_gate_descriptor(&obj, \
+                                           *pf_interrupt_table++, \
+                                           X64_INTERRUPT_IST_INDEX, \
+                                           INTERRUPT_GATE_64BIT, \
+                                           PRIVILEGE_LEVEL_0);
+                --interrupt_table_elements;
+            }
+            else {
+                break;
+            }
+        }
+        /* Add to IDT */
         x64_add_descriptor_to_idt(&obj, &g_x64_idt[0], j);
     }
 

@@ -46,32 +46,40 @@
 #define X64_EXCEPT_HANDLE_WEC_WRAP(name, inum) \
 		 .global name##_exception_handler; \
 		 .type name##_exception_handler, %function; \
+		 .text; \
+		 .func; \
 		 .code64; \
 		  name##_exception_handler: \
 		  push    %rdi; \
 		  mov     $inum,    %rdi; \
 		  jmp     _isr_handler_; \
-          .data; \
-          .quad    name##_exception_handler; \
-          .text
+         .data; \
+         .quad    name##_exception_handler; \
+         .endfunc; \
+
 
 
 #define X64_EXCEPT_HANDLE_NEC_WRAP(name, inum) \
 		 .global name##_exception_handler; \
 		 .type name##_exception_handler, %function; \
+		 .text; \
+		 .func; \
 		 .code64; \
 		  name##_exception_handler: \
 		  pushq    $0; \
 		  pushq    %rdi; \
 		  mov      $inum,    %rdi; \
 		  jmp      _isr_handler_; \
-          .data; \
-          .quad    name##_exception_handler; \
-          .text
+         .data; \
+         .quad     name##_exception_handler; \
+         .endfunc; \
+         .text
 
 #define X64_INTERRUPT_HANDLE_WRAP(inum) \
 		 .global exit##inum##_handler; \
 		 .type exit##inum##_handler, %function; \
+		 .text; \
+		 .func; \
 		 .code64; \
 		  exit##inum##_handler: \
 		  pushq    $0; \
@@ -80,6 +88,7 @@
 		  jmp      _isr_handler_; \
           .data; \
           .quad    exit##inum##_handler; \
+          .endfunc; \
           .text
 
 
