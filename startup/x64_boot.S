@@ -23,7 +23,7 @@
 #include "../x64_cpu_drivers/x64_segment_def.h"
 #undef COMPILER_ASM_FILE
 #include "../x64_cpu_drivers/x64_mmu.h"
-#include "../x64_cpu_drivers/x64_arch_def.h"
+#include "../startup/x64_arch_def.h"
 
 
 /* Set stack size */

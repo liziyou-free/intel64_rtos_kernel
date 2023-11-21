@@ -46,14 +46,28 @@ uint8_t g_interrupt_stack[1024*2]__attribute__((aligned(8)));
 
 
 extern x64_tss_ldt_dt_t g_gdt_tss_pos[1];
+extern uint64_t g_exception_handler_table_addr;
+extern uint16_t g_exception_handler_table_bytes;
+extern uint64_t g_interrupt_handler_table_addr;
+extern uint16_t g_interrupt_handler_table_bytes;
 
 
-void irq_handle (void) {
-  static int temp = 5;
-  int a = 0;
-  a = a + 5;
-  temp = a + temp;
-}
+
+#define __EXCEPTION_TABLE_ADDR__   \
+                    (&g_exception_handler_table_addr)
+
+#define __EXCEPTION_TABLE_BYTES__  \
+                    (*((uint16_t*)&g_exception_handler_table_bytes))
+
+#define __INTERRUPT_TABLE_ADDR__   \
+                    (&g_interrupt_handler_table_addr)
+
+#define __INTERRUPT_TABLE_BYTES__  \
+                    (*((uint16_t*)&g_interrupt_handler_table_bytes))
+
+
+typedef void (pf_isr_handler_t)(void);
+
 
 
 void x64_tss_init (void) {
@@ -112,32 +126,42 @@ void x64_tss_init (void) {
 
 void x64_idt_init (void)
 {
-  x64_idt_int_trap_gate_t  obj;
-  uint16_t idt_elements = sizeof(g_x64_idt) / 16; /* a descriptor:16bytes */
+    uint16_t idt_elements;
+    x64_idt_int_trap_gate_t  obj;
+    uint16_t interrupt_table_elements;
+    uint16_t exceptiont_table_elements;
+    pf_isr_handler_t *pf_interrupt_table;
+    pf_isr_handler_t *pf_exception_table;
 
-  for (int j = 0; j < idt_elements; j++) {
-      if (j < 32) {
-          /* exception */
-          x64_create_gate_descriptor(&obj, \
-                                     irq_handle, \
-                                     X64_INTERRUPT_IST_INDEX, \
-                                     TRAP_GATE_64BIT, \
-                                     PRIVILEGE_LEVEL_0);
-      } else {
-          /* interrupt */
-          x64_create_gate_descriptor(&obj, \
-                                     irq_handle, \
-                                     X64_INTERRUPT_IST_INDEX, \
-                                     INTERRUPT_GATE_64BIT, \
-                                     PRIVILEGE_LEVEL_0);
-      }
-      x64_add_descriptor_to_idt(&obj, &g_x64_idt[0], j);
-  }
+    idt_elements = sizeof(g_x64_idt) / 16; /* a descriptor:16bytes */
+    interrupt_table_elements = __INTERRUPT_TABLE_BYTES__ / 8;
+    exceptiont_table_elements = __EXCEPTION_TABLE_BYTES__ / 8;
+    pf_interrupt_table = (pf_isr_handler_t *)__INTERRUPT_TABLE_ADDR__;
+    pf_exception_table = (pf_isr_handler_t *)__EXCEPTION_TABLE_ADDR__;
 
-  /* Update to IDTR register */
-  x64_flush_idtr_register(g_x64_idt, sizeof(g_x64_idt) - 1);
+    for (int j = 0; j < idt_elements; j++) {
+        if (j < 32) {
+            /* exception */
+            x64_create_gate_descriptor(&obj, \
+                                       pf_exception_table++, \
+                                       X64_INTERRUPT_IST_INDEX, \
+                                       TRAP_GATE_64BIT, \
+                                       PRIVILEGE_LEVEL_0);
+        } else {
+            /* interrupt */
+            x64_create_gate_descriptor(&obj, \
+                                       pf_interrupt_table++, \
+                                       X64_INTERRUPT_IST_INDEX, \
+                                       INTERRUPT_GATE_64BIT, \
+                                       PRIVILEGE_LEVEL_0);
+        }
+        x64_add_descriptor_to_idt(&obj, &g_x64_idt[0], j);
+    }
 
-  return;
+    /* Update to IDTR register */
+    x64_flush_idtr_register(g_x64_idt, sizeof(g_x64_idt) - 1);
+
+    return;
 }
 
 
