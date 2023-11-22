@@ -56,55 +56,59 @@
  *\brief System control registers
  */
 //CR0
-#define X64_CR0_PE_BIT                 (1u << 0)
-#define X64_CR0_MP_BIT                 (1u << 1)
-#define X64_CR0_EM_BIT                 (1u << 2)
-#define X64_CR0_TS_BIT                 (1u << 3)
-#define X64_CR0_ET_BIT                 (1u << 4)
-#define X64_CR0_NE_BIT                 (1u << 5)
-#define X64_CR0_WP_BIT                 (1u << 16)
-#define X64_CR0_AM_BIT                 (1u << 18)
-#define X64_CR0_NW_BIT                 (1u << 29)
-#define X64_CR0_CD_BIT                 (1u << 30)
-#define X64_CR0_PG_BIT                 (1u << 31)
+#define X64_CR0_PE_BIT                 (1 << 0)
+#define X64_CR0_MP_BIT                 (1 << 1)
+#define X64_CR0_EM_BIT                 (1 << 2)
+#define X64_CR0_TS_BIT                 (1 << 3)
+#define X64_CR0_ET_BIT                 (1 << 4)
+#define X64_CR0_NE_BIT                 (1 << 5)
+#define X64_CR0_WP_BIT                 (1 << 16)
+#define X64_CR0_AM_BIT                 (1 << 18)
+#define X64_CR0_NW_BIT                 (1 << 29)
+#define X64_CR0_CD_BIT                 (1 << 30)
+#define X64_CR0_PG_BIT                 (1 << 31)
 //CR3
-#define X64_CR3_PWT_BIT                (1u << 3)
-#define X64_CR3_PCD_BIT                (1u << 4)
+#define X64_CR3_PWT_BIT                (1 << 3)
+#define X64_CR3_PCD_BIT                (1 << 4)
 //CR4
-#define X64_CR4_VME_BIT                (1U << 0)
-#define X64_CR4_PVI_BIT                (1U << 1)
-#define X64_CR4_TSD_BIT                (1U << 2)
-#define X64_CR4_DE_BIT                 (1U << 3)
-#define X64_CR4_PSE_BIT                (1U << 4)
-#define X64_CR4_PAE_BIT                (1U << 5)
-#define X64_CR4_MCE_BIT                (1U << 6)
-#define X64_CR4_PGE_BIT                (1U << 7)
-#define X64_CR4_PCE_BIT                (1U << 8)
-#define X64_CR4_OSFXSR_BIT             (1U << 9)
-#define X64_CR4_OSXMMEXCPT_BIT         (1U << 10)
-#define X64_CR4_UMIP_BIT               (1U << 11)
-#define X64_CR4_VMXE_BIT               (1U << 13)
-#define X64_CR4_SMXE_BIT               (1U << 14)
-#define X64_CR4_FSGSBASE_BIT           (1U << 16)
-#define X64_CR4_PCIDE_BIT              (1U << 17)
-#define X64_CR4_OSXSAVE_BIT            (1U << 18)
-#define X64_CR4_KL_BIT                 (1U << 19)
-#define X64_CR4_SMEP_BIT               (1U << 20)
-#define X64_CR4_SMAP_BIT               (1U << 21)
-#define X64_CR4_PKE_BIT                (1U << 22)
-#define X64_CR4_CET_BIT                (1U << 23)
-#define X64_CR4_PKS_BIT                (1U << 24)
-#define X64_CR4_UINTR_BIT              (1U << 25)
+#define X64_CR4_VME_BIT                (1 << 0)
+#define X64_CR4_PVI_BIT                (1 << 1)
+#define X64_CR4_TSD_BIT                (1 << 2)
+#define X64_CR4_DE_BIT                 (1 << 3)
+#define X64_CR4_PSE_BIT                (1 << 4)
+#define X64_CR4_PAE_BIT                (1 << 5)
+#define X64_CR4_MCE_BIT                (1 << 6)
+#define X64_CR4_PGE_BIT                (1 << 7)
+#define X64_CR4_PCE_BIT                (1 << 8)
+#define X64_CR4_OSFXSR_BIT             (1 << 9)
+#define X64_CR4_OSXMMEXCPT_BIT         (1 << 10)
+#define X64_CR4_UMIP_BIT               (1 << 11)
+#define X64_CR4_VMXE_BIT               (1 << 13)
+#define X64_CR4_SMXE_BIT               (1 << 14)
+#define X64_CR4_FSGSBASE_BIT           (1 << 16)
+#define X64_CR4_PCIDE_BIT              (1 << 17)
+#define X64_CR4_OSXSAVE_BIT            (1 << 18)
+#define X64_CR4_KL_BIT                 (1 << 19)
+#define X64_CR4_SMEP_BIT               (1 << 20)
+#define X64_CR4_SMAP_BIT               (1 << 21)
+#define X64_CR4_PKE_BIT                (1 << 22)
+#define X64_CR4_CET_BIT                (1 << 23)
+#define X64_CR4_PKS_BIT                (1 << 24)
+#define X64_CR4_UINTR_BIT              (1 << 25)
 
 
 /**
  *\brief Model-Specific Registers
  */
 #define IA32_EFER_MSR			       0xC0000080U
-#define IA32_EFER_MSR_SCE		       (1u << 0)    /* R/W */
-#define IA32_EFER_MSR_LME		       (1u << 8)    /* R/W */
-#define IA32_EFER_MSR_LMA		       (1u << 10)   /* R */
-#define IA32_EFER_MSR_NXE		       (1u << 11)   /* R/W */
+#define IA32_EFER_MSR_SCE		       (1 << 0)    /* R/W */
+#define IA32_EFER_MSR_LME		       (1 << 8)    /* R/W */
+#define IA32_EFER_MSR_LMA		       (1 << 10)   /* R */
+#define IA32_EFER_MSR_NXE		       (1 << 11)   /* R/W */
+
+#define IA32_APIC_BASE_MSR             0x1B
+#define APIC_GLOBAL_ENABLE             (1 << 11)
+#define APIC_PROCESSOR_BSP_FLAG        (1 << 8)
 
 
 #endif /* X64_ARCH_DEF_H_ */

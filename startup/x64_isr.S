@@ -58,7 +58,6 @@
          .endfunc; \
 
 
-
 #define X64_EXCEPT_HANDLE_NEC_WRAP(name, inum) \
 		 .global name##_exception_handler; \
 		 .type name##_exception_handler, %function; \
@@ -74,6 +73,7 @@
          .quad     name##_exception_handler; \
          .endfunc; \
          .text
+
 
 #define X64_INTERRUPT_HANDLE_WRAP(inum) \
 		 .global exit##inum##_handler; \
@@ -104,6 +104,7 @@ _isr_handler_:
     pushq    %rbx
     pushq    %rcx
     pushq    %rdx
+    pushq    %rbp
     pushq    %r8
     pushq    %r9
     pushq    %r10
@@ -112,6 +113,7 @@ _isr_handler_:
     pushq    %r13
     pushq    %r14
     pushq    %r15
+    /* don't push ds,gs,fs,es */
 
     /**
      * \note The destination operand contains the first byte of the memory image,
@@ -135,13 +137,15 @@ _isr_handler_:
 	popq    %r10
 	popq    %r9
 	popq    %r8
+	popq    %rbp
 	popq    %rdx
 	popq    %rcx
 	popq    %rbx
 	popq    %rax
     popq    %rsi
     popq    %rdi
-
+    /* Clean up error codes pushed to the stack */
+    leaq    8(%rsp),    %rsp
     iretq
 
 

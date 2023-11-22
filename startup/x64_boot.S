@@ -249,10 +249,11 @@ _pdt_loop:
     lgdt    g_x64_gdtr_loader
 
     // Set Segement Registers for proper iret, etc. operation
-    mov    $X64_GET_SEGMENT_SELECTOR_VALUE(X64_GDT_DATA_INDEX, \
-                                           PRIVILEGE_LEVEL_0, \
-                                           TABLE_INDICATOR_GDT), \
-                                           %ax
+    mov    $X64_GET_SEGMENT_SELECTOR_VALUE(
+                            X64_GDT_DATA_INDEX, \
+                            PRIVILEGE_LEVEL_0, \
+                            TABLE_INDICATOR_GDT), \
+                            %ax
     mov     %ax,    %ss
     mov     %ax,    %ds
     mov     %ax,    %es

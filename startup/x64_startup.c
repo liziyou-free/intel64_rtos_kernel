@@ -26,6 +26,9 @@
 #define ALIGNED(addr, align)    ((~(align - 1)) & addr)
 
 
+typedef void (*pf_isr_handler_t)(void);
+
+
 /*
  * A descriptor table is simply a memory array of 8byte entries that contain
  * descriptors. A descriptor table is variable in length and may contain up
@@ -42,7 +45,11 @@ x64_idt_int_trap_gate_t g_x64_idt[256]__attribute__((aligned(8)));
 
 
 /* stack for interrupt */
-uint8_t g_interrupt_stack[1024*2]__attribute__((aligned(8)));
+uint8_t g_interrupt_stack[1024*2]__attribute__((aligned(16)));
+
+
+/* stack for exception */
+uint8_t g_exception_stack[1024*2]__attribute__((aligned(16)));
 
 
 extern x64_tss_ldt_dt_t g_gdt_tss_pos[1];
@@ -50,7 +57,6 @@ extern uint64_t g_exception_handler_table_addr;
 extern uint16_t g_exception_handler_table_bytes;
 extern uint64_t g_interrupt_handler_table_addr;
 extern uint16_t g_interrupt_handler_table_bytes;
-
 
 
 #define __EXCEPTION_TABLE_ADDR__   \
@@ -66,49 +72,48 @@ extern uint16_t g_interrupt_handler_table_bytes;
                     (*((uint16_t*)&g_interrupt_handler_table_bytes))
 
 
-typedef void (*pf_isr_handler_t)(void);
-
-
 
 void x64_tss_init (void) {
 
     x64_tr_t tr;
     uint32_t tss_limit;
-    uint64_t ba;
-    uint64_t irq_stack_top;
+    uint64_t base_addr;
+    uint64_t interrupt_stack_top;
+    uint64_t exception_stack_top;
     x64_tss_ldt_dt_t *p_tss_descriptor;
     static x64_tss_t g_x64_tss_obj;
 
-    irq_stack_top = ((uint64_t)&g_interrupt_stack[0]) +  \
-                    sizeof(g_interrupt_stack) - 1;
+    /* Get stack top */
+    interrupt_stack_top = ((uint64_t)&g_interrupt_stack[0]) +  \
+                          sizeof(g_interrupt_stack) - 1;
+
+    exception_stack_top = ((uint64_t)&g_exception_stack[0]) +  \
+                          sizeof(g_exception_stack) - 1;
 
     /* Aligned to 16 bytes to maximize XMM register performance. */
-    irq_stack_top = ALIGNED(irq_stack_top, 16);
+    interrupt_stack_top = ALIGNED(interrupt_stack_top, 16);
 
-    /* Init TSS */
+    exception_stack_top = ALIGNED(exception_stack_top, 16);
+
+    /* Init TSS, Stack memory is only allocated for interrupts and
+     * exceptions. Other mechanisms are not currently used and will
+     * not be considered for the time being.
+     */
     memset((void *)&g_x64_tss_obj, 0, sizeof(x64_tss_t));
-    g_x64_tss_obj.ist1 = irq_stack_top;
-    g_x64_tss_obj.ist2 = irq_stack_top;
-    g_x64_tss_obj.ist3 = irq_stack_top;
-    g_x64_tss_obj.ist4 = irq_stack_top;
-    g_x64_tss_obj.ist5 = irq_stack_top;
-    g_x64_tss_obj.ist6 = irq_stack_top;
-    g_x64_tss_obj.ist7 = irq_stack_top;
-    g_x64_tss_obj.rsp0 = irq_stack_top;
-    g_x64_tss_obj.rsp1 = irq_stack_top;
-    g_x64_tss_obj.rsp2 = irq_stack_top;
+    g_x64_tss_obj.ist1 = interrupt_stack_top;
+    g_x64_tss_obj.ist2 = exception_stack_top;
 
-    /* Init TSS descriptor in GDT */
-    ba = (uint64_t)&g_x64_tss_obj;
+    /* Init TSS-descriptor in GDT */
+    base_addr = (uint64_t)&g_x64_tss_obj;
     tss_limit = sizeof(g_x64_tss_obj) - 1;
     p_tss_descriptor = (x64_tss_ldt_dt_t *)g_gdt_tss_pos;
     memset((void *)p_tss_descriptor, 0, sizeof(x64_tss_ldt_dt_t));
     p_tss_descriptor->limit_low16 = tss_limit & 0x0000ffff;
     p_tss_descriptor->fields.limit_high4 = (tss_limit >> 16) & 0x000f;
-    p_tss_descriptor->base_addr_0_15 = ba & 0x0000ffff;
-    p_tss_descriptor->base_addr_16_23 = (ba >> 16) & 0x00ff;
-    p_tss_descriptor->base_addr_24_31 = (ba >> 24) & 0x00ff;
-    p_tss_descriptor->base_addr_32_63 = ba >> 32;
+    p_tss_descriptor->base_addr_0_15 = base_addr & 0x0000ffff;
+    p_tss_descriptor->base_addr_16_23 = (base_addr >> 16) & 0x00ff;
+    p_tss_descriptor->base_addr_24_31 = (base_addr >> 24) & 0x00ff;
+    p_tss_descriptor->base_addr_32_63 = base_addr >> 32;
     p_tss_descriptor->fields.avl = 0;
     p_tss_descriptor->fields.g = 0;
     p_tss_descriptor->fields.present = 1;
@@ -136,8 +141,8 @@ void x64_idt_init (void)
     idt_elements = sizeof(g_x64_idt) / 16; /* a descriptor:16bytes */
     interrupt_table_elements = __INTERRUPT_TABLE_BYTES__ / 8;
     exceptiont_table_elements = __EXCEPTION_TABLE_BYTES__ / 8;
-    pf_interrupt_table = ((pf_isr_handler_t*)__INTERRUPT_TABLE_ADDR__);
-    pf_exception_table = ((pf_isr_handler_t*)__EXCEPTION_TABLE_ADDR__);
+    pf_interrupt_table = ((pf_isr_handler_t *)__INTERRUPT_TABLE_ADDR__);
+    pf_exception_table = ((pf_isr_handler_t *)__EXCEPTION_TABLE_ADDR__);
 
     for (int j = 0; j < idt_elements; j++) {
         if (j < 32) {
@@ -145,7 +150,7 @@ void x64_idt_init (void)
             if (exceptiont_table_elements) {
                 x64_create_gate_descriptor(&obj, \
                                            *pf_exception_table++, \
-                                           X64_INTERRUPT_IST_INDEX, \
+                                           X64_EXCEPTION_IST_INDEX, \
                                            TRAP_GATE_64BIT, \
                                            PRIVILEGE_LEVEL_0);
                 --exceptiont_table_elements;

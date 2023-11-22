@@ -47,9 +47,9 @@ uint8_t x64_create_gate_descriptor(x64_idt_int_trap_gate_t *p_obj,
      * rated with the IDT vector number reported as the error code.
      */
     p_obj->segment_selector = X64_GET_SEGMENT_SELECTOR_VALUE( \
-                                X64_GDT_INT_TRAP_GATE_INDEX, \
-                                dpl, \
-                                TABLE_INDICATOR_GDT);
+                                          X64_GDT_INT_TRAP_GATE_INDEX, \
+                                          dpl, \
+                                          TABLE_INDICATOR_GDT);
     p_obj->fields.dpl = rpl;
     p_obj->fields.ist = ist;
     p_obj->fields.present = 1;
