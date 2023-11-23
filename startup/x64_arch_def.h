@@ -108,7 +108,7 @@
 
 #define IA32_APIC_BASE_MSR             0x1B
 #define APIC_GLOBAL_ENABLE             (1 << 11)
-#define APIC_PROCESSOR_BSP_FLAG        (1 << 8)
+#define APIC_PROCESSOR_BSP_FLAG        (1 << 8)    /* BSP: bootstrap processor */
 
 
 #endif /* X64_ARCH_DEF_H_ */

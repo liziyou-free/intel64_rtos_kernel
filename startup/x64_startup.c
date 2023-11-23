@@ -20,7 +20,10 @@
 #include <stdint.h>
 #include <string.h>
 #include "./x64_startup.h"
+#include "./x64_common.h"
+#include "../x64_cpu_drivers/x64_apic.h"
 #include "../x64_cpu_drivers/x64_segment_def.h"
+
 
 
 #define ALIGNED(addr, align)    ((~(align - 1)) & addr)
@@ -181,6 +184,35 @@ void x64_idt_init (void)
     x64_flush_idtr_register(g_x64_idt, sizeof(g_x64_idt) - 1);
 
     return;
+}
+
+
+static void disable_intel_8259_intc (void)
+{
+  /**
+   * \note interl 8259 does not have a real disable bit, we mask all
+   * interrupt sources to achieve this purpose.
+   */
+    __asm__ __volatile__("movb  $0xff,  %al  \n\t"
+                         "outb  %al,   $0x21 \n\t"
+                         "outb  %al,   $0xA1 \n\t");
+    return;
+}
+
+
+
+#define X64_USE_APIC_INTC    1
+
+void x64_arch_init (void)
+{
+    /* Disable 8259, avoiding false triggering */
+    disable_intel_8259_intc();
+
+#if X64_USE_APIC_INTC
+    intel_apic_init();
+#else
+
+#endif
 }
 
 

@@ -17,13 +17,14 @@
 * web site:    http://www.zlg.cn/
 *******************************************************************************/
 
+#include "../x64_cpu_drivers/x64_apic.h"
 #include "../startup/x64_arch_def.h"
 #include <stdbool.h>
 #include <cpuid.h>
 #include <stdint.h>
 
 
-bool cpu_apic_check (void)
+static bool cpu_apic_check (void)
 {
     uint32_t eax=0;
     uint32_t ebx=0;
@@ -31,10 +32,10 @@ bool cpu_apic_check (void)
     uint32_t edx=0;
     uint32_t operand = 1;
     __asm__ __volatile__ ( \
-               "cpuid\n\t" \
-               : "=a" (eax), "=b" (ebx), "=c" (ecx), "=d" (edx) \
-               : "0" (operand) \
-               );
+              "cpuid\n\t"
+              : "=a" (eax), "=b" (ebx), "=c" (ecx), "=d" (edx)
+              : "0" (operand)
+              );
 
     if (edx & (1 << 9 )) {
         return true;
@@ -43,33 +44,65 @@ bool cpu_apic_check (void)
 }
 
 
-void cpu_apic_enable (void)
+static void cpu_apic_enable (void)
 {
-    uint32_t  msr_low;
+    uint32_t  msr_addr;
+    uint32_t  enable_bit;
 
-    msr_low = 0;
-    __asm__ __volatile__ ("mov $0x1b,  %%ecx \n\t"
-                          "rdmsr             \n\t"
-                          "mov %%eax,  %0    \n\t"
-                          "or  $0x800, %0    \n\t"
-                          "wrmsr"
-                          :"=r"(msr_low)
-                          ::"rcx", "rax", "rdx");
+    msr_addr = IA32_APIC_BASE_MSR;
+    enable_bit = APIC_GLOBAL_ENABLE;
+
+    __asm__ __volatile__ ( \
+              "movl  %0,  %%ecx \n\t"
+              "rdmsr            \n\t"
+              "orl   %1,  %%eax \n\t"
+              "wrmsr"
+              :
+              :"r"(msr_addr), "r"(enable_bit)
+              :"rcx", "rax", "rdx"
+              );
+    return;
 }
 
 
-void apic_init(void)
+uint64_t apic_get_base_addr (void)
 {
-  if (cpu_apic_check() == false) {
-      for(;;);
-  }
+  uint32_t  msr_addr;
+  uint32_t  msr_value;
+  uint64_t  apic_addr;
 
+  msr_addr = IA32_APIC_BASE_MSR;
+  apic_addr = 0;
+  __asm__ __volatile__ ( \
+            "movl  %1,  %%ecx \n\t"
+            "rdmsr            \n\t"
+            "movl  %%eax, %0  \n\t"
+            :"=r"(msr_value)
+            :"r"(msr_addr)
+            :"rcx", "rax", "rdx"
+            );
+
+  apic_addr = msr_value & 0xfffff000;
+  return apic_addr;
 }
 
 
-static __inline__ apic_eoi_hook(void)
+void intel_apic_init(void)
 {
+  uint64_t apic_addr;
 
+    if (cpu_apic_check() == false) {
+        for(;;);
+    }
+    cpu_apic_enable();
+    apic_addr = apic_get_base_addr();
+}
+
+
+static __inline__
+void apic_eoi_hook(void)
+{
+    return;
 }
 
 

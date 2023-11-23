@@ -47,6 +47,7 @@
 #define LAPIC_CURRENT_COUNTER_REGSITER        (LAPIC_BASE_ADDR + 0X390)
 #define LAPIC_DIVIDE_CONFIG_REGSITER          (LAPIC_BASE_ADDR + 0X3E0)
 
+void intel_apic_init(void);
 
 #endif /* X64_APIC_H_ */
 

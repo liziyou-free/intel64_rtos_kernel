@@ -242,6 +242,7 @@ _pdt_loop:
 *******************************************************************************/
     .global x64_tss_init
     .global x64_idt_init
+    .global x64_arch_init
     .global divided_zero
     X64_CODE64_FUNC_BEGIN(x64_start)
     cli
@@ -263,6 +264,7 @@ _pdt_loop:
     pop     %rdi
     pop     %rsi
     call    cmain
+    call    x64_arch_init
     call    x64_idt_init
     call    x64_tss_init
     int     $36
@@ -302,14 +304,6 @@ _gdt_end:
     X64_ASM_DATA(g_x64_gdtr_loader)
     .word    _gdt_end - _gdt_start -1  /* Limit = Total-bytes - 1 */
     .quad    _gdt_start                /* GDT base address */
-
-
-/* X86 Interrupt Descriptor Table Loader */
-    .align     4
-X64_ASM_DATA(g_idtr)
-    .word    0    /* Limit = Total-bytes - 1 */
-    .long    0    /* IDT base address */
-
 
 
 
