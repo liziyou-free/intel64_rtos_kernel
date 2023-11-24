@@ -113,7 +113,6 @@ Discarded input sections
  .debug_macro   0x0000000000000000      0x356 ./startup/x64_startup.o
  .debug_macro   0x0000000000000000       0x35 ./startup/x64_startup.o
  .debug_macro   0x0000000000000000       0x4c ./startup/x64_startup.o
- .debug_macro   0x0000000000000000       0x94 ./startup/x64_startup.o
  .debug_macro   0x0000000000000000      0x11b ./startup/x64_startup.o
 
 Memory Configuration
@@ -147,132 +146,137 @@ LOAD /home/freedomli/APP/toolchain_linux-x86_64_x86_64-zephyr-elf/x86_64-zephyr-
                 0x0000000000001000       0x40 ./startup/x64_boot.o
                 0x0000000000001000                _start
 
-.text           0x0000000000100000     0x1480
+.text           0x0000000000100000     0x15f0
                 0x0000000000100000                __code_start = .
                 0x0000000000100000                . = ALIGN (0x4)
  *(.text)
- .text          0x0000000000100000       0xe1 ./x64_cpu_drivers/x64_apic.o
-                0x0000000000100084                apic_get_base_addr
-                0x00000000001000b9                intel_apic_init
- .text          0x00000000001000e1      0x1e5 ./x64_cpu_drivers/x64_dt.o
-                0x00000000001000e1                x64_create_gate_descriptor
-                0x00000000001001ed                x64_add_descriptor_to_idt
-                0x0000000000100253                x64_flush_idtr_register
-                0x000000000010029c                x64_flush_tr_register
- .text          0x00000000001002c6        0x0 ./x64_cpu_drivers/x64_mmu.o
- .text          0x00000000001002c6      0xa69 ./startup/multiboot2.o
-                0x00000000001002c6                cmain
-                0x0000000000100a41                printf
-                0x0000000000100d08                sumab
- *fill*         0x0000000000100d2f        0x1 
- .text          0x0000000000100d30        0x0 ./startup/x64_boot.o
- .text          0x0000000000100d30      0x274 ./startup/x64_isr.o
-                0x0000000000100d83                divide_error_exception_handler
-                0x0000000000100d8f                debug_exception_handler
-                0x0000000000100d9b                nmi_exception_handler
-                0x0000000000100da7                breakpoint_exception_handler
-                0x0000000000100db6                overflow_exception_handler
-                0x0000000000100dc5                bound_range_exception_handler
-                0x0000000000100dd4                invalid_opcode_exception_handler
-                0x0000000000100de3                device_not_available_exception_handler
-                0x0000000000100df2                double_fault_exception_handler
-                0x0000000000100dff                coprocessor_segment_overrun_exception_handler
-                0x0000000000100e0e                invalid_tss_exception_handler
-                0x0000000000100e1b                segment_not_present_exception_handler
-                0x0000000000100e28                stack_fault_exception_handler
-                0x0000000000100e35                general_protection_exception_handler
-                0x0000000000100e42                page_fault_exception_handler
-                0x0000000000100e4f                reserved_exception_handler
-                0x0000000000100e5e                fpu_fp_error_exception_handler
-                0x0000000000100e6d                aligment_check_exception_handler
-                0x0000000000100e7a                machine_cahck_exception_handler
-                0x0000000000100e89                simd_fp_exception_handler
-                0x0000000000100e98                virt_exception_exception_handler
-                0x0000000000100ea5                exit0_handler
-                0x0000000000100eb4                exit1_handler
-                0x0000000000100ec3                exit2_handler
-                0x0000000000100ed2                exit3_handler
-                0x0000000000100ee1                exit4_handler
-                0x0000000000100ef0                exit5_handler
-                0x0000000000100eff                exit6_handler
-                0x0000000000100f0e                exit7_handler
-                0x0000000000100f1d                exit8_handler
-                0x0000000000100f2c                exit9_handler
-                0x0000000000100f3b                exit10_handler
-                0x0000000000100f4a                exit11_handler
-                0x0000000000100f59                exit12_handler
-                0x0000000000100f68                exit13_handler
-                0x0000000000100f77                exit14_handler
-                0x0000000000100f86                exit15_handler
-                0x0000000000100f95                exit16_handler
- .text          0x0000000000100fa4       0x22 ./startup/x64_isr_handler.o
-                0x0000000000100fa4                x64_common_isr
- .text          0x0000000000100fc6      0x2a1 ./startup/x64_startup.o
-                0x0000000000100fc6                x64_tss_init
-                0x0000000000101115                x64_idt_init
-                0x000000000010122a                x64_arch_init
-                0x000000000010123b                divided_zero
- *fill*         0x0000000000101267        0x9 
- .text          0x0000000000101270      0x12d /home/freedomli/APP/toolchain_linux-x86_64_x86_64-zephyr-elf/x86_64-zephyr-elf/bin/../lib/gcc/x86_64-zephyr-elf/12.2.0/../../../../x86_64-zephyr-elf/lib/libc.a(lib_a-memcpy.o)
-                0x0000000000101270                memcpy
- *fill*         0x000000000010139d        0x3 
- .text          0x00000000001013a0       0xe0 /home/freedomli/APP/toolchain_linux-x86_64_x86_64-zephyr-elf/x86_64-zephyr-elf/bin/../lib/gcc/x86_64-zephyr-elf/12.2.0/../../../../x86_64-zephyr-elf/lib/libc.a(lib_a-memset.o)
-                0x00000000001013a0                memset
+ .text          0x0000000000100000      0x248 ./x64_cpu_drivers/x64_apic.o
+                0x000000000010005d                cpu_local_apic_open
+                0x0000000000100093                get_local_apic_base_addr
+                0x00000000001000c8                local_apic_disable
+                0x0000000000100104                local_apic_enable
+                0x0000000000100140                local_apic_set_int_vector
+                0x00000000001001e9                intel_local_apic_init
+ .text          0x0000000000100248      0x1e5 ./x64_cpu_drivers/x64_dt.o
+                0x0000000000100248                x64_create_gate_descriptor
+                0x0000000000100354                x64_add_descriptor_to_idt
+                0x00000000001003ba                x64_flush_idtr_register
+                0x0000000000100403                x64_flush_tr_register
+ .text          0x000000000010042d        0x0 ./x64_cpu_drivers/x64_mmu.o
+ .text          0x000000000010042d      0xa69 ./startup/multiboot2.o
+                0x000000000010042d                cmain
+                0x0000000000100ba8                printf
+                0x0000000000100e6f                sumab
+ *fill*         0x0000000000100e96        0x2 
+ .text          0x0000000000100e98        0x0 ./startup/x64_boot.o
+ .text          0x0000000000100e98      0x274 ./startup/x64_isr.o
+                0x0000000000100eeb                divide_error_exception_handler
+                0x0000000000100ef7                debug_exception_handler
+                0x0000000000100f03                nmi_exception_handler
+                0x0000000000100f0f                breakpoint_exception_handler
+                0x0000000000100f1e                overflow_exception_handler
+                0x0000000000100f2d                bound_range_exception_handler
+                0x0000000000100f3c                invalid_opcode_exception_handler
+                0x0000000000100f4b                device_not_available_exception_handler
+                0x0000000000100f5a                double_fault_exception_handler
+                0x0000000000100f67                coprocessor_segment_overrun_exception_handler
+                0x0000000000100f76                invalid_tss_exception_handler
+                0x0000000000100f83                segment_not_present_exception_handler
+                0x0000000000100f90                stack_fault_exception_handler
+                0x0000000000100f9d                general_protection_exception_handler
+                0x0000000000100faa                page_fault_exception_handler
+                0x0000000000100fb7                reserved_exception_handler
+                0x0000000000100fc6                fpu_fp_error_exception_handler
+                0x0000000000100fd5                aligment_check_exception_handler
+                0x0000000000100fe2                machine_cahck_exception_handler
+                0x0000000000100ff1                simd_fp_exception_handler
+                0x0000000000101000                virt_exception_exception_handler
+                0x000000000010100d                exit0_handler
+                0x000000000010101c                exit1_handler
+                0x000000000010102b                exit2_handler
+                0x000000000010103a                exit3_handler
+                0x0000000000101049                exit4_handler
+                0x0000000000101058                exit5_handler
+                0x0000000000101067                exit6_handler
+                0x0000000000101076                exit7_handler
+                0x0000000000101085                exit8_handler
+                0x0000000000101094                exit9_handler
+                0x00000000001010a3                exit10_handler
+                0x00000000001010b2                exit11_handler
+                0x00000000001010c1                exit12_handler
+                0x00000000001010d0                exit13_handler
+                0x00000000001010df                exit14_handler
+                0x00000000001010ee                exit15_handler
+                0x00000000001010fd                exit16_handler
+ .text          0x000000000010110c       0x22 ./startup/x64_isr_handler.o
+                0x000000000010110c                x64_common_isr
+ .text          0x000000000010112e      0x2ab ./startup/x64_startup.o
+                0x000000000010112e                x64_tss_init
+                0x000000000010127d                x64_idt_init
+                0x0000000000101392                x64_arch_init
+                0x00000000001013ad                divided_zero
+ *fill*         0x00000000001013d9        0x7 
+ .text          0x00000000001013e0      0x12d /home/freedomli/APP/toolchain_linux-x86_64_x86_64-zephyr-elf/x86_64-zephyr-elf/bin/../lib/gcc/x86_64-zephyr-elf/12.2.0/../../../../x86_64-zephyr-elf/lib/libc.a(lib_a-memcpy.o)
+                0x00000000001013e0                memcpy
+ *fill*         0x000000000010150d        0x3 
+ .text          0x0000000000101510       0xe0 /home/freedomli/APP/toolchain_linux-x86_64_x86_64-zephyr-elf/x86_64-zephyr-elf/bin/../lib/gcc/x86_64-zephyr-elf/12.2.0/../../../../x86_64-zephyr-elf/lib/libc.a(lib_a-memset.o)
+                0x0000000000101510                memset
 
-.iplt           0x0000000000101480        0x0
- .iplt          0x0000000000101480        0x0 ./x64_cpu_drivers/x64_apic.o
+.iplt           0x00000000001015f0        0x0
+ .iplt          0x00000000001015f0        0x0 ./x64_cpu_drivers/x64_apic.o
 
 .text.multiboot_entry
-                0x0000000000101480       0x7e
+                0x00000000001015f0       0x7e
  .text.multiboot_entry
-                0x0000000000101480       0x7e ./startup/x64_boot.o
-                0x0000000000101480                multiboot_entry
+                0x00000000001015f0       0x7e ./startup/x64_boot.o
+                0x00000000001015f0                multiboot_entry
 
 .text.mmu_translate_table_init
-                0x00000000001014fe       0x3c
+                0x000000000010166e       0x3c
  .text.mmu_translate_table_init
-                0x00000000001014fe       0x3c ./startup/x64_boot.o
-                0x00000000001014fe                mmu_translate_table_init
+                0x000000000010166e       0x3c ./startup/x64_boot.o
+                0x000000000010166e                mmu_translate_table_init
 
 .text.x64_start
-                0x000000000010153a       0x37
+                0x00000000001016aa       0x37
  .text.x64_start
-                0x000000000010153a       0x37 ./startup/x64_boot.o
-                0x000000000010153a                x64_start
+                0x00000000001016aa       0x37 ./startup/x64_boot.o
+                0x00000000001016aa                x64_start
 
 .isr_text
  *(.isr)
 
-.gdt386         0x0000000000101571        0x7
-                0x0000000000101578                . = ALIGN (0x8)
- *fill*         0x0000000000101571        0x7 
+.gdt386         0x00000000001016e1        0x7
+                0x00000000001016e8                . = ALIGN (0x8)
+ *fill*         0x00000000001016e1        0x7 
  *(.x86_gdt_section)
 
-.rodata         0x0000000000101578      0x197
-                0x0000000000101578                __rodata_start = .
+.rodata         0x00000000001016e8      0x1cf
+                0x00000000001016e8                __rodata_start = .
  *(.rodata)
- .rodata        0x0000000000101578      0x197 ./startup/multiboot2.o
+ .rodata        0x00000000001016e8       0x38 ./x64_cpu_drivers/x64_apic.o
+ .rodata        0x0000000000101720      0x197 ./startup/multiboot2.o
  *(.rodata.*)
-                0x000000000010170f                __rodata_end = .
-                0x000000000010170f                __code_end = .
+                0x00000000001018b7                __rodata_end = .
+                0x00000000001018b7                __code_end = .
                 0x0000000009100000                __load_data_start = LOADADDR (.data)
 
-.eh_frame       0x0000000000101710      0x2a0
- .eh_frame      0x0000000000101710       0xa0 ./x64_cpu_drivers/x64_apic.o
- .eh_frame      0x00000000001017b0       0x80 ./x64_cpu_drivers/x64_dt.o
+.eh_frame       0x00000000001018b8      0x300
+ .eh_frame      0x00000000001018b8      0x100 ./x64_cpu_drivers/x64_apic.o
+ .eh_frame      0x00000000001019b8       0x80 ./x64_cpu_drivers/x64_dt.o
                                          0x98 (size before relaxing)
- .eh_frame      0x0000000000101830       0xc0 ./startup/multiboot2.o
+ .eh_frame      0x0000000000101a38       0xc0 ./startup/multiboot2.o
                                          0xd8 (size before relaxing)
- .eh_frame      0x00000000001018f0       0x20 ./startup/x64_isr_handler.o
+ .eh_frame      0x0000000000101af8       0x20 ./startup/x64_isr_handler.o
                                          0x38 (size before relaxing)
- .eh_frame      0x0000000000101910       0xa0 ./startup/x64_startup.o
+ .eh_frame      0x0000000000101b18       0xa0 ./startup/x64_startup.o
                                          0xb8 (size before relaxing)
 
-.rela.dyn       0x00000000001019b0        0x0
- .rela.got      0x00000000001019b0        0x0 ./x64_cpu_drivers/x64_apic.o
- .rela.iplt     0x00000000001019b0        0x0 ./x64_cpu_drivers/x64_apic.o
+.rela.dyn       0x0000000000101bb8        0x0
+ .rela.got      0x0000000000101bb8        0x0 ./x64_cpu_drivers/x64_apic.o
+ .rela.iplt     0x0000000000101bb8        0x0 ./x64_cpu_drivers/x64_apic.o
  .rela.text.multiboot_entry
-                0x00000000001019b0        0x0 ./x64_cpu_drivers/x64_apic.o
+                0x0000000000101bb8        0x0 ./x64_cpu_drivers/x64_apic.o
 
 .data           0x0000000001100000   0x808000 load address 0x0000000009100000
                 0x0000000001100000                __data_start = .
@@ -373,25 +377,25 @@ LOAD /home/freedomli/APP/toolchain_linux-x86_64_x86_64-zephyr-elf/x86_64-zephyr-
                 0x000000000191a0c0                PROVIDE (stack_end = __stack_end)
 OUTPUT(x86_64_prj.elf elf64-x86-64)
 
-.debug_info     0x0000000000000000     0x14b7
- .debug_info    0x0000000000000000      0x1bc ./x64_cpu_drivers/x64_apic.o
- .debug_info    0x00000000000001bc      0x377 ./x64_cpu_drivers/x64_dt.o
- .debug_info    0x0000000000000533       0x22 ./x64_cpu_drivers/x64_mmu.o
- .debug_info    0x0000000000000555      0x847 ./startup/multiboot2.o
- .debug_info    0x0000000000000d9c       0x23 ./startup/x64_boot.o
- .debug_info    0x0000000000000dbf       0x29 ./startup/x64_isr.o
- .debug_info    0x0000000000000de8       0xcc ./startup/x64_isr_handler.o
- .debug_info    0x0000000000000eb4      0x603 ./startup/x64_startup.o
+.debug_info     0x0000000000000000     0x15e6
+ .debug_info    0x0000000000000000      0x2d9 ./x64_cpu_drivers/x64_apic.o
+ .debug_info    0x00000000000002d9      0x377 ./x64_cpu_drivers/x64_dt.o
+ .debug_info    0x0000000000000650       0x22 ./x64_cpu_drivers/x64_mmu.o
+ .debug_info    0x0000000000000672      0x847 ./startup/multiboot2.o
+ .debug_info    0x0000000000000eb9       0x23 ./startup/x64_boot.o
+ .debug_info    0x0000000000000edc       0x29 ./startup/x64_isr.o
+ .debug_info    0x0000000000000f05       0xcc ./startup/x64_isr_handler.o
+ .debug_info    0x0000000000000fd1      0x615 ./startup/x64_startup.o
 
-.debug_abbrev   0x0000000000000000      0x748
- .debug_abbrev  0x0000000000000000       0xcc ./x64_cpu_drivers/x64_apic.o
- .debug_abbrev  0x00000000000000cc      0x183 ./x64_cpu_drivers/x64_dt.o
- .debug_abbrev  0x000000000000024f       0x12 ./x64_cpu_drivers/x64_mmu.o
- .debug_abbrev  0x0000000000000261      0x259 ./startup/multiboot2.o
- .debug_abbrev  0x00000000000004ba       0x12 ./startup/x64_boot.o
- .debug_abbrev  0x00000000000004cc       0x14 ./startup/x64_isr.o
- .debug_abbrev  0x00000000000004e0       0x7f ./startup/x64_isr_handler.o
- .debug_abbrev  0x000000000000055f      0x1e9 ./startup/x64_startup.o
+.debug_abbrev   0x0000000000000000      0x758
+ .debug_abbrev  0x0000000000000000       0xc7 ./x64_cpu_drivers/x64_apic.o
+ .debug_abbrev  0x00000000000000c7      0x183 ./x64_cpu_drivers/x64_dt.o
+ .debug_abbrev  0x000000000000024a       0x12 ./x64_cpu_drivers/x64_mmu.o
+ .debug_abbrev  0x000000000000025c      0x259 ./startup/multiboot2.o
+ .debug_abbrev  0x00000000000004b5       0x12 ./startup/x64_boot.o
+ .debug_abbrev  0x00000000000004c7       0x14 ./startup/x64_isr.o
+ .debug_abbrev  0x00000000000004db       0x7f ./startup/x64_isr_handler.o
+ .debug_abbrev  0x000000000000055a      0x1fe ./startup/x64_startup.o
 
 .debug_aranges  0x0000000000000000      0x1a0
  .debug_aranges
@@ -411,78 +415,79 @@ OUTPUT(x86_64_prj.elf elf64-x86-64)
  .debug_aranges
                 0x0000000000000170       0x30 ./startup/x64_startup.o
 
-.debug_macro    0x0000000000000000     0x263e
- .debug_macro   0x0000000000000000       0x87 ./x64_cpu_drivers/x64_apic.o
- .debug_macro   0x0000000000000087      0x898 ./x64_cpu_drivers/x64_apic.o
- .debug_macro   0x000000000000091f       0x94 ./x64_cpu_drivers/x64_apic.o
- .debug_macro   0x00000000000009b3      0x19c ./x64_cpu_drivers/x64_apic.o
- .debug_macro   0x0000000000000b4f       0x22 ./x64_cpu_drivers/x64_apic.o
- .debug_macro   0x0000000000000b71      0x37e ./x64_cpu_drivers/x64_apic.o
- .debug_macro   0x0000000000000eef       0x22 ./x64_cpu_drivers/x64_apic.o
- .debug_macro   0x0000000000000f11       0x56 ./x64_cpu_drivers/x64_apic.o
- .debug_macro   0x0000000000000f67       0x51 ./x64_cpu_drivers/x64_apic.o
- .debug_macro   0x0000000000000fb8       0xfd ./x64_cpu_drivers/x64_apic.o
- .debug_macro   0x00000000000010b5       0x6a ./x64_cpu_drivers/x64_apic.o
- .debug_macro   0x000000000000111f      0x1df ./x64_cpu_drivers/x64_apic.o
- .debug_macro   0x00000000000012fe      0x143 ./x64_cpu_drivers/x64_dt.o
- .debug_macro   0x0000000000001441       0x19 ./x64_cpu_drivers/x64_dt.o
- .debug_macro   0x000000000000145a       0x52 ./x64_cpu_drivers/x64_dt.o
- .debug_macro   0x00000000000014ac       0x5c ./x64_cpu_drivers/x64_dt.o
- .debug_macro   0x0000000000001508       0x35 ./x64_cpu_drivers/x64_dt.o
- .debug_macro   0x000000000000153d       0x34 ./x64_cpu_drivers/x64_dt.o
- .debug_macro   0x0000000000001571       0x16 ./x64_cpu_drivers/x64_dt.o
- .debug_macro   0x0000000000001587      0x11c ./x64_cpu_drivers/x64_dt.o
- .debug_macro   0x00000000000016a3       0x8d ./x64_cpu_drivers/x64_dt.o
- .debug_macro   0x0000000000001730       0x16 ./x64_cpu_drivers/x64_dt.o
- .debug_macro   0x0000000000001746       0x43 ./x64_cpu_drivers/x64_dt.o
- .debug_macro   0x0000000000001789       0x57 ./x64_cpu_drivers/x64_dt.o
- .debug_macro   0x00000000000017e0       0x34 ./x64_cpu_drivers/x64_dt.o
- .debug_macro   0x0000000000001814       0x10 ./x64_cpu_drivers/x64_dt.o
- .debug_macro   0x0000000000001824       0x58 ./x64_cpu_drivers/x64_dt.o
- .debug_macro   0x000000000000187c      0x182 ./x64_cpu_drivers/x64_dt.o
- .debug_macro   0x00000000000019fe      0x356 ./x64_cpu_drivers/x64_dt.o
- .debug_macro   0x0000000000001d54       0x22 ./x64_cpu_drivers/x64_dt.o
- .debug_macro   0x0000000000001d76       0x16 ./x64_cpu_drivers/x64_dt.o
- .debug_macro   0x0000000000001d8c       0x35 ./x64_cpu_drivers/x64_dt.o
- .debug_macro   0x0000000000001dc1      0x11b ./x64_cpu_drivers/x64_dt.o
- .debug_macro   0x0000000000001edc       0x4c ./x64_cpu_drivers/x64_dt.o
- .debug_macro   0x0000000000001f28       0x1a ./x64_cpu_drivers/x64_mmu.o
- .debug_macro   0x0000000000001f42      0x18a ./x64_cpu_drivers/x64_mmu.o
- .debug_macro   0x00000000000020cc       0x32 ./startup/multiboot2.o
- .debug_macro   0x00000000000020fe      0x162 ./startup/multiboot2.o
- .debug_macro   0x0000000000002260       0x63 ./startup/x64_isr_handler.o
- .debug_macro   0x00000000000022c3      0x157 ./startup/x64_startup.o
- .debug_macro   0x000000000000241a       0x58 ./startup/x64_startup.o
- .debug_macro   0x0000000000002472      0x182 ./startup/x64_startup.o
- .debug_macro   0x00000000000025f4       0x10 ./startup/x64_startup.o
- .debug_macro   0x0000000000002604       0x3a ./startup/x64_startup.o
+.debug_macro    0x0000000000000000     0x2768
+ .debug_macro   0x0000000000000000       0xc3 ./x64_cpu_drivers/x64_apic.o
+ .debug_macro   0x00000000000000c3      0x898 ./x64_cpu_drivers/x64_apic.o
+ .debug_macro   0x000000000000095b       0x22 ./x64_cpu_drivers/x64_apic.o
+ .debug_macro   0x000000000000097d       0x56 ./x64_cpu_drivers/x64_apic.o
+ .debug_macro   0x00000000000009d3       0x51 ./x64_cpu_drivers/x64_apic.o
+ .debug_macro   0x0000000000000a24       0xfd ./x64_cpu_drivers/x64_apic.o
+ .debug_macro   0x0000000000000b21       0x6a ./x64_cpu_drivers/x64_apic.o
+ .debug_macro   0x0000000000000b8b      0x1df ./x64_cpu_drivers/x64_apic.o
+ .debug_macro   0x0000000000000d6a       0xbe ./x64_cpu_drivers/x64_apic.o
+ .debug_macro   0x0000000000000e28      0x19c ./x64_cpu_drivers/x64_apic.o
+ .debug_macro   0x0000000000000fc4       0x22 ./x64_cpu_drivers/x64_apic.o
+ .debug_macro   0x0000000000000fe6      0x37e ./x64_cpu_drivers/x64_apic.o
+ .debug_macro   0x0000000000001364      0x143 ./x64_cpu_drivers/x64_dt.o
+ .debug_macro   0x00000000000014a7       0x19 ./x64_cpu_drivers/x64_dt.o
+ .debug_macro   0x00000000000014c0       0x52 ./x64_cpu_drivers/x64_dt.o
+ .debug_macro   0x0000000000001512       0x5c ./x64_cpu_drivers/x64_dt.o
+ .debug_macro   0x000000000000156e       0x35 ./x64_cpu_drivers/x64_dt.o
+ .debug_macro   0x00000000000015a3       0x34 ./x64_cpu_drivers/x64_dt.o
+ .debug_macro   0x00000000000015d7       0x16 ./x64_cpu_drivers/x64_dt.o
+ .debug_macro   0x00000000000015ed      0x11c ./x64_cpu_drivers/x64_dt.o
+ .debug_macro   0x0000000000001709       0x8d ./x64_cpu_drivers/x64_dt.o
+ .debug_macro   0x0000000000001796       0x16 ./x64_cpu_drivers/x64_dt.o
+ .debug_macro   0x00000000000017ac       0x43 ./x64_cpu_drivers/x64_dt.o
+ .debug_macro   0x00000000000017ef       0x57 ./x64_cpu_drivers/x64_dt.o
+ .debug_macro   0x0000000000001846       0x34 ./x64_cpu_drivers/x64_dt.o
+ .debug_macro   0x000000000000187a       0x10 ./x64_cpu_drivers/x64_dt.o
+ .debug_macro   0x000000000000188a       0x58 ./x64_cpu_drivers/x64_dt.o
+ .debug_macro   0x00000000000018e2      0x182 ./x64_cpu_drivers/x64_dt.o
+ .debug_macro   0x0000000000001a64      0x356 ./x64_cpu_drivers/x64_dt.o
+ .debug_macro   0x0000000000001dba       0x22 ./x64_cpu_drivers/x64_dt.o
+ .debug_macro   0x0000000000001ddc       0x16 ./x64_cpu_drivers/x64_dt.o
+ .debug_macro   0x0000000000001df2       0x35 ./x64_cpu_drivers/x64_dt.o
+ .debug_macro   0x0000000000001e27      0x11b ./x64_cpu_drivers/x64_dt.o
+ .debug_macro   0x0000000000001f42       0x4c ./x64_cpu_drivers/x64_dt.o
+ .debug_macro   0x0000000000001f8e       0x1a ./x64_cpu_drivers/x64_mmu.o
+ .debug_macro   0x0000000000001fa8      0x18a ./x64_cpu_drivers/x64_mmu.o
+ .debug_macro   0x0000000000002132       0x32 ./startup/multiboot2.o
+ .debug_macro   0x0000000000002164      0x162 ./startup/multiboot2.o
+ .debug_macro   0x00000000000022c6       0x63 ./startup/x64_isr_handler.o
+ .debug_macro   0x0000000000002329      0x157 ./startup/x64_startup.o
+ .debug_macro   0x0000000000002480       0x58 ./startup/x64_startup.o
+ .debug_macro   0x00000000000024d8      0x182 ./startup/x64_startup.o
+ .debug_macro   0x000000000000265a       0x10 ./startup/x64_startup.o
+ .debug_macro   0x000000000000266a       0x3a ./startup/x64_startup.o
+ .debug_macro   0x00000000000026a4       0xc4 ./startup/x64_startup.o
 
-.debug_line     0x0000000000000000      0xaa9
- .debug_line    0x0000000000000000       0xfa ./x64_cpu_drivers/x64_apic.o
- .debug_line    0x00000000000000fa      0x163 ./x64_cpu_drivers/x64_dt.o
- .debug_line    0x000000000000025d       0x3f ./x64_cpu_drivers/x64_mmu.o
- .debug_line    0x000000000000029c      0x456 ./startup/multiboot2.o
- .debug_line    0x00000000000006f2       0xd0 ./startup/x64_boot.o
- .debug_line    0x00000000000007c2       0x9b ./startup/x64_isr.o
- .debug_line    0x000000000000085d       0x9c ./startup/x64_isr_handler.o
- .debug_line    0x00000000000008f9      0x1b0 ./startup/x64_startup.o
+.debug_line     0x0000000000000000      0xb1f
+ .debug_line    0x0000000000000000      0x16f ./x64_cpu_drivers/x64_apic.o
+ .debug_line    0x000000000000016f      0x163 ./x64_cpu_drivers/x64_dt.o
+ .debug_line    0x00000000000002d2       0x3f ./x64_cpu_drivers/x64_mmu.o
+ .debug_line    0x0000000000000311      0x456 ./startup/multiboot2.o
+ .debug_line    0x0000000000000767       0xd0 ./startup/x64_boot.o
+ .debug_line    0x0000000000000837       0x9b ./startup/x64_isr.o
+ .debug_line    0x00000000000008d2       0x9c ./startup/x64_isr_handler.o
+ .debug_line    0x000000000000096e      0x1b1 ./startup/x64_startup.o
 
-.debug_str      0x0000000000000000     0x9e6a
- .debug_str     0x0000000000000000     0x51a2 ./x64_cpu_drivers/x64_apic.o
-                                       0x52f5 (size before relaxing)
- .debug_str     0x00000000000051a2     0x3457 ./x64_cpu_drivers/x64_dt.o
+.debug_str      0x0000000000000000     0x9f7a
+ .debug_str     0x0000000000000000     0x52cc ./x64_cpu_drivers/x64_apic.o
+                                       0x5447 (size before relaxing)
+ .debug_str     0x00000000000052cc     0x3442 ./x64_cpu_drivers/x64_dt.o
                                        0x6eb1 (size before relaxing)
- .debug_str     0x00000000000085f9      0x788 ./x64_cpu_drivers/x64_mmu.o
+ .debug_str     0x000000000000870e      0x788 ./x64_cpu_drivers/x64_mmu.o
                                        0x32c6 (size before relaxing)
- .debug_str     0x0000000000008d81      0xac5 ./startup/multiboot2.o
+ .debug_str     0x0000000000008e96      0xac5 ./startup/multiboot2.o
                                        0x369d (size before relaxing)
- .debug_str     0x0000000000009846       0x54 ./startup/x64_boot.o
- .debug_str     0x000000000000989a       0x15 ./startup/x64_isr.o
+ .debug_str     0x000000000000995b       0x54 ./startup/x64_boot.o
+ .debug_str     0x00000000000099af       0x15 ./startup/x64_isr.o
                                          0x53 (size before relaxing)
- .debug_str     0x00000000000098af       0x14 ./startup/x64_isr_handler.o
+ .debug_str     0x00000000000099c4        0xf ./startup/x64_isr_handler.o
                                        0x39b4 (size before relaxing)
- .debug_str     0x00000000000098c3      0x5a7 ./startup/x64_startup.o
-                                       0x77dd (size before relaxing)
+ .debug_str     0x00000000000099d3      0x5a7 ./startup/x64_startup.o
+                                       0x777e (size before relaxing)
 
 .debug_line_str
                 0x0000000000000000      0x44b

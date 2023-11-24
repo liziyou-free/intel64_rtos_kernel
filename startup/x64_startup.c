@@ -209,7 +209,8 @@ void x64_arch_init (void)
     disable_intel_8259_intc();
 
 #if X64_USE_APIC_INTC
-    intel_apic_init();
+    cpu_local_apic_open();
+    intel_local_apic_init(1);
 #else
 
 #endif

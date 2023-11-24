@@ -27,6 +27,26 @@ typedef  unsigned char       u8;
 typedef  unsigned short int  u16;
 typedef  unsigned long int   u32;
 
+
+static inline uint64_t x64_read_msr(uint32_t msr)
+{
+  uint32_t low;
+  uint32_t high;
+
+  __asm__ __volatile__("rdmsr" : "=a" (low), "=d" (high) : "c" (msr));
+  return low | ((unsigned long)high << 32);
+}
+
+
+static inline void x64_write_msr(uint32_t msr, uint64_t val)
+{
+  __asm__ __volatile__ ("wrmsr"
+                       : /* no output */
+                       : "c" (msr), "a" (val), "d" (val >> 32)
+                       : "memory");
+}
+
+
 #define BUILDIO(bwl, bw, type)                      \
 static __always_inline void __out##bwl(type value, u16 port)        \
 {                                   \
