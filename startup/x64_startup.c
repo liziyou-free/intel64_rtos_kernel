@@ -25,19 +25,10 @@
 #include "../x64_cpu_drivers/x64_segment_def.h"
 
 
-
 #define ALIGNED(addr, align)    ((~(align - 1)) & addr)
 
 
 typedef void (*pf_isr_handler_t)(void);
-
-
-/*
- * A descriptor table is simply a memory array of 8byte entries that contain
- * descriptors. A descriptor table is variable in length and may contain up
- * to 8192 (2^13) descriptors.
- */
-//x86_gdt_struct_t g_x86_gdt[64]__attribute__((aligned(16)));
 
 
 /**
