@@ -74,4 +74,11 @@ BUILDIO(l,  , u32)
 #define outw __outw
 #define outl __outl
 
+
+/* transplant */
+#define atomic_read32(reg)  (*((uint32_t*)(reg)))
+#define atomic_write32(reg, value)  ((*((uint32_t*)(reg))) = (value))
+
+
+
 #endif /* X64_DRIVER_X86_COMMON_H_ */

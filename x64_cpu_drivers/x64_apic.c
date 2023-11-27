@@ -17,7 +17,7 @@
 * web site:    http://www.zlg.cn/
 *******************************************************************************/
 
-#include "../x64_cpu_drivers/x64_apic.h"
+#include "./x64_apic.h"
 #include "../startup/x64_arch_def.h"
 #include <stdbool.h>
 #include <cpuid.h>
@@ -31,11 +31,6 @@
 #define APIC_CMCI_INUM                     249
 #define APIC_THERMSL_MONITOR_INUM          250
 #define APIC_PERFORMANCE_COUNTER_INUM      251
-
-
-/* transplant */
-#define atomic_read32(reg)  (*((uint32_t*)reg))
-#define atomic_write32(reg, value)  ((*((uint32_t*)reg)) = (value))
 
 
 static bool cpu_local_apic_check (void)
@@ -84,8 +79,12 @@ void cpu_local_apic_open (void)
 
 
 /**
+ * \brief Get Local-APIC register base address
+ *
  * \note Each core has a separate Local-APIC, so this function will always return
  * the Local-APIC address of the core on which the function is running.
+ *
+ * \retval
  */
 uint64_t get_local_apic_base_addr (void)
 {
@@ -128,14 +127,16 @@ void local_apic_enable (void)
   uint32_t value;
 
   loapic_addr = get_local_apic_base_addr();
-  value = atomic_read32(loapic_addr + APIC_SPURIOUS_INTERRUPT_REG_OFFSET);
-  value |= (1 << APIC_SOFTWARE_ENABLE_SHIFT);
+//  value = atomic_read32(loapic_addr + APIC_SPURIOUS_INTERRUPT_REG_OFFSET);
+//  value |= (1 << APIC_SOFTWARE_ENABLE_SHIFT);
+
+  value = (1 << APIC_SOFTWARE_ENABLE_SHIFT) | 0xff;
   atomic_write32(loapic_addr + APIC_SPURIOUS_INTERRUPT_REG_OFFSET, value);
   return;
 }
 
 
-void intel_local_apic_init(uint16_t core_id)
+void intel_local_apic_init (uint16_t core_id)
 {
     uint64_t loapic_addr;
 
@@ -177,8 +178,8 @@ void intel_local_apic_init(uint16_t core_id)
 
 
 
-static __inline__
-void apic_eoi_hook(void)
+//static __inline__
+void apic_eoi_hook (void)
 {
   uint64_t loapic_addr;
 
@@ -193,14 +194,57 @@ void apic_eoi_hook(void)
 /*******************************************************************************
  * I/O  APIC
 *******************************************************************************/
+static uint32_t ioapic_read(uint32_t reg)
+{
+  uint32_t value;
+
+  atomic_write32(IOAPIC_BASE_ADDR + IOAPIC_REG_INDEX, reg);
+  value = atomic_read32(IOAPIC_BASE_ADDR + IOAPIC_REG_DATA);
+  return value;
+}
+
+
+static void ioapic_write(uint32_t reg, uint32_t data)
+{
+  atomic_write32(IOAPIC_BASE_ADDR + IOAPIC_REG_INDEX, reg);
+  atomic_write32(IOAPIC_BASE_ADDR + IOAPIC_REG_DATA, data);
+  return;
+}
+
+
+void ioapic_mask_irq (uint8_t inum)
+{
+  uint32_t cur_v;
+  uint32_t reg_offset;
+
+  reg_offset = IOAPIC_REG_TABLE + (inum - IRQ0) * 2;
+  cur_v = ioapic_read(reg_offset);
+  cur_v |= 1 << 16;
+  ioapic_write(reg_offset, cur_v);
+  return;
+}
+
+
+void ioapic_unmask_irq (uint8_t inum)
+{
+  uint32_t cur_v;
+  uint32_t reg_offset;
+
+  reg_offset = IOAPIC_REG_TABLE + (inum - IRQ0) * 2;
+  cur_v = ioapic_read(reg_offset);
+  cur_v &= ~(1 << 16);
+  ioapic_write(reg_offset, cur_v);
+  return;
+}
+
 
 void ioapic_config_int_line (uint8_t intline, ioapic_intline_config_t *p_cfg)
 {
     /* Redirection Entry register */
     uint32_t *p_rer = (uint32_t *)p_cfg;
 
-    atomic_write32((IOAPIC_REG_TABLE + intline * 2), p_rer[0]);
-    atomic_write32((IOAPIC_REG_TABLE + intline * 2 + 1), p_rer[1]);
+    ioapic_write((IOAPIC_REG_TABLE + intline * 2), p_rer[0]);
+    ioapic_write((IOAPIC_REG_TABLE + intline * 2 + 1), p_rer[1]);
     return;
 }
 
@@ -212,8 +256,8 @@ void intel_ioapic_init (void)
     uint32_t max_irq_num;
     ioapic_intline_config_t int_cfg;
 
-    ver_info = atomic_read32(IOAPIC_BASE_ADDR + IOAPIC_REG_VER);
-    max_irq_num = (ver_info >> 16) & 0x000f;
+    ver_info = ioapic_read(IOAPIC_REG_VER);
+    max_irq_num = (ver_info >> 16) & 0x00ff;
 
     int_cfg.trigger_mode = TRIGGER_RISING_EDGE;
     int_cfg.mask = 1;  /* defualt mask interrupt */
@@ -221,56 +265,12 @@ void intel_ioapic_init (void)
     int_cfg.destination = 1;  /* BSP core defualt logic id */
     int_cfg.delivery_mode = DELIVERY_MODE_FIXED;    /* fixed mode */
 
-    for (vector_cnt = 0; vector_cnt < max_irq_num; vector_cnt++) {
+    /* Init all interrupt line */
+    for (vector_cnt = 0; vector_cnt <= max_irq_num; vector_cnt++) {
         int_cfg.vector = IRQ0 + vector_cnt;
         ioapic_config_int_line(vector_cnt, &int_cfg);
     }
 
     return;
 }
-
-
-
-
-
-
-//void local_apic_set_int_vector (uint8_t inum, uint8_t vector)
-//{
-//  uint64_t loapic_addr;
-//  uint32_t reg_value;
-//  uint16_t reg_offset;
-//
-//  loapic_addr = get_local_apic_base_addr();
-//
-//    switch (inum) {
-//    case APIC_CMCI_INUM:
-//        reg_offset = APIC_CMCI_REG_OFFSET;
-//        break;
-//    case APIC_TIMER_INUM:
-//        reg_offset = APIC_TIMER_REG_OFFSET;
-//      break;
-//    case APIC_LINT0_INUM:
-//        reg_offset = APIC_LINT_0_REG_OFFSET;
-//        break;
-//    case APIC_LINT1_INUM:
-//        reg_offset = APIC_LINT_1_REG_OFFSET;
-//        break;
-//    case APIC_ERROR_INUM:
-//        reg_offset = APIC_LVT_ERR_REG_OFFSET;
-//        break;
-//    case APIC_THERMSL_MONITOR_INUM:
-//        reg_offset = APIC_THERMAL_SENSOR_REG_OFFSET;
-//        break;
-//    case APIC_PERFORMANCE_COUNTER_INUM:
-//        reg_offset = APIC_MONITOR_COUNTER_REG_OFFSET;
-//        break;
-//    default:
-//        break;
-//    }
-//    reg_value = atomic_read32(loapic_addr + reg_offset);
-//    reg_value &= ~0x000000ff;
-//    reg_value |= vector;
-//    atomic_write32(loapic_addr + APIC_TIMER_REG_OFFSET, reg_value);
-//    return;
-//}
 

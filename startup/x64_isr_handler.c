@@ -18,12 +18,29 @@
 *******************************************************************************/
 
 #include <stdint.h>
+#include "./x64_isr_handler.h"
+#include "../x64_cpu_drivers/x64_apic.h"
+
+
+x64_irq_hanlder_t x64_irq_handler[256];
+
+
+uint8_t irq_handler_register(uint8_t vector, void(*p_fun)(void), void* param) {
+  if (!p_fun) {
+      return 1;
+  }
+  x64_irq_handler[vector].param = param;
+  x64_irq_handler[vector].pfn_handler = p_fun;
+  return 0;
+}
 
 
 void x64_common_isr (uint64_t inum)
 {
     (void)inum;
-    for (int a = 3; a > 0; a--) {;}
+    if (inum >=32 ) {
+        apic_eoi_hook();
+    }
     return;
 }
 

@@ -1,29 +1,93 @@
-# 0 "./startup/x64_isr.S"
+# 0 "./x64_cpu_drivers/x64_apic.c"
 # 0 "<built-in>"
 # 0 "<command-line>"
 # 1 "/usr/include/stdc-predef.h" 1 3 4
 # 0 "<command-line>" 2
-# 1 "./startup/x64_isr.S"
-# 43 "./startup/x64_isr.S"
-# 1 "./startup/x64_arch_def.h" 1
-# 44 "./startup/x64_isr.S" 2
-# 90 "./startup/x64_isr.S"
-    .global x64_common_isr
-    .code64
-_isr_handler_:
-    pushq %rsi
-    pushq %rax
-    pushq %rbx
-    pushq %rcx
-    pushq %rdx
-    pushq %r8
-    pushq %r9
-    pushq %r10
-    pushq %r11
-    pushq %r12
-    pushq %r13
-    pushq %r14
-    pushq %r15
+# 1 "./x64_cpu_drivers/x64_apic.c"
+# 20 "./x64_cpu_drivers/x64_apic.c"
+# 1 "./x64_cpu_drivers/../x64_cpu_drivers/x64_apic.h" 1
+# 23 "./x64_cpu_drivers/../x64_cpu_drivers/x64_apic.h"
+# 1 "/usr/lib/gcc/x86_64-linux-gnu/13/include/stdint.h" 1 3 4
+# 9 "/usr/lib/gcc/x86_64-linux-gnu/13/include/stdint.h" 3 4
+# 1 "/usr/include/stdint.h" 1 3 4
+# 26 "/usr/include/stdint.h" 3 4
+# 1 "/usr/include/x86_64-linux-gnu/bits/libc-header-start.h" 1 3 4
+# 33 "/usr/include/x86_64-linux-gnu/bits/libc-header-start.h" 3 4
+# 1 "/usr/include/features.h" 1 3 4
+# 394 "/usr/include/features.h" 3 4
+# 1 "/usr/include/features-time64.h" 1 3 4
+# 20 "/usr/include/features-time64.h" 3 4
+# 1 "/usr/include/x86_64-linux-gnu/bits/wordsize.h" 1 3 4
+# 21 "/usr/include/features-time64.h" 2 3 4
+# 1 "/usr/include/x86_64-linux-gnu/bits/timesize.h" 1 3 4
+# 19 "/usr/include/x86_64-linux-gnu/bits/timesize.h" 3 4
+# 1 "/usr/include/x86_64-linux-gnu/bits/wordsize.h" 1 3 4
+# 20 "/usr/include/x86_64-linux-gnu/bits/timesize.h" 2 3 4
+# 22 "/usr/include/features-time64.h" 2 3 4
+# 395 "/usr/include/features.h" 2 3 4
+# 502 "/usr/include/features.h" 3 4
+# 1 "/usr/include/x86_64-linux-gnu/sys/cdefs.h" 1 3 4
+# 576 "/usr/include/x86_64-linux-gnu/sys/cdefs.h" 3 4
+# 1 "/usr/include/x86_64-linux-gnu/bits/wordsize.h" 1 3 4
+# 577 "/usr/include/x86_64-linux-gnu/sys/cdefs.h" 2 3 4
+# 1 "/usr/include/x86_64-linux-gnu/bits/long-double.h" 1 3 4
+# 578 "/usr/include/x86_64-linux-gnu/sys/cdefs.h" 2 3 4
+# 503 "/usr/include/features.h" 2 3 4
+# 526 "/usr/include/features.h" 3 4
+# 1 "/usr/include/x86_64-linux-gnu/gnu/stubs.h" 1 3 4
+# 10 "/usr/include/x86_64-linux-gnu/gnu/stubs.h" 3 4
+# 1 "/usr/include/x86_64-linux-gnu/gnu/stubs-64.h" 1 3 4
+# 11 "/usr/include/x86_64-linux-gnu/gnu/stubs.h" 2 3 4
+# 527 "/usr/include/features.h" 2 3 4
+# 34 "/usr/include/x86_64-linux-gnu/bits/libc-header-start.h" 2 3 4
+# 27 "/usr/include/stdint.h" 2 3 4
+# 1 "/usr/include/x86_64-linux-gnu/bits/types.h" 1 3 4
+# 27 "/usr/include/x86_64-linux-gnu/bits/types.h" 3 4
+# 1 "/usr/include/x86_64-linux-gnu/bits/wordsize.h" 1 3 4
+# 28 "/usr/include/x86_64-linux-gnu/bits/types.h" 2 3 4
+# 1 "/usr/include/x86_64-linux-gnu/bits/timesize.h" 1 3 4
+# 19 "/usr/include/x86_64-linux-gnu/bits/timesize.h" 3 4
+# 1 "/usr/include/x86_64-linux-gnu/bits/wordsize.h" 1 3 4
+# 20 "/usr/include/x86_64-linux-gnu/bits/timesize.h" 2 3 4
+# 29 "/usr/include/x86_64-linux-gnu/bits/types.h" 2 3 4
+
+
+
+# 31 "/usr/include/x86_64-linux-gnu/bits/types.h" 3 4
+typedef unsigned char __u_char;
+typedef unsigned short int __u_short;
+typedef unsigned int __u_int;
+typedef unsigned long int __u_long;
+
+
+typedef signed char __int8_t;
+typedef unsigned char __uint8_t;
+typedef signed short int __int16_t;
+typedef unsigned short int __uint16_t;
+typedef signed int __int32_t;
+typedef unsigned int __uint32_t;
+
+typedef signed long int __int64_t;
+typedef unsigned long int __uint64_t;
+
+
+
+
+
+
+typedef __int8_t __int_least8_t;
+typedef __uint8_t __uint_least8_t;
+typedef __int16_t __int_least16_t;
+typedef __uint16_t __uint_least16_t;
+typedef __int32_t __int_least32_t;
+typedef __uint32_t __uint_least32_t;
+typedef __int64_t __int_least64_t;
+typedef __uint64_t __uint_least64_t;
+
+
+
+typedef long int __quad_t;
+typedef unsigned long int __u_quad_t;
 
 
 
@@ -31,94 +95,491 @@ _isr_handler_:
 
 
 
-    leaq -(8 + 512)(%rsp), %rsp
-    fxsaveq (%rsp)
+typedef long int __intmax_t;
+typedef unsigned long int __uintmax_t;
+# 141 "/usr/include/x86_64-linux-gnu/bits/types.h" 3 4
+# 1 "/usr/include/x86_64-linux-gnu/bits/typesizes.h" 1 3 4
+# 142 "/usr/include/x86_64-linux-gnu/bits/types.h" 2 3 4
+# 1 "/usr/include/x86_64-linux-gnu/bits/time64.h" 1 3 4
+# 143 "/usr/include/x86_64-linux-gnu/bits/types.h" 2 3 4
 
 
-    call x64_common_isr
+typedef unsigned long int __dev_t;
+typedef unsigned int __uid_t;
+typedef unsigned int __gid_t;
+typedef unsigned long int __ino_t;
+typedef unsigned long int __ino64_t;
+typedef unsigned int __mode_t;
+typedef unsigned long int __nlink_t;
+typedef long int __off_t;
+typedef long int __off64_t;
+typedef int __pid_t;
+typedef struct { int __val[2]; } __fsid_t;
+typedef long int __clock_t;
+typedef unsigned long int __rlim_t;
+typedef unsigned long int __rlim64_t;
+typedef unsigned int __id_t;
+typedef long int __time_t;
+typedef unsigned int __useconds_t;
+typedef long int __suseconds_t;
+typedef long int __suseconds64_t;
 
-    fxrstorq (%rsp)
-    leaq (8 + 512)(%rsp), %rsp
-    popq %r15
- popq %r14
- popq %r13
- popq %r12
- popq %r11
- popq %r10
- popq %r9
- popq %r8
- popq %rdx
- popq %rcx
- popq %rbx
- popq %rax
-    popq %rsi
-    popq %rdi
-
-    iretq
-
-
-    .data
-    .align 8
-    .type g_exception_handler_table_addr, %object
-_exception_table_head_:
-g_exception_handler_table_addr:
- .global divide_error_exception_handler; .type divide_error_exception_handler, %function; .code64; divide_error_exception_handler: pushq $0; pushq %rdi; mov $0, %rdi; jmp _isr_handler_; .data; .quad divide_error_exception_handler; .text
- .global debug_exception_handler; .type debug_exception_handler, %function; .code64; debug_exception_handler: pushq $0; pushq %rdi; mov $1, %rdi; jmp _isr_handler_; .data; .quad debug_exception_handler; .text
- .global nmi_exception_handler; .type nmi_exception_handler, %function; .code64; nmi_exception_handler: pushq $0; pushq %rdi; mov $2, %rdi; jmp _isr_handler_; .data; .quad nmi_exception_handler; .text
- .global breakpoint_exception_handler; .type breakpoint_exception_handler, %function; .code64; breakpoint_exception_handler: pushq $0; pushq %rdi; mov $3, %rdi; jmp _isr_handler_; .data; .quad breakpoint_exception_handler; .text
- .global overflow_exception_handler; .type overflow_exception_handler, %function; .code64; overflow_exception_handler: pushq $0; pushq %rdi; mov $4, %rdi; jmp _isr_handler_; .data; .quad overflow_exception_handler; .text
- .global bound_range_exception_handler; .type bound_range_exception_handler, %function; .code64; bound_range_exception_handler: pushq $0; pushq %rdi; mov $5, %rdi; jmp _isr_handler_; .data; .quad bound_range_exception_handler; .text
- .global invalid_opcode_exception_handler; .type invalid_opcode_exception_handler, %function; .code64; invalid_opcode_exception_handler: pushq $0; pushq %rdi; mov $6, %rdi; jmp _isr_handler_; .data; .quad invalid_opcode_exception_handler; .text
- .global device_not_available_exception_handler; .type device_not_available_exception_handler, %function; .code64; device_not_available_exception_handler: pushq $0; pushq %rdi; mov $7, %rdi; jmp _isr_handler_; .data; .quad device_not_available_exception_handler; .text
- .global double_fault_exception_handler; .type double_fault_exception_handler, %function; .code64; double_fault_exception_handler: push %rdi; mov $8, %rdi; jmp _isr_handler_; .data; .quad double_fault_exception_handler; .text
- .global coprocessor_segment_overrun_exception_handler; .type coprocessor_segment_overrun_exception_handler, %function; .code64; coprocessor_segment_overrun_exception_handler: pushq $0; pushq %rdi; mov $9, %rdi; jmp _isr_handler_; .data; .quad coprocessor_segment_overrun_exception_handler; .text
- .global invalid_tss_exception_handler; .type invalid_tss_exception_handler, %function; .code64; invalid_tss_exception_handler: push %rdi; mov $10, %rdi; jmp _isr_handler_; .data; .quad invalid_tss_exception_handler; .text
- .global segment_not_present_exception_handler; .type segment_not_present_exception_handler, %function; .code64; segment_not_present_exception_handler: push %rdi; mov $11, %rdi; jmp _isr_handler_; .data; .quad segment_not_present_exception_handler; .text
- .global stack_fault_exception_handler; .type stack_fault_exception_handler, %function; .code64; stack_fault_exception_handler: push %rdi; mov $12, %rdi; jmp _isr_handler_; .data; .quad stack_fault_exception_handler; .text
- .global general_protection_exception_handler; .type general_protection_exception_handler, %function; .code64; general_protection_exception_handler: push %rdi; mov $13, %rdi; jmp _isr_handler_; .data; .quad general_protection_exception_handler; .text
- .global page_fault_exception_handler; .type page_fault_exception_handler, %function; .code64; page_fault_exception_handler: push %rdi; mov $14, %rdi; jmp _isr_handler_; .data; .quad page_fault_exception_handler; .text
- .global reserved_exception_handler; .type reserved_exception_handler, %function; .code64; reserved_exception_handler: pushq $0; pushq %rdi; mov $15, %rdi; jmp _isr_handler_; .data; .quad reserved_exception_handler; .text
- .global fpu_fp_error_exception_handler; .type fpu_fp_error_exception_handler, %function; .code64; fpu_fp_error_exception_handler: pushq $0; pushq %rdi; mov $16, %rdi; jmp _isr_handler_; .data; .quad fpu_fp_error_exception_handler; .text
- .global aligment_check_exception_handler; .type aligment_check_exception_handler, %function; .code64; aligment_check_exception_handler: push %rdi; mov $17, %rdi; jmp _isr_handler_; .data; .quad aligment_check_exception_handler; .text
- .global machine_cahck_exception_handler; .type machine_cahck_exception_handler, %function; .code64; machine_cahck_exception_handler: pushq $0; pushq %rdi; mov $18, %rdi; jmp _isr_handler_; .data; .quad machine_cahck_exception_handler; .text
- .global simd_fp_exception_handler; .type simd_fp_exception_handler, %function; .code64; simd_fp_exception_handler: pushq $0; pushq %rdi; mov $19, %rdi; jmp _isr_handler_; .data; .quad simd_fp_exception_handler; .text
- .global virt_exception_exception_handler; .type virt_exception_exception_handler, %function; .code64; virt_exception_exception_handler: push %rdi; mov $20, %rdi; jmp _isr_handler_; .data; .quad virt_exception_exception_handler; .text
+typedef int __daddr_t;
+typedef int __key_t;
 
 
-    .data
-    .global g_exception_handler_table_addr
-    .global g_exception_handler_table_bytes
-_exception_table_end_:
-g_exception_handler_table_bytes:
-    .word (_exception_table_end_ - _exception_table_head_)
+typedef int __clockid_t;
 
 
-    .data
-    .align 8
-    .type g_interrupt_handler_table, %object
-_interrupt_table_head_:
-g_interrupt_handler_table_addr:
- .global exit0_handler; .type exit0_handler, %function; .code64; exit0_handler: pushq $0; pushq %rdi; mov $0, %rdi; jmp _isr_handler_; .data; .quad exit0_handler; .text
- .global exit1_handler; .type exit1_handler, %function; .code64; exit1_handler: pushq $0; pushq %rdi; mov $1, %rdi; jmp _isr_handler_; .data; .quad exit1_handler; .text
- .global exit2_handler; .type exit2_handler, %function; .code64; exit2_handler: pushq $0; pushq %rdi; mov $2, %rdi; jmp _isr_handler_; .data; .quad exit2_handler; .text
- .global exit3_handler; .type exit3_handler, %function; .code64; exit3_handler: pushq $0; pushq %rdi; mov $3, %rdi; jmp _isr_handler_; .data; .quad exit3_handler; .text
- .global exit4_handler; .type exit4_handler, %function; .code64; exit4_handler: pushq $0; pushq %rdi; mov $4, %rdi; jmp _isr_handler_; .data; .quad exit4_handler; .text
- .global exit5_handler; .type exit5_handler, %function; .code64; exit5_handler: pushq $0; pushq %rdi; mov $5, %rdi; jmp _isr_handler_; .data; .quad exit5_handler; .text
- .global exit6_handler; .type exit6_handler, %function; .code64; exit6_handler: pushq $0; pushq %rdi; mov $6, %rdi; jmp _isr_handler_; .data; .quad exit6_handler; .text
- .global exit7_handler; .type exit7_handler, %function; .code64; exit7_handler: pushq $0; pushq %rdi; mov $7, %rdi; jmp _isr_handler_; .data; .quad exit7_handler; .text
- .global exit8_handler; .type exit8_handler, %function; .code64; exit8_handler: pushq $0; pushq %rdi; mov $8, %rdi; jmp _isr_handler_; .data; .quad exit8_handler; .text
- .global exit9_handler; .type exit9_handler, %function; .code64; exit9_handler: pushq $0; pushq %rdi; mov $9, %rdi; jmp _isr_handler_; .data; .quad exit9_handler; .text
- .global exit10_handler; .type exit10_handler, %function; .code64; exit10_handler: pushq $0; pushq %rdi; mov $10, %rdi; jmp _isr_handler_; .data; .quad exit10_handler; .text
- .global exit11_handler; .type exit11_handler, %function; .code64; exit11_handler: pushq $0; pushq %rdi; mov $11, %rdi; jmp _isr_handler_; .data; .quad exit11_handler; .text
- .global exit12_handler; .type exit12_handler, %function; .code64; exit12_handler: pushq $0; pushq %rdi; mov $12, %rdi; jmp _isr_handler_; .data; .quad exit12_handler; .text
- .global exit13_handler; .type exit13_handler, %function; .code64; exit13_handler: pushq $0; pushq %rdi; mov $13, %rdi; jmp _isr_handler_; .data; .quad exit13_handler; .text
- .global exit14_handler; .type exit14_handler, %function; .code64; exit14_handler: pushq $0; pushq %rdi; mov $14, %rdi; jmp _isr_handler_; .data; .quad exit14_handler; .text
- .global exit15_handler; .type exit15_handler, %function; .code64; exit15_handler: pushq $0; pushq %rdi; mov $15, %rdi; jmp _isr_handler_; .data; .quad exit15_handler; .text
- .global exit16_handler; .type exit16_handler, %function; .code64; exit16_handler: pushq $0; pushq %rdi; mov $16, %rdi; jmp _isr_handler_; .data; .quad exit16_handler; .text
+typedef void * __timer_t;
 
- .data
-    .global g_interrupt_handler_table_addr
-    .global g_interrupt_handler_table_bytes
-_interrupt_table_end_:
-g_interrupt_handler_table_bytes:
-    .word (_interrupt_table_end_ - _interrupt_table_head_)
+
+typedef long int __blksize_t;
+
+
+
+
+typedef long int __blkcnt_t;
+typedef long int __blkcnt64_t;
+
+
+typedef unsigned long int __fsblkcnt_t;
+typedef unsigned long int __fsblkcnt64_t;
+
+
+typedef unsigned long int __fsfilcnt_t;
+typedef unsigned long int __fsfilcnt64_t;
+
+
+typedef long int __fsword_t;
+
+typedef long int __ssize_t;
+
+
+typedef long int __syscall_slong_t;
+
+typedef unsigned long int __syscall_ulong_t;
+
+
+
+typedef __off64_t __loff_t;
+typedef char *__caddr_t;
+
+
+typedef long int __intptr_t;
+
+
+typedef unsigned int __socklen_t;
+
+
+
+
+typedef int __sig_atomic_t;
+# 28 "/usr/include/stdint.h" 2 3 4
+# 1 "/usr/include/x86_64-linux-gnu/bits/wchar.h" 1 3 4
+# 29 "/usr/include/stdint.h" 2 3 4
+# 1 "/usr/include/x86_64-linux-gnu/bits/wordsize.h" 1 3 4
+# 30 "/usr/include/stdint.h" 2 3 4
+
+
+
+
+# 1 "/usr/include/x86_64-linux-gnu/bits/stdint-intn.h" 1 3 4
+# 24 "/usr/include/x86_64-linux-gnu/bits/stdint-intn.h" 3 4
+typedef __int8_t int8_t;
+typedef __int16_t int16_t;
+typedef __int32_t int32_t;
+typedef __int64_t int64_t;
+# 35 "/usr/include/stdint.h" 2 3 4
+
+
+# 1 "/usr/include/x86_64-linux-gnu/bits/stdint-uintn.h" 1 3 4
+# 24 "/usr/include/x86_64-linux-gnu/bits/stdint-uintn.h" 3 4
+typedef __uint8_t uint8_t;
+typedef __uint16_t uint16_t;
+typedef __uint32_t uint32_t;
+typedef __uint64_t uint64_t;
+# 38 "/usr/include/stdint.h" 2 3 4
+
+
+
+
+
+typedef __int_least8_t int_least8_t;
+typedef __int_least16_t int_least16_t;
+typedef __int_least32_t int_least32_t;
+typedef __int_least64_t int_least64_t;
+
+
+typedef __uint_least8_t uint_least8_t;
+typedef __uint_least16_t uint_least16_t;
+typedef __uint_least32_t uint_least32_t;
+typedef __uint_least64_t uint_least64_t;
+
+
+
+
+
+typedef signed char int_fast8_t;
+
+typedef long int int_fast16_t;
+typedef long int int_fast32_t;
+typedef long int int_fast64_t;
+# 71 "/usr/include/stdint.h" 3 4
+typedef unsigned char uint_fast8_t;
+
+typedef unsigned long int uint_fast16_t;
+typedef unsigned long int uint_fast32_t;
+typedef unsigned long int uint_fast64_t;
+# 87 "/usr/include/stdint.h" 3 4
+typedef long int intptr_t;
+
+
+typedef unsigned long int uintptr_t;
+# 101 "/usr/include/stdint.h" 3 4
+typedef __intmax_t intmax_t;
+typedef __uintmax_t uintmax_t;
+# 10 "/usr/lib/gcc/x86_64-linux-gnu/13/include/stdint.h" 2 3 4
+# 24 "./x64_cpu_drivers/../x64_cpu_drivers/x64_apic.h" 2
+# 157 "./x64_cpu_drivers/../x64_cpu_drivers/x64_apic.h"
+
+# 157 "./x64_cpu_drivers/../x64_cpu_drivers/x64_apic.h"
+typedef struct ioapic_intline_config {
+    uint64_t vector:8;
+    uint64_t delivery_mode:3;
+    uint64_t destination_mode:1;
+    uint64_t delivery_status:1;
+    uint64_t trigger_mode:3;
+    uint64_t mask:1;
+    uint64_t :39;
+    uint64_t destination:8;
+} ioapic_intline_config_t;
+
+
+void cpu_local_apic_open (void);
+
+void intel_local_apic_init (uint16_t core_id);
+
+void intel_ioapic_init (void);
+
+void ioapic_mask_irq (uint8_t inum);
+
+void ioapic_unmask_irq (uint8_t inum);
+# 21 "./x64_cpu_drivers/x64_apic.c" 2
+# 1 "./x64_cpu_drivers/../startup/x64_arch_def.h" 1
+# 22 "./x64_cpu_drivers/x64_apic.c" 2
+# 1 "/usr/lib/gcc/x86_64-linux-gnu/13/include/stdbool.h" 1 3 4
+# 23 "./x64_cpu_drivers/x64_apic.c" 2
+# 1 "/usr/lib/gcc/x86_64-linux-gnu/13/include/cpuid.h" 1 3 4
+# 254 "/usr/lib/gcc/x86_64-linux-gnu/13/include/cpuid.h" 3 4
+
+# 254 "/usr/lib/gcc/x86_64-linux-gnu/13/include/cpuid.h" 3 4
+static __inline unsigned int
+__get_cpuid_max (unsigned int __ext, unsigned int *__sig)
+{
+  unsigned int __eax, __ebx, __ecx, __edx;
+# 296 "/usr/lib/gcc/x86_64-linux-gnu/13/include/cpuid.h" 3 4
+  __asm__ __volatile__ ("cpuid\n\t" : "=a" (__eax), "=b" (__ebx), "=c" (__ecx), "=d" (__edx) : "0" (__ext));
+
+  if (__sig)
+    *__sig = __ebx;
+
+  return __eax;
+}
+
+
+
+
+
+
+static __inline int
+__get_cpuid (unsigned int __leaf,
+      unsigned int *__eax, unsigned int *__ebx,
+      unsigned int *__ecx, unsigned int *__edx)
+{
+  unsigned int __ext = __leaf & 0x80000000;
+  unsigned int __maxlevel = __get_cpuid_max (__ext, 0);
+
+  if (__maxlevel == 0 || __maxlevel < __leaf)
+    return 0;
+
+  __asm__ __volatile__ ("cpuid\n\t" : "=a" (*__eax), "=b" (*__ebx), "=c" (*__ecx), "=d" (*__edx) : "0" (__leaf));
+  return 1;
+}
+
+
+
+static __inline int
+__get_cpuid_count (unsigned int __leaf, unsigned int __subleaf,
+     unsigned int *__eax, unsigned int *__ebx,
+     unsigned int *__ecx, unsigned int *__edx)
+{
+  unsigned int __ext = __leaf & 0x80000000;
+  unsigned int __maxlevel = __get_cpuid_max (__ext, 0);
+
+  if (__maxlevel == 0 || __maxlevel < __leaf)
+    return 0;
+
+  __asm__ __volatile__ ("cpuid\n\t" : "=a" (*__eax), "=b" (*__ebx), "=c" (*__ecx), "=d" (*__edx) : "0" (__leaf), "2" (__subleaf));
+  return 1;
+}
+
+static __inline void
+__cpuidex (int __cpuid_info[4], int __leaf, int __subleaf)
+{
+  __asm__ __volatile__ ("cpuid\n\t" : "=a" (__cpuid_info[0]), "=b" (__cpuid_info[1]), "=c" (__cpuid_info[2]), "=d" (__cpuid_info[3]) : "0" (__leaf), "2" (__subleaf))
+                                    ;
+}
+# 24 "./x64_cpu_drivers/x64_apic.c" 2
+# 41 "./x64_cpu_drivers/x64_apic.c"
+
+# 41 "./x64_cpu_drivers/x64_apic.c"
+static 
+# 41 "./x64_cpu_drivers/x64_apic.c" 3 4
+      _Bool 
+# 41 "./x64_cpu_drivers/x64_apic.c"
+           cpu_local_apic_check (void)
+{
+    uint32_t eax=0;
+    uint32_t ebx=0;
+    uint32_t ecx=0;
+    uint32_t edx=0;
+    uint32_t operand = 1;
+    __asm__ __volatile__ (
+              "cpuid\n\t"
+              : "=a" (eax), "=b" (ebx), "=c" (ecx), "=d" (edx)
+              : "0" (operand)
+              );
+
+    if (edx & (1 << 9 )) {
+        return 
+# 55 "./x64_cpu_drivers/x64_apic.c" 3 4
+              1
+# 55 "./x64_cpu_drivers/x64_apic.c"
+                  ;
+    }
+    return 
+# 57 "./x64_cpu_drivers/x64_apic.c" 3 4
+          0
+# 57 "./x64_cpu_drivers/x64_apic.c"
+               ;
+}
+
+
+void cpu_local_apic_open (void)
+{
+    uint32_t msr_addr;
+    uint32_t enable_bit;
+
+    if (cpu_local_apic_check() == 
+# 66 "./x64_cpu_drivers/x64_apic.c" 3 4
+                                 0
+# 66 "./x64_cpu_drivers/x64_apic.c"
+                                      ) {
+        for(;;);
+    }
+
+    msr_addr = 0x1B;
+    enable_bit = (1 << 11);
+
+    __asm__ __volatile__ (
+              "movl  %0,  %%ecx \n\t"
+              "rdmsr            \n\t"
+              "orl   %1,  %%eax \n\t"
+              "wrmsr"
+              :
+              :"r"(msr_addr), "r"(enable_bit)
+              :"rcx", "rax", "rdx"
+              );
+    return;
+}
+
+
+
+
+
+
+uint64_t get_local_apic_base_addr (void)
+{
+  uint32_t msr_addr;
+  uint32_t msr_value;
+  uint64_t apic_addr;
+
+  msr_addr = 0x1B;
+  apic_addr = 0;
+  __asm__ __volatile__ (
+            "movl  %1,  %%ecx \n\t"
+            "rdmsr            \n\t"
+            "movl  %%eax, %0  \n\t"
+            :"=r"(msr_value)
+            :"r"(msr_addr)
+            :"rcx", "rax", "rdx"
+            );
+
+  apic_addr = msr_value & 0xfffff000;
+  return apic_addr;
+}
+
+
+void local_apic_disable (void)
+{
+  uint64_t loapic_addr;
+  uint32_t value;
+
+  loapic_addr = get_local_apic_base_addr();
+  value = (*((uint32_t*)loapic_addr + 0xF0));
+  value &= ~(1 << 8);
+  ((*((uint32_t*)loapic_addr + 0xF0)) = (value));
+  return;
+}
+
+
+void local_apic_enable (void)
+{
+  uint64_t loapic_addr;
+  uint32_t value;
+
+  loapic_addr = get_local_apic_base_addr();
+  value = (*((uint32_t*)loapic_addr + 0xF0));
+  value |= (1 << 8);
+  ((*((uint32_t*)loapic_addr + 0xF0)) = (value));
+  return;
+}
+
+
+void intel_local_apic_init (uint16_t core_id)
+{
+    uint64_t loapic_addr;
+
+    loapic_addr = get_local_apic_base_addr();
+
+
+
+    ((*((uint32_t*)loapic_addr + 0XE0)) = ((0x0f << 28)))
+                                       ;
+
+
+    ((*((uint32_t*)loapic_addr + 0XD0)) = ((1 << (core_id + 24))))
+                                                        ;
+
+
+    ((*((uint32_t*)loapic_addr + 0X2F0)) = (1 << 16))
+                                       ;
+    ((*((uint32_t*)loapic_addr + 0X320)) = (1 << 16))
+                                       ;
+    ((*((uint32_t*)loapic_addr + 0X330)) = (1 << 16))
+                                       ;
+    ((*((uint32_t*)loapic_addr + 0X340)) = (1 << 16))
+                                       ;
+    ((*((uint32_t*)loapic_addr + 0X350)) = (1 << 16))
+                                       ;
+    ((*((uint32_t*)loapic_addr + 0X360)) = (1 << 16))
+                                       ;
+    ((*((uint32_t*)loapic_addr + 0X370)) = (1 << 16))
+                                       ;
+
+
+    ((*((uint32_t*)loapic_addr + 0XB0)) = (0));
+
+
+    local_apic_enable();
+    return;
+}
+
+
+
+
+static __inline__
+void apic_eoi_hook(void)
+{
+  uint64_t loapic_addr;
+
+  loapic_addr = get_local_apic_base_addr();
+
+  ((*((uint32_t*)loapic_addr + 0XB0)) = (0));
+  return;
+}
+
+
+
+
+
+
+static uint32_t ioapic_read(uint32_t reg)
+{
+  uint32_t value;
+
+  ((*((uint32_t*)0xFEC00000 + 0x00)) = (reg));
+  value = (*((uint32_t*)0xFEC00000 + 0x10));
+  return value;
+}
+
+
+static void ioapic_write(uint32_t reg, uint32_t data)
+{
+  ((*((uint32_t*)0xFEC00000 + 0x00)) = (reg));
+  ((*((uint32_t*)0xFEC00000 + 0x10)) = (data));
+  return;
+}
+
+
+void ioapic_mask_irq (uint8_t inum)
+{
+  uint32_t cur_v;
+  uint32_t reg_offset;
+
+  reg_offset = 0x10 + (inum - 32) * 2;
+  cur_v = ioapic_read(reg_offset);
+  cur_v |= 1 << 16;
+  ioapic_write(reg_offset, cur_v);
+  return;
+}
+
+
+void ioapic_unmask_irq (uint8_t inum)
+{
+  uint32_t cur_v;
+  uint32_t reg_offset;
+
+  reg_offset = 0x10 + (inum - 32) * 2;
+  cur_v = ioapic_read(reg_offset);
+  cur_v &= ~(1 << 16);
+  ioapic_write(reg_offset, cur_v);
+  return;
+}
+
+
+void ioapic_config_int_line (uint8_t intline, ioapic_intline_config_t *p_cfg)
+{
+
+    uint32_t *p_rer = (uint32_t *)p_cfg;
+
+    ioapic_write((0x10 + intline * 2), p_rer[0]);
+    ioapic_write((0x10 + intline * 2 + 1), p_rer[1]);
+    return;
+}
+
+
+void intel_ioapic_init (void)
+{
+    uint32_t vector_cnt;
+    uint32_t ver_info;
+    uint32_t max_irq_num;
+    ioapic_intline_config_t int_cfg;
+
+    ver_info = ioapic_read(0x01);
+    max_irq_num = (ver_info >> 16) & 0x000f;
+
+    int_cfg.trigger_mode = 0;
+    int_cfg.mask = 1;
+    int_cfg.destination_mode = 0;
+    int_cfg.destination = 1;
+    int_cfg.delivery_mode = 0;
+
+    for (vector_cnt = 0; vector_cnt < max_irq_num; vector_cnt++) {
+        int_cfg.vector = 32 + vector_cnt;
+        ioapic_config_int_line(vector_cnt, &int_cfg);
+    }
+
+    return;
+}

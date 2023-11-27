@@ -89,8 +89,8 @@
 
 
 /**
- *\brief x86_dt_privilege_t
- *\note descriptor privilege level: used by the protection mechanism.
+ * \brief x86_dt_privilege_t
+ * \note descriptor privilege level: used by the protection mechanism.
  */
 #define PRIVILEGE_LEVEL_0          0  /* High */
 #define PRIVILEGE_LEVEL_1          1
@@ -99,8 +99,8 @@
 
 
 /**
- *\brief table_indicator_type_t
- *\note  specifies to which descriptor table the selector refers.
+ * \brief table_indicator_type_t
+ * \note  specifies to which descriptor table the selector refers.
  */
 #define TABLE_INDICATOR_GDT        0
 #define TABLE_INDICATOR_LDT        1

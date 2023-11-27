@@ -201,7 +201,8 @@ void x64_arch_init (void)
 
 #if X64_USE_APIC_INTC
     cpu_local_apic_open();
-    intel_local_apic_init(1);
+    intel_local_apic_init(0);
+    intel_ioapic_init();
 #else
 
 #endif

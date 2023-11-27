@@ -243,7 +243,7 @@ _pdt_loop:
     .global x64_tss_init
     .global x64_idt_init
     .global x64_arch_init
-    .global divided_zero
+    .global divided_zero, main
     X64_CODE64_FUNC_BEGIN(x64_start)
     cli
 
@@ -267,6 +267,8 @@ _pdt_loop:
     call    x64_arch_init
     call    x64_idt_init
     call    x64_tss_init
+    sti
+    call    main
     int     $36
     call    divided_zero
 

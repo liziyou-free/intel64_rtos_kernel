@@ -21,7 +21,36 @@
 #define X64_APIC_H_
 
 #include <stdint.h>
+#include "../startup/x64_common.h"
 
+/*******************************************************************************
+ * Interrupt number
+*******************************************************************************/
+
+/**
+ *\note interrupt number
+ */
+#define IRQ0    32 /* System timer (cannot be changed) */
+#define IRQ1    33 /* Keyboard controller (cannot be changed) */
+#define IRQ2    34 /* Cascaded signals from IRQs 8~15 */
+#define IRQ3    35 /* Serial port controller for COM2/4 */
+#define IRQ4    36 /* serial port controller for COM1/3 */
+#define IRQ5    37 /* LPT port 2 or sound card */
+#define IRQ6    38 /* Floppy disk controller */
+#define IRQ7    39 /* LPT port 1 or sound card */
+#define IRQ8    40 /* Real time clock (RTC) */
+#define IRQ9    41 /* Open interrupt/available or SCSI host adapter */
+#define IRQ10   42 /* Open interrupt/available or SCSI or NIC */
+#define IRQ11   43 /* Open interrupt/available or SCSI or NIC */
+#define IRQ12   44 /* Mouse on PS/2 connector */
+#define IRQ13   45 /* Math coprocessor */
+#define IRQ14   46 /* Primary ATA channel */
+#define IRQ15   47 /* Secondary ATA channel */
+
+
+/*******************************************************************************
+ * Local  APIC
+*******************************************************************************/
 
 /**
  *\brief Local APIC register offset
@@ -78,6 +107,10 @@
 #define LVT_MASK_SHIFT                         16
 
 
+/*******************************************************************************
+ * I/O  APIC
+*******************************************************************************/
+
 /**
  *\brief I/O APIC register offset
  */
@@ -89,26 +122,6 @@
 #  define IOAPIC_REG_TABLE                     0x10       /* Redirection table base */
 #  define IOAPIC_PIN_DISABLE                  (1 << 16)   /* Disable */
 
-
-/**
- *\note interrupt number
- */
-#define IRQ0    32 /* System timer (cannot be changed) */
-#define IRQ1    33 /* Keyboard controller (cannot be changed) */
-#define IRQ2    34 /* Cascaded signals from IRQs 8~15 */
-#define IRQ3    35 /* Serial port controller for COM2/4 */
-#define IRQ4    36 /* serial port controller for COM1/3 */
-#define IRQ5    37 /* LPT port 2 or sound card */
-#define IRQ6    38 /* Floppy disk controller */
-#define IRQ7    39 /* LPT port 1 or sound card */
-#define IRQ8    40 /* Real time clock (RTC) */
-#define IRQ9    41 /* Open interrupt/available or SCSI host adapter */
-#define IRQ10   42 /* Open interrupt/available or SCSI or NIC */
-#define IRQ11   43 /* Open interrupt/available or SCSI or NIC */
-#define IRQ12   44 /* Mouse on PS/2 connector */
-#define IRQ13   45 /* Math coprocessor */
-#define IRQ14   46 /* Primary ATA channel */
-#define IRQ15   47 /* Secondary ATA channel */
 
 
 /**
@@ -137,14 +150,14 @@
 /**
  *\brief destination_mmode_t
  */
-#define PHYSICAL_DESTINATION           1
-#define LOGICAL_DESTINATION            0
+#define PHYSICAL_DESTINATION           0
+#define LOGICAL_DESTINATION            1
 
 
 typedef struct ioapic_intline_config {
     uint64_t vector:8;
     uint64_t delivery_mode:3;     /* @ delivery_mode_t */
-    uint64_t destination_mode:1;  /* @destination_mmode_t */
+    uint64_t destination_mode:1;  /* @ destination_mmode_t */
     uint64_t delivery_status:1;
     uint64_t trigger_mode:3;      /* @ ioapic_trigger_mode_t */
     uint64_t mask:1;
@@ -156,6 +169,16 @@ typedef struct ioapic_intline_config {
 void cpu_local_apic_open (void);
 
 void intel_local_apic_init (uint16_t core_id);
+
+void apic_eoi_hook (void);
+
+void intel_ioapic_init (void);
+
+void ioapic_mask_irq (uint8_t inum);
+
+void ioapic_unmask_irq (uint8_t inum);
+
+
 
 #endif /* X64_APIC_H_ */
 
