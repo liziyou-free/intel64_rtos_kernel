@@ -22,9 +22,18 @@
 
 #include "../startup/x64_common.h"
 
+
 typedef struct {
   void *param;
-  void (*pfn_handler)(void);
+  void (*pfn_handler)(void*param);
 } x64_irq_hanlder_t;
 
+
+int8_t x64_irq_handler_register(uint8_t vector, void(*p_fun)(void), void* param);
+
+int8_t x64_irq_handler_destroy(uint8_t vector);
+
+
 #endif /* STARTUP_X64_ISR_HANDLER_H_ */
+
+

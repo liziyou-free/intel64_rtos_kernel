@@ -28,7 +28,7 @@ void x86_timer_init (void);
 
 int main(int argc, char**arg) {
 
-    volatile long count = 0;
+    volatile long long count = 0;
 
     x86_timer_init();
     x86_isa_serial_init();
@@ -36,7 +36,7 @@ int main(int argc, char**arg) {
 
       for (;;) {
           count ++;
-          if (count > 1000000) {
+          if (count > 100000000) {
               count = 0;
               x86_serial_send_str("FreedomLi \r\n");
               continue;

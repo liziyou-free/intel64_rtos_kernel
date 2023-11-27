@@ -22,12 +22,17 @@
 #include "../x64_cpu_drivers/x64_apic.h"
 
 
-x64_irq_hanlder_t x64_irq_handler[256];
+static x64_irq_hanlder_t x64_irq_handler[256];
 
 
-uint8_t irq_handler_register(uint8_t vector, void(*p_fun)(void), void* param) {
-  if (!p_fun) {
-      return 1;
+int8_t x64_irq_handler_register(uint8_t vector, void(*p_fun)(void), void* param)
+{
+  uint32_t elements;
+
+  elements = sizeof(x64_irq_handler) / sizeof(x64_irq_handler[0]);
+
+  if (p_fun == NULL || vector >= elements) {
+      return -1;
   }
   x64_irq_handler[vector].param = param;
   x64_irq_handler[vector].pfn_handler = p_fun;
@@ -35,12 +40,39 @@ uint8_t irq_handler_register(uint8_t vector, void(*p_fun)(void), void* param) {
 }
 
 
+int8_t x64_irq_handler_destroy(uint8_t vector)
+{
+    uint32_t elements;
+
+    elements = sizeof(x64_irq_handler) / sizeof(x64_irq_handler[0]);
+
+    if (vector >= elements) {
+        return -1;
+    }
+    x64_irq_handler[vector].param = NULL;
+    x64_irq_handler[vector].pfn_handler = NULL;
+    return 0;
+}
+
+
+
+
 void x64_common_isr (uint64_t inum)
 {
-    (void)inum;
+    uint32_t elements;
+
+    elements = sizeof(x64_irq_handler) / sizeof(x64_irq_handler[0]);
+
+    if (inum >= elements || x64_irq_handler[inum].pfn_handler == NULL) {
+        for (;;);
+    }
+
+    (x64_irq_handler[inum].pfn_handler)(x64_irq_handler[inum].param);
+
     if (inum >=32 ) {
         apic_eoi_hook();
     }
+
     return;
 }
 

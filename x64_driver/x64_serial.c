@@ -8,10 +8,15 @@
 #include "x64_serial.h"
 
 #include "../startup/x64_common.h"
+#include "../startup/x64_isr_handler.h"
 #include "../x64_cpu_drivers/x64_apic.h"
 
 
 #define PORT    0x3f8          // COM1
+
+static uint8_t serial_rx_buf[1024];
+
+void serial_interrupt_handler (void *p_param);
 
 
 uint8_t x86_isa_serial_init(){
@@ -31,6 +36,8 @@ uint8_t x86_isa_serial_init(){
    // If serial is not faulty set it in normal operation mode
    // (not-loopback with IRQs enabled and OUT#1 and OUT#2 bits enabled)
    outb(0x0F, PORT + 4);
+
+   x64_irq_handler_register(36, serial_interrupt_handler, NULL);
 
    /* 使能中断线 */
    //enable_8259A_irq(36);
@@ -57,4 +64,18 @@ char x86_serial_receive() {
     while ((inb(PORT + 5) & 1) == 0);
     return inb(PORT);
 }
+
+
+void serial_interrupt_handler (void *p_param)
+{
+    static uint32_t index = 0;
+
+    serial_rx_buf[index] = x86_serial_receive();
+    index = (index > (sizeof(serial_rx_buf) - 1)) ? 0 : (index + 1);
+    return;
+}
+
+
+
+
 

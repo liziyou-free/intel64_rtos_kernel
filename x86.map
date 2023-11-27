@@ -1,8 +1,8 @@
 Archive member included to satisfy reference by file (symbol)
 
-/home/freedomli/APP/toolchain_linux-x86_64_x86_64-zephyr-elf/x86_64-zephyr-elf/bin/../lib/gcc/x86_64-zephyr-elf/12.2.0/../../../../x86_64-zephyr-elf/lib/libc.a(lib_a-memcpy.o)
+/home/freedom/App/toolchain_linux-x86_64_x86_64-zephyr-elf/x86_64-zephyr-elf/bin/../lib/gcc/x86_64-zephyr-elf/12.2.0/../../../../x86_64-zephyr-elf/lib/libc.a(lib_a-memcpy.o)
                               ./x64_cpu_drivers/x64_dt.o (memcpy)
-/home/freedomli/APP/toolchain_linux-x86_64_x86_64-zephyr-elf/x86_64-zephyr-elf/bin/../lib/gcc/x86_64-zephyr-elf/12.2.0/../../../../x86_64-zephyr-elf/lib/libc.a(lib_a-memset.o)
+/home/freedom/App/toolchain_linux-x86_64_x86_64-zephyr-elf/x86_64-zephyr-elf/bin/../lib/gcc/x86_64-zephyr-elf/12.2.0/../../../../x86_64-zephyr-elf/lib/libc.a(lib_a-memset.o)
                               ./x64_cpu_drivers/x64_dt.o (memset)
 
 Discarded input sections
@@ -246,9 +246,9 @@ LOAD ./startup/x64_isr.o
 LOAD ./startup/x64_isr_handler.o
 LOAD ./startup/x64_startup.o
 LOAD ./app/main.o
-LOAD /home/freedomli/APP/toolchain_linux-x86_64_x86_64-zephyr-elf/x86_64-zephyr-elf/bin/../lib/gcc/x86_64-zephyr-elf/12.2.0/libgcc.a
-LOAD /home/freedomli/APP/toolchain_linux-x86_64_x86_64-zephyr-elf/x86_64-zephyr-elf/bin/../lib/gcc/x86_64-zephyr-elf/12.2.0/../../../../x86_64-zephyr-elf/lib/libc.a
-LOAD /home/freedomli/APP/toolchain_linux-x86_64_x86_64-zephyr-elf/x86_64-zephyr-elf/bin/../lib/gcc/x86_64-zephyr-elf/12.2.0/libgcc.a
+LOAD /home/freedom/App/toolchain_linux-x86_64_x86_64-zephyr-elf/x86_64-zephyr-elf/bin/../lib/gcc/x86_64-zephyr-elf/12.2.0/libgcc.a
+LOAD /home/freedom/App/toolchain_linux-x86_64_x86_64-zephyr-elf/x86_64-zephyr-elf/bin/../lib/gcc/x86_64-zephyr-elf/12.2.0/../../../../x86_64-zephyr-elf/lib/libc.a
+LOAD /home/freedom/App/toolchain_linux-x86_64_x86_64-zephyr-elf/x86_64-zephyr-elf/bin/../lib/gcc/x86_64-zephyr-elf/12.2.0/libgcc.a
 
 .multiboot      0x0000000000001000       0x40
                 0x0000000000001000                . = ALIGN (0x4)
@@ -257,370 +257,373 @@ LOAD /home/freedomli/APP/toolchain_linux-x86_64_x86_64-zephyr-elf/x86_64-zephyr-
                 0x0000000000001000       0x40 ./startup/x64_boot.o
                 0x0000000000001000                _start
 
-.text           0x0000000000100000     0x28f0
+.text           0x0000000000100000     0x2a10
                 0x0000000000100000                __code_start = .
                 0x0000000000100000                . = ALIGN (0x4)
  *(.text)
  .text          0x0000000000100000       0xe4 ./x64_driver/i8253_timer.o
                 0x0000000000100000                i8253_timer_config
                 0x00000000001000b4                x86_timer_init
- .text          0x00000000001000e4      0x1ae ./x64_driver/x64_serial.o
+ .text          0x00000000001000e4      0x20e ./x64_driver/x64_serial.o
                 0x00000000001000e4                x86_isa_serial_init
-                0x00000000001001da                x86_serial_send
-                0x0000000000100222                x86_serial_send_str
-                0x0000000000100255                x86_serial_receive
- .text          0x0000000000100292      0x224 ./x64_driver/x86_pic.o
-                0x0000000000100292                disable_8259A_irq
-                0x000000000010030d                enable_8259A_irq
-                0x000000000010038a                x86_pic_i8259a_init
- .text          0x00000000001004b6      0x3be ./x64_cpu_drivers/x64_apic.o
-                0x0000000000100513                cpu_local_apic_open
-                0x0000000000100549                get_local_apic_base_addr
-                0x000000000010057e                local_apic_disable
-                0x00000000001005ba                local_apic_enable
-                0x00000000001005e7                intel_local_apic_init
-                0x00000000001006b2                apic_eoi_hook
-                0x000000000010071f                ioapic_mask_irq
-                0x000000000010075e                ioapic_unmask_irq
-                0x000000000010079d                ioapic_config_int_line
-                0x00000000001007f0                intel_ioapic_init
- .text          0x0000000000100874      0x1e5 ./x64_cpu_drivers/x64_dt.o
-                0x0000000000100874                x64_create_gate_descriptor
-                0x0000000000100980                x64_add_descriptor_to_idt
-                0x00000000001009e6                x64_flush_idtr_register
-                0x0000000000100a2f                x64_flush_tr_register
- .text          0x0000000000100a59        0x0 ./x64_cpu_drivers/x64_mmu.o
- .text          0x0000000000100a59      0xa69 ./startup/multiboot2.o
-                0x0000000000100a59                cmain
-                0x00000000001011d4                printf
-                0x000000000010149b                sumab
- *fill*         0x00000000001014c2        0x6 
- .text          0x00000000001014c8        0x0 ./startup/x64_boot.o
- .text          0x00000000001014c8      0xe95 ./startup/x64_isr.o
-                0x000000000010151b                divide_error_exception_handler
-                0x0000000000101527                debug_exception_handler
-                0x0000000000101533                nmi_exception_handler
-                0x000000000010153f                breakpoint_exception_handler
-                0x000000000010154e                overflow_exception_handler
-                0x000000000010155d                bound_range_exception_handler
-                0x000000000010156c                invalid_opcode_exception_handler
-                0x000000000010157b                device_not_available_exception_handler
-                0x000000000010158a                double_fault_exception_handler
-                0x0000000000101597                coprocessor_segment_overrun_exception_handler
-                0x00000000001015a6                invalid_tss_exception_handler
-                0x00000000001015b3                segment_not_present_exception_handler
-                0x00000000001015c0                stack_fault_exception_handler
-                0x00000000001015cd                general_protection_exception_handler
-                0x00000000001015da                page_fault_exception_handler
-                0x00000000001015e7                reserved_exception_handler
-                0x00000000001015f6                fpu_fp_error_exception_handler
-                0x0000000000101605                aligment_check_exception_handler
-                0x0000000000101612                machine_cahck_exception_handler
-                0x0000000000101621                simd_fp_exception_handler
-                0x0000000000101630                virt_exception_exception_handler
-                0x000000000010163d                exit32_handler
-                0x000000000010164c                exit33_handler
-                0x000000000010165b                exit34_handler
-                0x000000000010166a                exit35_handler
-                0x0000000000101679                exit36_handler
-                0x0000000000101688                exit37_handler
-                0x0000000000101697                exit38_handler
-                0x00000000001016a6                exit39_handler
-                0x00000000001016b5                exit40_handler
-                0x00000000001016c4                exit41_handler
-                0x00000000001016d3                exit42_handler
-                0x00000000001016e2                exit43_handler
-                0x00000000001016f1                exit44_handler
-                0x0000000000101700                exit45_handler
-                0x000000000010170f                exit46_handler
-                0x000000000010171e                exit47_handler
-                0x000000000010172d                exit48_handler
-                0x000000000010173c                exit49_handler
-                0x000000000010174b                exit50_handler
-                0x000000000010175a                exit51_handler
-                0x0000000000101769                exit52_handler
-                0x0000000000101778                exit53_handler
-                0x0000000000101787                exit54_handler
-                0x0000000000101796                exit55_handler
-                0x00000000001017a5                exit56_handler
-                0x00000000001017b4                exit57_handler
-                0x00000000001017c3                exit58_handler
-                0x00000000001017d2                exit59_handler
-                0x00000000001017e1                exit60_handler
-                0x00000000001017f0                exit61_handler
-                0x00000000001017ff                exit62_handler
-                0x000000000010180e                exit63_handler
-                0x000000000010181d                exit64_handler
-                0x000000000010182c                exit65_handler
-                0x000000000010183b                exit66_handler
-                0x000000000010184a                exit67_handler
-                0x0000000000101859                exit68_handler
-                0x0000000000101868                exit69_handler
-                0x0000000000101877                exit70_handler
-                0x0000000000101886                exit71_handler
-                0x0000000000101895                exit72_handler
-                0x00000000001018a4                exit73_handler
-                0x00000000001018b3                exit74_handler
-                0x00000000001018c2                exit75_handler
-                0x00000000001018d1                exit76_handler
-                0x00000000001018e0                exit77_handler
-                0x00000000001018ef                exit78_handler
-                0x00000000001018fe                exit79_handler
-                0x000000000010190d                exit80_handler
-                0x000000000010191c                exit81_handler
-                0x000000000010192b                exit82_handler
-                0x000000000010193a                exit83_handler
-                0x0000000000101949                exit84_handler
-                0x0000000000101958                exit85_handler
-                0x0000000000101967                exit86_handler
-                0x0000000000101976                exit87_handler
-                0x0000000000101985                exit88_handler
-                0x0000000000101994                exit89_handler
-                0x00000000001019a3                exit90_handler
-                0x00000000001019b2                exit91_handler
-                0x00000000001019c1                exit92_handler
-                0x00000000001019d0                exit93_handler
-                0x00000000001019df                exit94_handler
-                0x00000000001019ee                exit95_handler
-                0x00000000001019fd                exit96_handler
-                0x0000000000101a0c                exit97_handler
-                0x0000000000101a1b                exit98_handler
-                0x0000000000101a2a                exit99_handler
-                0x0000000000101a39                exit100_handler
-                0x0000000000101a48                exit101_handler
-                0x0000000000101a57                exit102_handler
-                0x0000000000101a66                exit103_handler
-                0x0000000000101a75                exit104_handler
-                0x0000000000101a84                exit105_handler
-                0x0000000000101a93                exit106_handler
-                0x0000000000101aa2                exit107_handler
-                0x0000000000101ab1                exit108_handler
-                0x0000000000101ac0                exit109_handler
-                0x0000000000101acf                exit110_handler
-                0x0000000000101ade                exit111_handler
-                0x0000000000101aed                exit112_handler
-                0x0000000000101afc                exit113_handler
-                0x0000000000101b0b                exit114_handler
-                0x0000000000101b1a                exit115_handler
-                0x0000000000101b29                exit116_handler
-                0x0000000000101b38                exit117_handler
-                0x0000000000101b47                exit118_handler
-                0x0000000000101b56                exit119_handler
-                0x0000000000101b65                exit120_handler
-                0x0000000000101b74                exit121_handler
-                0x0000000000101b83                exit122_handler
-                0x0000000000101b92                exit123_handler
-                0x0000000000101ba1                exit124_handler
-                0x0000000000101bb0                exit125_handler
-                0x0000000000101bbf                exit126_handler
-                0x0000000000101bce                exit127_handler
-                0x0000000000101bdd                exit128_handler
-                0x0000000000101bec                exit129_handler
-                0x0000000000101bfb                exit130_handler
-                0x0000000000101c0a                exit131_handler
-                0x0000000000101c19                exit132_handler
-                0x0000000000101c28                exit133_handler
-                0x0000000000101c37                exit134_handler
-                0x0000000000101c46                exit135_handler
-                0x0000000000101c55                exit136_handler
-                0x0000000000101c64                exit137_handler
-                0x0000000000101c73                exit138_handler
-                0x0000000000101c82                exit139_handler
-                0x0000000000101c91                exit140_handler
-                0x0000000000101ca0                exit141_handler
-                0x0000000000101caf                exit142_handler
-                0x0000000000101cbe                exit143_handler
-                0x0000000000101ccd                exit144_handler
-                0x0000000000101cdc                exit145_handler
-                0x0000000000101ceb                exit146_handler
-                0x0000000000101cfa                exit147_handler
-                0x0000000000101d09                exit148_handler
-                0x0000000000101d18                exit149_handler
-                0x0000000000101d27                exit150_handler
-                0x0000000000101d36                exit151_handler
-                0x0000000000101d45                exit152_handler
-                0x0000000000101d54                exit153_handler
-                0x0000000000101d63                exit154_handler
-                0x0000000000101d72                exit155_handler
-                0x0000000000101d81                exit156_handler
-                0x0000000000101d90                exit157_handler
-                0x0000000000101d9f                exit158_handler
-                0x0000000000101dae                exit159_handler
-                0x0000000000101dbd                exit160_handler
-                0x0000000000101dcc                exit161_handler
-                0x0000000000101ddb                exit162_handler
-                0x0000000000101dea                exit163_handler
-                0x0000000000101df9                exit164_handler
-                0x0000000000101e08                exit165_handler
-                0x0000000000101e17                exit166_handler
-                0x0000000000101e26                exit167_handler
-                0x0000000000101e35                exit168_handler
-                0x0000000000101e44                exit169_handler
-                0x0000000000101e53                exit170_handler
-                0x0000000000101e62                exit171_handler
-                0x0000000000101e71                exit172_handler
-                0x0000000000101e80                exit173_handler
-                0x0000000000101e8f                exit174_handler
-                0x0000000000101e9e                exit175_handler
-                0x0000000000101ead                exit176_handler
-                0x0000000000101ebc                exit177_handler
-                0x0000000000101ecb                exit178_handler
-                0x0000000000101eda                exit179_handler
-                0x0000000000101ee9                exit180_handler
-                0x0000000000101ef8                exit181_handler
-                0x0000000000101f07                exit182_handler
-                0x0000000000101f16                exit183_handler
-                0x0000000000101f25                exit184_handler
-                0x0000000000101f34                exit185_handler
-                0x0000000000101f43                exit186_handler
-                0x0000000000101f52                exit187_handler
-                0x0000000000101f61                exit188_handler
-                0x0000000000101f70                exit189_handler
-                0x0000000000101f7f                exit190_handler
-                0x0000000000101f8e                exit191_handler
-                0x0000000000101f9d                exit192_handler
-                0x0000000000101fac                exit193_handler
-                0x0000000000101fbb                exit194_handler
-                0x0000000000101fca                exit195_handler
-                0x0000000000101fd9                exit196_handler
-                0x0000000000101fe8                exit197_handler
-                0x0000000000101ff7                exit198_handler
-                0x0000000000102006                exit199_handler
-                0x0000000000102015                exit200_handler
-                0x0000000000102024                exit201_handler
-                0x0000000000102033                exit202_handler
-                0x0000000000102042                exit203_handler
-                0x0000000000102051                exit204_handler
-                0x0000000000102060                exit205_handler
-                0x000000000010206f                exit206_handler
-                0x000000000010207e                exit207_handler
-                0x000000000010208d                exit208_handler
-                0x000000000010209c                exit209_handler
-                0x00000000001020ab                exit210_handler
-                0x00000000001020ba                exit211_handler
-                0x00000000001020c9                exit212_handler
-                0x00000000001020d8                exit213_handler
-                0x00000000001020e7                exit214_handler
-                0x00000000001020f6                exit215_handler
-                0x0000000000102105                exit216_handler
-                0x0000000000102114                exit217_handler
-                0x0000000000102123                exit218_handler
-                0x0000000000102132                exit219_handler
-                0x0000000000102141                exit220_handler
-                0x0000000000102150                exit221_handler
-                0x000000000010215f                exit222_handler
-                0x000000000010216e                exit223_handler
-                0x000000000010217d                exit224_handler
-                0x000000000010218c                exit225_handler
-                0x000000000010219b                exit226_handler
-                0x00000000001021aa                exit227_handler
-                0x00000000001021b9                exit228_handler
-                0x00000000001021c8                exit229_handler
-                0x00000000001021d7                exit230_handler
-                0x00000000001021e6                exit231_handler
-                0x00000000001021f5                exit232_handler
-                0x0000000000102204                exit233_handler
-                0x0000000000102213                exit234_handler
-                0x0000000000102222                exit235_handler
-                0x0000000000102231                exit236_handler
-                0x0000000000102240                exit237_handler
-                0x000000000010224f                exit238_handler
-                0x000000000010225e                exit239_handler
-                0x000000000010226d                exit240_handler
-                0x000000000010227c                exit241_handler
-                0x000000000010228b                exit242_handler
-                0x000000000010229a                exit243_handler
-                0x00000000001022a9                exit244_handler
-                0x00000000001022b8                exit245_handler
-                0x00000000001022c7                exit246_handler
-                0x00000000001022d6                exit247_handler
-                0x00000000001022e5                exit248_handler
-                0x00000000001022f4                exit249_handler
-                0x0000000000102303                exit250_handler
-                0x0000000000102312                exit251_handler
-                0x0000000000102321                exit252_handler
-                0x0000000000102330                exit253_handler
-                0x000000000010233f                exit254_handler
-                0x000000000010234e                exit255_handler
- .text          0x000000000010235d       0x76 ./startup/x64_isr_handler.o
-                0x000000000010235d                irq_handler_register
-                0x00000000001023b7                x64_common_isr
- .text          0x00000000001023d3      0x2b0 ./startup/x64_startup.o
-                0x00000000001023d3                x64_tss_init
-                0x0000000000102522                x64_idt_init
-                0x0000000000102637                x64_arch_init
-                0x0000000000102657                divided_zero
- .text          0x0000000000102683       0x5d ./app/main.o
-                0x0000000000102683                main
- .text          0x00000000001026e0      0x12d /home/freedomli/APP/toolchain_linux-x86_64_x86_64-zephyr-elf/x86_64-zephyr-elf/bin/../lib/gcc/x86_64-zephyr-elf/12.2.0/../../../../x86_64-zephyr-elf/lib/libc.a(lib_a-memcpy.o)
-                0x00000000001026e0                memcpy
- *fill*         0x000000000010280d        0x3 
- .text          0x0000000000102810       0xe0 /home/freedomli/APP/toolchain_linux-x86_64_x86_64-zephyr-elf/x86_64-zephyr-elf/bin/../lib/gcc/x86_64-zephyr-elf/12.2.0/../../../../x86_64-zephyr-elf/lib/libc.a(lib_a-memset.o)
-                0x0000000000102810                memset
+                0x00000000001001ee                x86_serial_send
+                0x0000000000100236                x86_serial_send_str
+                0x0000000000100269                x86_serial_receive
+                0x00000000001002a6                serial_interrupt_handler
+ .text          0x00000000001002f2      0x224 ./x64_driver/x86_pic.o
+                0x00000000001002f2                disable_8259A_irq
+                0x000000000010036d                enable_8259A_irq
+                0x00000000001003ea                x86_pic_i8259a_init
+ .text          0x0000000000100516      0x3be ./x64_cpu_drivers/x64_apic.o
+                0x0000000000100573                cpu_local_apic_open
+                0x00000000001005a9                get_local_apic_base_addr
+                0x00000000001005de                local_apic_disable
+                0x000000000010061a                local_apic_enable
+                0x0000000000100647                intel_local_apic_init
+                0x0000000000100712                apic_eoi_hook
+                0x000000000010077f                ioapic_mask_irq
+                0x00000000001007be                ioapic_unmask_irq
+                0x00000000001007fd                ioapic_config_int_line
+                0x0000000000100850                intel_ioapic_init
+ .text          0x00000000001008d4      0x1e5 ./x64_cpu_drivers/x64_dt.o
+                0x00000000001008d4                x64_create_gate_descriptor
+                0x00000000001009e0                x64_add_descriptor_to_idt
+                0x0000000000100a46                x64_flush_idtr_register
+                0x0000000000100a8f                x64_flush_tr_register
+ .text          0x0000000000100ab9        0x0 ./x64_cpu_drivers/x64_mmu.o
+ .text          0x0000000000100ab9      0xa69 ./startup/multiboot2.o
+                0x0000000000100ab9                cmain
+                0x0000000000101234                printf
+                0x00000000001014fb                sumab
+ *fill*         0x0000000000101522        0x6 
+ .text          0x0000000000101528        0x0 ./startup/x64_boot.o
+ .text          0x0000000000101528      0xe95 ./startup/x64_isr.o
+                0x000000000010157b                divide_error_exception_handler
+                0x0000000000101587                debug_exception_handler
+                0x0000000000101593                nmi_exception_handler
+                0x000000000010159f                breakpoint_exception_handler
+                0x00000000001015ae                overflow_exception_handler
+                0x00000000001015bd                bound_range_exception_handler
+                0x00000000001015cc                invalid_opcode_exception_handler
+                0x00000000001015db                device_not_available_exception_handler
+                0x00000000001015ea                double_fault_exception_handler
+                0x00000000001015f7                coprocessor_segment_overrun_exception_handler
+                0x0000000000101606                invalid_tss_exception_handler
+                0x0000000000101613                segment_not_present_exception_handler
+                0x0000000000101620                stack_fault_exception_handler
+                0x000000000010162d                general_protection_exception_handler
+                0x000000000010163a                page_fault_exception_handler
+                0x0000000000101647                reserved_exception_handler
+                0x0000000000101656                fpu_fp_error_exception_handler
+                0x0000000000101665                aligment_check_exception_handler
+                0x0000000000101672                machine_cahck_exception_handler
+                0x0000000000101681                simd_fp_exception_handler
+                0x0000000000101690                virt_exception_exception_handler
+                0x000000000010169d                exit32_handler
+                0x00000000001016ac                exit33_handler
+                0x00000000001016bb                exit34_handler
+                0x00000000001016ca                exit35_handler
+                0x00000000001016d9                exit36_handler
+                0x00000000001016e8                exit37_handler
+                0x00000000001016f7                exit38_handler
+                0x0000000000101706                exit39_handler
+                0x0000000000101715                exit40_handler
+                0x0000000000101724                exit41_handler
+                0x0000000000101733                exit42_handler
+                0x0000000000101742                exit43_handler
+                0x0000000000101751                exit44_handler
+                0x0000000000101760                exit45_handler
+                0x000000000010176f                exit46_handler
+                0x000000000010177e                exit47_handler
+                0x000000000010178d                exit48_handler
+                0x000000000010179c                exit49_handler
+                0x00000000001017ab                exit50_handler
+                0x00000000001017ba                exit51_handler
+                0x00000000001017c9                exit52_handler
+                0x00000000001017d8                exit53_handler
+                0x00000000001017e7                exit54_handler
+                0x00000000001017f6                exit55_handler
+                0x0000000000101805                exit56_handler
+                0x0000000000101814                exit57_handler
+                0x0000000000101823                exit58_handler
+                0x0000000000101832                exit59_handler
+                0x0000000000101841                exit60_handler
+                0x0000000000101850                exit61_handler
+                0x000000000010185f                exit62_handler
+                0x000000000010186e                exit63_handler
+                0x000000000010187d                exit64_handler
+                0x000000000010188c                exit65_handler
+                0x000000000010189b                exit66_handler
+                0x00000000001018aa                exit67_handler
+                0x00000000001018b9                exit68_handler
+                0x00000000001018c8                exit69_handler
+                0x00000000001018d7                exit70_handler
+                0x00000000001018e6                exit71_handler
+                0x00000000001018f5                exit72_handler
+                0x0000000000101904                exit73_handler
+                0x0000000000101913                exit74_handler
+                0x0000000000101922                exit75_handler
+                0x0000000000101931                exit76_handler
+                0x0000000000101940                exit77_handler
+                0x000000000010194f                exit78_handler
+                0x000000000010195e                exit79_handler
+                0x000000000010196d                exit80_handler
+                0x000000000010197c                exit81_handler
+                0x000000000010198b                exit82_handler
+                0x000000000010199a                exit83_handler
+                0x00000000001019a9                exit84_handler
+                0x00000000001019b8                exit85_handler
+                0x00000000001019c7                exit86_handler
+                0x00000000001019d6                exit87_handler
+                0x00000000001019e5                exit88_handler
+                0x00000000001019f4                exit89_handler
+                0x0000000000101a03                exit90_handler
+                0x0000000000101a12                exit91_handler
+                0x0000000000101a21                exit92_handler
+                0x0000000000101a30                exit93_handler
+                0x0000000000101a3f                exit94_handler
+                0x0000000000101a4e                exit95_handler
+                0x0000000000101a5d                exit96_handler
+                0x0000000000101a6c                exit97_handler
+                0x0000000000101a7b                exit98_handler
+                0x0000000000101a8a                exit99_handler
+                0x0000000000101a99                exit100_handler
+                0x0000000000101aa8                exit101_handler
+                0x0000000000101ab7                exit102_handler
+                0x0000000000101ac6                exit103_handler
+                0x0000000000101ad5                exit104_handler
+                0x0000000000101ae4                exit105_handler
+                0x0000000000101af3                exit106_handler
+                0x0000000000101b02                exit107_handler
+                0x0000000000101b11                exit108_handler
+                0x0000000000101b20                exit109_handler
+                0x0000000000101b2f                exit110_handler
+                0x0000000000101b3e                exit111_handler
+                0x0000000000101b4d                exit112_handler
+                0x0000000000101b5c                exit113_handler
+                0x0000000000101b6b                exit114_handler
+                0x0000000000101b7a                exit115_handler
+                0x0000000000101b89                exit116_handler
+                0x0000000000101b98                exit117_handler
+                0x0000000000101ba7                exit118_handler
+                0x0000000000101bb6                exit119_handler
+                0x0000000000101bc5                exit120_handler
+                0x0000000000101bd4                exit121_handler
+                0x0000000000101be3                exit122_handler
+                0x0000000000101bf2                exit123_handler
+                0x0000000000101c01                exit124_handler
+                0x0000000000101c10                exit125_handler
+                0x0000000000101c1f                exit126_handler
+                0x0000000000101c2e                exit127_handler
+                0x0000000000101c3d                exit128_handler
+                0x0000000000101c4c                exit129_handler
+                0x0000000000101c5b                exit130_handler
+                0x0000000000101c6a                exit131_handler
+                0x0000000000101c79                exit132_handler
+                0x0000000000101c88                exit133_handler
+                0x0000000000101c97                exit134_handler
+                0x0000000000101ca6                exit135_handler
+                0x0000000000101cb5                exit136_handler
+                0x0000000000101cc4                exit137_handler
+                0x0000000000101cd3                exit138_handler
+                0x0000000000101ce2                exit139_handler
+                0x0000000000101cf1                exit140_handler
+                0x0000000000101d00                exit141_handler
+                0x0000000000101d0f                exit142_handler
+                0x0000000000101d1e                exit143_handler
+                0x0000000000101d2d                exit144_handler
+                0x0000000000101d3c                exit145_handler
+                0x0000000000101d4b                exit146_handler
+                0x0000000000101d5a                exit147_handler
+                0x0000000000101d69                exit148_handler
+                0x0000000000101d78                exit149_handler
+                0x0000000000101d87                exit150_handler
+                0x0000000000101d96                exit151_handler
+                0x0000000000101da5                exit152_handler
+                0x0000000000101db4                exit153_handler
+                0x0000000000101dc3                exit154_handler
+                0x0000000000101dd2                exit155_handler
+                0x0000000000101de1                exit156_handler
+                0x0000000000101df0                exit157_handler
+                0x0000000000101dff                exit158_handler
+                0x0000000000101e0e                exit159_handler
+                0x0000000000101e1d                exit160_handler
+                0x0000000000101e2c                exit161_handler
+                0x0000000000101e3b                exit162_handler
+                0x0000000000101e4a                exit163_handler
+                0x0000000000101e59                exit164_handler
+                0x0000000000101e68                exit165_handler
+                0x0000000000101e77                exit166_handler
+                0x0000000000101e86                exit167_handler
+                0x0000000000101e95                exit168_handler
+                0x0000000000101ea4                exit169_handler
+                0x0000000000101eb3                exit170_handler
+                0x0000000000101ec2                exit171_handler
+                0x0000000000101ed1                exit172_handler
+                0x0000000000101ee0                exit173_handler
+                0x0000000000101eef                exit174_handler
+                0x0000000000101efe                exit175_handler
+                0x0000000000101f0d                exit176_handler
+                0x0000000000101f1c                exit177_handler
+                0x0000000000101f2b                exit178_handler
+                0x0000000000101f3a                exit179_handler
+                0x0000000000101f49                exit180_handler
+                0x0000000000101f58                exit181_handler
+                0x0000000000101f67                exit182_handler
+                0x0000000000101f76                exit183_handler
+                0x0000000000101f85                exit184_handler
+                0x0000000000101f94                exit185_handler
+                0x0000000000101fa3                exit186_handler
+                0x0000000000101fb2                exit187_handler
+                0x0000000000101fc1                exit188_handler
+                0x0000000000101fd0                exit189_handler
+                0x0000000000101fdf                exit190_handler
+                0x0000000000101fee                exit191_handler
+                0x0000000000101ffd                exit192_handler
+                0x000000000010200c                exit193_handler
+                0x000000000010201b                exit194_handler
+                0x000000000010202a                exit195_handler
+                0x0000000000102039                exit196_handler
+                0x0000000000102048                exit197_handler
+                0x0000000000102057                exit198_handler
+                0x0000000000102066                exit199_handler
+                0x0000000000102075                exit200_handler
+                0x0000000000102084                exit201_handler
+                0x0000000000102093                exit202_handler
+                0x00000000001020a2                exit203_handler
+                0x00000000001020b1                exit204_handler
+                0x00000000001020c0                exit205_handler
+                0x00000000001020cf                exit206_handler
+                0x00000000001020de                exit207_handler
+                0x00000000001020ed                exit208_handler
+                0x00000000001020fc                exit209_handler
+                0x000000000010210b                exit210_handler
+                0x000000000010211a                exit211_handler
+                0x0000000000102129                exit212_handler
+                0x0000000000102138                exit213_handler
+                0x0000000000102147                exit214_handler
+                0x0000000000102156                exit215_handler
+                0x0000000000102165                exit216_handler
+                0x0000000000102174                exit217_handler
+                0x0000000000102183                exit218_handler
+                0x0000000000102192                exit219_handler
+                0x00000000001021a1                exit220_handler
+                0x00000000001021b0                exit221_handler
+                0x00000000001021bf                exit222_handler
+                0x00000000001021ce                exit223_handler
+                0x00000000001021dd                exit224_handler
+                0x00000000001021ec                exit225_handler
+                0x00000000001021fb                exit226_handler
+                0x000000000010220a                exit227_handler
+                0x0000000000102219                exit228_handler
+                0x0000000000102228                exit229_handler
+                0x0000000000102237                exit230_handler
+                0x0000000000102246                exit231_handler
+                0x0000000000102255                exit232_handler
+                0x0000000000102264                exit233_handler
+                0x0000000000102273                exit234_handler
+                0x0000000000102282                exit235_handler
+                0x0000000000102291                exit236_handler
+                0x00000000001022a0                exit237_handler
+                0x00000000001022af                exit238_handler
+                0x00000000001022be                exit239_handler
+                0x00000000001022cd                exit240_handler
+                0x00000000001022dc                exit241_handler
+                0x00000000001022eb                exit242_handler
+                0x00000000001022fa                exit243_handler
+                0x0000000000102309                exit244_handler
+                0x0000000000102318                exit245_handler
+                0x0000000000102327                exit246_handler
+                0x0000000000102336                exit247_handler
+                0x0000000000102345                exit248_handler
+                0x0000000000102354                exit249_handler
+                0x0000000000102363                exit250_handler
+                0x0000000000102372                exit251_handler
+                0x0000000000102381                exit252_handler
+                0x0000000000102390                exit253_handler
+                0x000000000010239f                exit254_handler
+                0x00000000001023ae                exit255_handler
+ .text          0x00000000001023bd      0x130 ./startup/x64_isr_handler.o
+                0x00000000001023bd                x64_irq_handler_register
+                0x0000000000102427                x64_irq_handler_destroy
+                0x0000000000102480                x64_common_isr
+ .text          0x00000000001024ed      0x2b0 ./startup/x64_startup.o
+                0x00000000001024ed                x64_tss_init
+                0x000000000010263c                x64_idt_init
+                0x0000000000102751                x64_arch_init
+                0x0000000000102771                divided_zero
+ .text          0x000000000010279d       0x5d ./app/main.o
+                0x000000000010279d                main
+ *fill*         0x00000000001027fa        0x6 
+ .text          0x0000000000102800      0x12d /home/freedom/App/toolchain_linux-x86_64_x86_64-zephyr-elf/x86_64-zephyr-elf/bin/../lib/gcc/x86_64-zephyr-elf/12.2.0/../../../../x86_64-zephyr-elf/lib/libc.a(lib_a-memcpy.o)
+                0x0000000000102800                memcpy
+ *fill*         0x000000000010292d        0x3 
+ .text          0x0000000000102930       0xe0 /home/freedom/App/toolchain_linux-x86_64_x86_64-zephyr-elf/x86_64-zephyr-elf/bin/../lib/gcc/x86_64-zephyr-elf/12.2.0/../../../../x86_64-zephyr-elf/lib/libc.a(lib_a-memset.o)
+                0x0000000000102930                memset
 
-.iplt           0x00000000001028f0        0x0
- .iplt          0x00000000001028f0        0x0 ./x64_driver/i8253_timer.o
+.iplt           0x0000000000102a10        0x0
+ .iplt          0x0000000000102a10        0x0 ./x64_driver/i8253_timer.o
 
 .text.multiboot_entry
-                0x00000000001028f0       0x7e
+                0x0000000000102a10       0x7e
  .text.multiboot_entry
-                0x00000000001028f0       0x7e ./startup/x64_boot.o
-                0x00000000001028f0                multiboot_entry
+                0x0000000000102a10       0x7e ./startup/x64_boot.o
+                0x0000000000102a10                multiboot_entry
 
 .text.mmu_translate_table_init
-                0x000000000010296e       0x3c
+                0x0000000000102a8e       0x3c
  .text.mmu_translate_table_init
-                0x000000000010296e       0x3c ./startup/x64_boot.o
-                0x000000000010296e                mmu_translate_table_init
+                0x0000000000102a8e       0x3c ./startup/x64_boot.o
+                0x0000000000102a8e                mmu_translate_table_init
 
 .text.x64_start
-                0x00000000001029aa       0x3d
+                0x0000000000102aca       0x3d
  .text.x64_start
-                0x00000000001029aa       0x3d ./startup/x64_boot.o
-                0x00000000001029aa                x64_start
+                0x0000000000102aca       0x3d ./startup/x64_boot.o
+                0x0000000000102aca                x64_start
 
 .isr_text
  *(.isr)
 
-.gdt386         0x00000000001029e7        0x1
-                0x00000000001029e8                . = ALIGN (0x8)
- *fill*         0x00000000001029e7        0x1 
+.gdt386         0x0000000000102b07        0x1
+                0x0000000000102b08                . = ALIGN (0x8)
+ *fill*         0x0000000000102b07        0x1 
  *(.x86_gdt_section)
 
-.rodata         0x00000000001029e8      0x1b7
-                0x00000000001029e8                __rodata_start = .
+.rodata         0x0000000000102b08      0x1b7
+                0x0000000000102b08                __rodata_start = .
  *(.rodata)
- .rodata        0x00000000001029e8      0x197 ./startup/multiboot2.o
- .rodata        0x0000000000102b7f       0x20 ./app/main.o
+ .rodata        0x0000000000102b08      0x197 ./startup/multiboot2.o
+ .rodata        0x0000000000102c9f       0x20 ./app/main.o
  *(.rodata.*)
-                0x0000000000102b9f                __rodata_end = .
-                0x0000000000102b9f                __code_end = .
+                0x0000000000102cbf                __rodata_end = .
+                0x0000000000102cbf                __code_end = .
                 0x0000000009100000                __load_data_start = LOADADDR (.data)
 
-.eh_frame       0x0000000000102ba0      0x51c
- .eh_frame      0x0000000000102ba0       0x58 ./x64_driver/i8253_timer.o
- .eh_frame      0x0000000000102bf8       0x80 ./x64_driver/x64_serial.o
-                                         0x98 (size before relaxing)
- .eh_frame      0x0000000000102c78       0x60 ./x64_driver/x86_pic.o
-                                         0x78 (size before relaxing)
- .eh_frame      0x0000000000102cd8      0x1a8 ./x64_cpu_drivers/x64_apic.o
-                                        0x1c0 (size before relaxing)
- .eh_frame      0x0000000000102e80       0x80 ./x64_cpu_drivers/x64_dt.o
-                                         0x98 (size before relaxing)
- .eh_frame      0x0000000000102f00       0xc0 ./startup/multiboot2.o
-                                         0xd8 (size before relaxing)
- .eh_frame      0x0000000000102fc0       0x40 ./startup/x64_isr_handler.o
-                                         0x58 (size before relaxing)
- .eh_frame      0x0000000000103000       0xa0 ./startup/x64_startup.o
+.eh_frame       0x0000000000102cc0      0x55c
+ .eh_frame      0x0000000000102cc0       0x58 ./x64_driver/i8253_timer.o
+ .eh_frame      0x0000000000102d18       0xa0 ./x64_driver/x64_serial.o
                                          0xb8 (size before relaxing)
- .eh_frame      0x00000000001030a0       0x1c ./app/main.o
+ .eh_frame      0x0000000000102db8       0x60 ./x64_driver/x86_pic.o
+                                         0x78 (size before relaxing)
+ .eh_frame      0x0000000000102e18      0x1a8 ./x64_cpu_drivers/x64_apic.o
+                                        0x1c0 (size before relaxing)
+ .eh_frame      0x0000000000102fc0       0x80 ./x64_cpu_drivers/x64_dt.o
+                                         0x98 (size before relaxing)
+ .eh_frame      0x0000000000103040       0xc0 ./startup/multiboot2.o
+                                         0xd8 (size before relaxing)
+ .eh_frame      0x0000000000103100       0x60 ./startup/x64_isr_handler.o
+                                         0x78 (size before relaxing)
+ .eh_frame      0x0000000000103160       0xa0 ./startup/x64_startup.o
+                                         0xb8 (size before relaxing)
+ .eh_frame      0x0000000000103200       0x1c ./app/main.o
                                          0x38 (size before relaxing)
 
-.rela.dyn       0x00000000001030c0        0x0
- .rela.got      0x00000000001030c0        0x0 ./x64_driver/i8253_timer.o
- .rela.iplt     0x00000000001030c0        0x0 ./x64_driver/i8253_timer.o
+.rela.dyn       0x0000000000103220        0x0
+ .rela.got      0x0000000000103220        0x0 ./x64_driver/i8253_timer.o
+ .rela.iplt     0x0000000000103220        0x0 ./x64_driver/i8253_timer.o
  .rela.text.multiboot_entry
-                0x00000000001030c0        0x0 ./x64_driver/i8253_timer.o
+                0x0000000000103220        0x0 ./x64_driver/i8253_timer.o
 
 .data           0x0000000001100000   0x808000 load address 0x0000000009100000
                 0x0000000001100000                __data_start = .
@@ -641,8 +644,8 @@ LOAD /home/freedomli/APP/toolchain_linux-x86_64_x86_64-zephyr-elf/x86_64-zephyr-
  .data          0x00000000011007ba        0x0 ./startup/x64_isr_handler.o
  .data          0x00000000011007ba        0x0 ./startup/x64_startup.o
  .data          0x00000000011007ba        0x0 ./app/main.o
- .data          0x00000000011007ba        0x0 /home/freedomli/APP/toolchain_linux-x86_64_x86_64-zephyr-elf/x86_64-zephyr-elf/bin/../lib/gcc/x86_64-zephyr-elf/12.2.0/../../../../x86_64-zephyr-elf/lib/libc.a(lib_a-memcpy.o)
- .data          0x00000000011007ba        0x0 /home/freedomli/APP/toolchain_linux-x86_64_x86_64-zephyr-elf/x86_64-zephyr-elf/bin/../lib/gcc/x86_64-zephyr-elf/12.2.0/../../../../x86_64-zephyr-elf/lib/libc.a(lib_a-memset.o)
+ .data          0x00000000011007ba        0x0 /home/freedom/App/toolchain_linux-x86_64_x86_64-zephyr-elf/x86_64-zephyr-elf/bin/../lib/gcc/x86_64-zephyr-elf/12.2.0/../../../../x86_64-zephyr-elf/lib/libc.a(lib_a-memcpy.o)
+ .data          0x00000000011007ba        0x0 /home/freedom/App/toolchain_linux-x86_64_x86_64-zephyr-elf/x86_64-zephyr-elf/bin/../lib/gcc/x86_64-zephyr-elf/12.2.0/../../../../x86_64-zephyr-elf/lib/libc.a(lib_a-memset.o)
  *(.data.*)
  *fill*         0x00000000011007ba        0x2 
  .data.g_x64_gdt
@@ -685,38 +688,38 @@ LOAD /home/freedomli/APP/toolchain_linux-x86_64_x86_64-zephyr-elf/x86_64-zephyr-
 .igot.plt       0x0000000001908000        0x0 load address 0x0000000009908000
  .igot.plt      0x0000000001908000        0x0 ./x64_driver/i8253_timer.o
 
-.bss            0x0000000001908000     0x3088 load address 0x0000000009908000
+.bss            0x0000000001908000     0x3488 load address 0x0000000009908000
                 0x0000000001908000                __bss_start = .
  *(COMMON)
  *(.bss)
  .bss           0x0000000001908000        0x0 ./x64_driver/i8253_timer.o
- .bss           0x0000000001908000        0x0 ./x64_driver/x64_serial.o
- .bss           0x0000000001908000        0x0 ./x64_driver/x86_pic.o
- .bss           0x0000000001908000        0x0 ./x64_cpu_drivers/x64_apic.o
- .bss           0x0000000001908000        0x0 ./x64_cpu_drivers/x64_dt.o
- .bss           0x0000000001908000        0x0 ./x64_cpu_drivers/x64_mmu.o
- .bss           0x0000000001908000       0x10 ./startup/multiboot2.o
- .bss           0x0000000001908010        0x0 ./startup/x64_boot.o
- .bss           0x0000000001908010        0x0 ./startup/x64_isr.o
- *fill*         0x0000000001908010       0x10 
- .bss           0x0000000001908020     0x1000 ./startup/x64_isr_handler.o
-                0x0000000001908020                x64_irq_handler
- .bss           0x0000000001909020     0x2068 ./startup/x64_startup.o
-                0x0000000001909020                g_x64_idt
-                0x000000000190a020                g_interrupt_stack
-                0x000000000190a820                g_exception_stack
- .bss           0x000000000190b088        0x0 ./app/main.o
- .bss           0x000000000190b088        0x0 /home/freedomli/APP/toolchain_linux-x86_64_x86_64-zephyr-elf/x86_64-zephyr-elf/bin/../lib/gcc/x86_64-zephyr-elf/12.2.0/../../../../x86_64-zephyr-elf/lib/libc.a(lib_a-memcpy.o)
- .bss           0x000000000190b088        0x0 /home/freedomli/APP/toolchain_linux-x86_64_x86_64-zephyr-elf/x86_64-zephyr-elf/bin/../lib/gcc/x86_64-zephyr-elf/12.2.0/../../../../x86_64-zephyr-elf/lib/libc.a(lib_a-memset.o)
+ .bss           0x0000000001908000      0x404 ./x64_driver/x64_serial.o
+ .bss           0x0000000001908404        0x0 ./x64_driver/x86_pic.o
+ .bss           0x0000000001908404        0x0 ./x64_cpu_drivers/x64_apic.o
+ .bss           0x0000000001908404        0x0 ./x64_cpu_drivers/x64_dt.o
+ .bss           0x0000000001908404        0x0 ./x64_cpu_drivers/x64_mmu.o
+ *fill*         0x0000000001908404        0x4 
+ .bss           0x0000000001908408       0x10 ./startup/multiboot2.o
+ .bss           0x0000000001908418        0x0 ./startup/x64_boot.o
+ .bss           0x0000000001908418        0x0 ./startup/x64_isr.o
+ *fill*         0x0000000001908418        0x8 
+ .bss           0x0000000001908420     0x1000 ./startup/x64_isr_handler.o
+ .bss           0x0000000001909420     0x2068 ./startup/x64_startup.o
+                0x0000000001909420                g_x64_idt
+                0x000000000190a420                g_interrupt_stack
+                0x000000000190ac20                g_exception_stack
+ .bss           0x000000000190b488        0x0 ./app/main.o
+ .bss           0x000000000190b488        0x0 /home/freedom/App/toolchain_linux-x86_64_x86_64-zephyr-elf/x86_64-zephyr-elf/bin/../lib/gcc/x86_64-zephyr-elf/12.2.0/../../../../x86_64-zephyr-elf/lib/libc.a(lib_a-memcpy.o)
+ .bss           0x000000000190b488        0x0 /home/freedom/App/toolchain_linux-x86_64_x86_64-zephyr-elf/x86_64-zephyr-elf/bin/../lib/gcc/x86_64-zephyr-elf/12.2.0/../../../../x86_64-zephyr-elf/lib/libc.a(lib_a-memset.o)
  *(.bss.*)
-                0x000000000190b088                __bss_end = .
-                0x000000000190b088                __stack_start = .
+                0x000000000190b488                __bss_end = .
+                0x000000000190b488                __stack_start = .
 
-.stack          0x000000000190b0c0    0x10000 load address 0x0000000009908000
+.stack          0x000000000190b4c0    0x10000 load address 0x0000000009908000
  *(.kernel.stack)
- .kernel.stack  0x000000000190b0c0    0x10000 ./startup/x64_boot.o
-                0x000000000190b0c0                g_kernel_stack
-                0x000000000191b0c0                __stack_end = .
+ .kernel.stack  0x000000000190b4c0    0x10000 ./startup/x64_boot.o
+                0x000000000190b4c0                g_kernel_stack
+                0x000000000191b4c0                __stack_end = .
                 [!provide]                        PROVIDE (kernel_code_start = __code_start)
                 [!provide]                        PROVIDE (kernel_code_end = (__code_start + LENGTH (CODE)))
                 [!provide]                        PROVIDE (rodata_start = __rodata_start)
@@ -725,38 +728,38 @@ LOAD /home/freedomli/APP/toolchain_linux-x86_64_x86_64-zephyr-elf/x86_64-zephyr-
                 0x0000000001100000                PROVIDE (data_start = __data_start)
                 0x0000000001908000                PROVIDE (data_end = __data_end)
                 0x0000000001908000                PROVIDE (bss_start = __bss_start)
-                0x000000000190b088                PROVIDE (bss_end = __bss_end)
-                0x000000000190b088                PROVIDE (stack_start = __stack_start)
-                0x000000000191b0c0                PROVIDE (stack_end = __stack_end)
+                0x000000000190b488                PROVIDE (bss_end = __bss_end)
+                0x000000000190b488                PROVIDE (stack_start = __stack_start)
+                0x000000000191b4c0                PROVIDE (stack_end = __stack_end)
 OUTPUT(x86_64_prj.elf elf64-x86-64)
 
-.debug_info     0x0000000000000000     0x24ac
+.debug_info     0x0000000000000000     0x2608
  .debug_info    0x0000000000000000      0x2b1 ./x64_driver/i8253_timer.o
- .debug_info    0x00000000000002b1      0x41e ./x64_driver/x64_serial.o
- .debug_info    0x00000000000006cf      0x45e ./x64_driver/x86_pic.o
- .debug_info    0x0000000000000b2d      0x4af ./x64_cpu_drivers/x64_apic.o
- .debug_info    0x0000000000000fdc      0x377 ./x64_cpu_drivers/x64_dt.o
- .debug_info    0x0000000000001353       0x22 ./x64_cpu_drivers/x64_mmu.o
- .debug_info    0x0000000000001375      0x847 ./startup/multiboot2.o
- .debug_info    0x0000000000001bbc       0x23 ./startup/x64_boot.o
- .debug_info    0x0000000000001bdf       0x29 ./startup/x64_isr.o
- .debug_info    0x0000000000001c08      0x176 ./startup/x64_isr_handler.o
- .debug_info    0x0000000000001d7e      0x619 ./startup/x64_startup.o
- .debug_info    0x0000000000002397      0x115 ./app/main.o
+ .debug_info    0x00000000000002b1      0x4da ./x64_driver/x64_serial.o
+ .debug_info    0x000000000000078b      0x45e ./x64_driver/x86_pic.o
+ .debug_info    0x0000000000000be9      0x4af ./x64_cpu_drivers/x64_apic.o
+ .debug_info    0x0000000000001098      0x377 ./x64_cpu_drivers/x64_dt.o
+ .debug_info    0x000000000000140f       0x22 ./x64_cpu_drivers/x64_mmu.o
+ .debug_info    0x0000000000001431      0x847 ./startup/multiboot2.o
+ .debug_info    0x0000000000001c78       0x23 ./startup/x64_boot.o
+ .debug_info    0x0000000000001c9b       0x29 ./startup/x64_isr.o
+ .debug_info    0x0000000000001cc4      0x20f ./startup/x64_isr_handler.o
+ .debug_info    0x0000000000001ed3      0x619 ./startup/x64_startup.o
+ .debug_info    0x00000000000024ec      0x11c ./app/main.o
 
-.debug_abbrev   0x0000000000000000      0xc9f
+.debug_abbrev   0x0000000000000000      0xd10
  .debug_abbrev  0x0000000000000000      0x131 ./x64_driver/i8253_timer.o
- .debug_abbrev  0x0000000000000131      0x16f ./x64_driver/x64_serial.o
- .debug_abbrev  0x00000000000002a0       0xde ./x64_driver/x86_pic.o
- .debug_abbrev  0x000000000000037e      0x135 ./x64_cpu_drivers/x64_apic.o
- .debug_abbrev  0x00000000000004b3      0x183 ./x64_cpu_drivers/x64_dt.o
- .debug_abbrev  0x0000000000000636       0x12 ./x64_cpu_drivers/x64_mmu.o
- .debug_abbrev  0x0000000000000648      0x259 ./startup/multiboot2.o
- .debug_abbrev  0x00000000000008a1       0x12 ./startup/x64_boot.o
- .debug_abbrev  0x00000000000008b3       0x14 ./startup/x64_isr.o
- .debug_abbrev  0x00000000000008c7       0xf3 ./startup/x64_isr_handler.o
- .debug_abbrev  0x00000000000009ba      0x200 ./startup/x64_startup.o
- .debug_abbrev  0x0000000000000bba       0xe5 ./app/main.o
+ .debug_abbrev  0x0000000000000131      0x1cc ./x64_driver/x64_serial.o
+ .debug_abbrev  0x00000000000002fd       0xde ./x64_driver/x86_pic.o
+ .debug_abbrev  0x00000000000003db      0x135 ./x64_cpu_drivers/x64_apic.o
+ .debug_abbrev  0x0000000000000510      0x183 ./x64_cpu_drivers/x64_dt.o
+ .debug_abbrev  0x0000000000000693       0x12 ./x64_cpu_drivers/x64_mmu.o
+ .debug_abbrev  0x00000000000006a5      0x259 ./startup/multiboot2.o
+ .debug_abbrev  0x00000000000008fe       0x12 ./startup/x64_boot.o
+ .debug_abbrev  0x0000000000000910       0x14 ./startup/x64_isr.o
+ .debug_abbrev  0x0000000000000924      0x107 ./startup/x64_isr_handler.o
+ .debug_abbrev  0x0000000000000a2b      0x200 ./startup/x64_startup.o
+ .debug_abbrev  0x0000000000000c2b       0xe5 ./app/main.o
 
 .debug_aranges  0x0000000000000000      0x260
  .debug_aranges
@@ -784,7 +787,7 @@ OUTPUT(x86_64_prj.elf elf64-x86-64)
  .debug_aranges
                 0x0000000000000230       0x30 ./app/main.o
 
-.debug_macro    0x0000000000000000     0x2be3
+.debug_macro    0x0000000000000000     0x2bf1
  .debug_macro   0x0000000000000000       0xbb ./x64_driver/i8253_timer.o
  .debug_macro   0x00000000000000bb      0x898 ./x64_driver/i8253_timer.o
  .debug_macro   0x0000000000000953       0x22 ./x64_driver/i8253_timer.o
@@ -799,122 +802,122 @@ OUTPUT(x86_64_prj.elf elf64-x86-64)
  .debug_macro   0x000000000000127a       0x3a ./x64_driver/i8253_timer.o
  .debug_macro   0x00000000000012b4       0x22 ./x64_driver/i8253_timer.o
  .debug_macro   0x00000000000012d6      0x1c6 ./x64_driver/i8253_timer.o
- .debug_macro   0x000000000000149c       0xb1 ./x64_driver/x64_serial.o
- .debug_macro   0x000000000000154d       0xab ./x64_driver/x86_pic.o
- .debug_macro   0x00000000000015f8       0x4c ./x64_driver/x86_pic.o
- .debug_macro   0x0000000000001644       0xde ./x64_cpu_drivers/x64_apic.o
- .debug_macro   0x0000000000001722      0x19c ./x64_cpu_drivers/x64_apic.o
- .debug_macro   0x00000000000018be       0x22 ./x64_cpu_drivers/x64_apic.o
- .debug_macro   0x00000000000018e0      0x37e ./x64_cpu_drivers/x64_apic.o
- .debug_macro   0x0000000000001c5e      0x143 ./x64_cpu_drivers/x64_dt.o
- .debug_macro   0x0000000000001da1       0x19 ./x64_cpu_drivers/x64_dt.o
- .debug_macro   0x0000000000001dba       0x52 ./x64_cpu_drivers/x64_dt.o
- .debug_macro   0x0000000000001e0c       0x5c ./x64_cpu_drivers/x64_dt.o
- .debug_macro   0x0000000000001e68       0x35 ./x64_cpu_drivers/x64_dt.o
- .debug_macro   0x0000000000001e9d       0x34 ./x64_cpu_drivers/x64_dt.o
- .debug_macro   0x0000000000001ed1       0x16 ./x64_cpu_drivers/x64_dt.o
- .debug_macro   0x0000000000001ee7      0x11c ./x64_cpu_drivers/x64_dt.o
- .debug_macro   0x0000000000002003       0x8d ./x64_cpu_drivers/x64_dt.o
- .debug_macro   0x0000000000002090       0x16 ./x64_cpu_drivers/x64_dt.o
- .debug_macro   0x00000000000020a6       0x43 ./x64_cpu_drivers/x64_dt.o
- .debug_macro   0x00000000000020e9       0x57 ./x64_cpu_drivers/x64_dt.o
- .debug_macro   0x0000000000002140       0x34 ./x64_cpu_drivers/x64_dt.o
- .debug_macro   0x0000000000002174       0x10 ./x64_cpu_drivers/x64_dt.o
- .debug_macro   0x0000000000002184       0x58 ./x64_cpu_drivers/x64_dt.o
- .debug_macro   0x00000000000021dc      0x182 ./x64_cpu_drivers/x64_dt.o
- .debug_macro   0x000000000000235e       0x22 ./x64_cpu_drivers/x64_dt.o
- .debug_macro   0x0000000000002380       0x16 ./x64_cpu_drivers/x64_dt.o
- .debug_macro   0x0000000000002396       0x35 ./x64_cpu_drivers/x64_dt.o
- .debug_macro   0x00000000000023cb      0x11b ./x64_cpu_drivers/x64_dt.o
- .debug_macro   0x00000000000024e6       0x4c ./x64_cpu_drivers/x64_dt.o
- .debug_macro   0x0000000000002532       0x1a ./x64_cpu_drivers/x64_mmu.o
- .debug_macro   0x000000000000254c      0x18a ./x64_cpu_drivers/x64_mmu.o
- .debug_macro   0x00000000000026d6       0x32 ./startup/multiboot2.o
- .debug_macro   0x0000000000002708      0x162 ./startup/multiboot2.o
- .debug_macro   0x000000000000286a       0xa7 ./startup/x64_isr_handler.o
- .debug_macro   0x0000000000002911      0x161 ./startup/x64_startup.o
- .debug_macro   0x0000000000002a72       0x58 ./startup/x64_startup.o
- .debug_macro   0x0000000000002aca       0x10 ./startup/x64_startup.o
- .debug_macro   0x0000000000002ada       0x46 ./startup/x64_startup.o
- .debug_macro   0x0000000000002b20       0xc3 ./app/main.o
+ .debug_macro   0x000000000000149c       0xbf ./x64_driver/x64_serial.o
+ .debug_macro   0x000000000000155b       0xab ./x64_driver/x86_pic.o
+ .debug_macro   0x0000000000001606       0x4c ./x64_driver/x86_pic.o
+ .debug_macro   0x0000000000001652       0xde ./x64_cpu_drivers/x64_apic.o
+ .debug_macro   0x0000000000001730      0x19c ./x64_cpu_drivers/x64_apic.o
+ .debug_macro   0x00000000000018cc       0x22 ./x64_cpu_drivers/x64_apic.o
+ .debug_macro   0x00000000000018ee      0x37e ./x64_cpu_drivers/x64_apic.o
+ .debug_macro   0x0000000000001c6c      0x143 ./x64_cpu_drivers/x64_dt.o
+ .debug_macro   0x0000000000001daf       0x19 ./x64_cpu_drivers/x64_dt.o
+ .debug_macro   0x0000000000001dc8       0x52 ./x64_cpu_drivers/x64_dt.o
+ .debug_macro   0x0000000000001e1a       0x5c ./x64_cpu_drivers/x64_dt.o
+ .debug_macro   0x0000000000001e76       0x35 ./x64_cpu_drivers/x64_dt.o
+ .debug_macro   0x0000000000001eab       0x34 ./x64_cpu_drivers/x64_dt.o
+ .debug_macro   0x0000000000001edf       0x16 ./x64_cpu_drivers/x64_dt.o
+ .debug_macro   0x0000000000001ef5      0x11c ./x64_cpu_drivers/x64_dt.o
+ .debug_macro   0x0000000000002011       0x8d ./x64_cpu_drivers/x64_dt.o
+ .debug_macro   0x000000000000209e       0x16 ./x64_cpu_drivers/x64_dt.o
+ .debug_macro   0x00000000000020b4       0x43 ./x64_cpu_drivers/x64_dt.o
+ .debug_macro   0x00000000000020f7       0x57 ./x64_cpu_drivers/x64_dt.o
+ .debug_macro   0x000000000000214e       0x34 ./x64_cpu_drivers/x64_dt.o
+ .debug_macro   0x0000000000002182       0x10 ./x64_cpu_drivers/x64_dt.o
+ .debug_macro   0x0000000000002192       0x58 ./x64_cpu_drivers/x64_dt.o
+ .debug_macro   0x00000000000021ea      0x182 ./x64_cpu_drivers/x64_dt.o
+ .debug_macro   0x000000000000236c       0x22 ./x64_cpu_drivers/x64_dt.o
+ .debug_macro   0x000000000000238e       0x16 ./x64_cpu_drivers/x64_dt.o
+ .debug_macro   0x00000000000023a4       0x35 ./x64_cpu_drivers/x64_dt.o
+ .debug_macro   0x00000000000023d9      0x11b ./x64_cpu_drivers/x64_dt.o
+ .debug_macro   0x00000000000024f4       0x4c ./x64_cpu_drivers/x64_dt.o
+ .debug_macro   0x0000000000002540       0x1a ./x64_cpu_drivers/x64_mmu.o
+ .debug_macro   0x000000000000255a      0x18a ./x64_cpu_drivers/x64_mmu.o
+ .debug_macro   0x00000000000026e4       0x32 ./startup/multiboot2.o
+ .debug_macro   0x0000000000002716      0x162 ./startup/multiboot2.o
+ .debug_macro   0x0000000000002878       0xa7 ./startup/x64_isr_handler.o
+ .debug_macro   0x000000000000291f      0x161 ./startup/x64_startup.o
+ .debug_macro   0x0000000000002a80       0x58 ./startup/x64_startup.o
+ .debug_macro   0x0000000000002ad8       0x10 ./startup/x64_startup.o
+ .debug_macro   0x0000000000002ae8       0x46 ./startup/x64_startup.o
+ .debug_macro   0x0000000000002b2e       0xc3 ./app/main.o
 
-.debug_line     0x0000000000000000     0x1154
+.debug_line     0x0000000000000000     0x11f1
  .debug_line    0x0000000000000000      0x112 ./x64_driver/i8253_timer.o
- .debug_line    0x0000000000000112      0x14b ./x64_driver/x64_serial.o
- .debug_line    0x000000000000025d      0x154 ./x64_driver/x86_pic.o
- .debug_line    0x00000000000003b1      0x1f3 ./x64_cpu_drivers/x64_apic.o
- .debug_line    0x00000000000005a4      0x163 ./x64_cpu_drivers/x64_dt.o
- .debug_line    0x0000000000000707       0x3f ./x64_cpu_drivers/x64_mmu.o
- .debug_line    0x0000000000000746      0x456 ./startup/multiboot2.o
- .debug_line    0x0000000000000b9c       0xd2 ./startup/x64_boot.o
- .debug_line    0x0000000000000c6e      0x16a ./startup/x64_isr.o
- .debug_line    0x0000000000000dd8       0xd8 ./startup/x64_isr_handler.o
- .debug_line    0x0000000000000eb0      0x1bb ./startup/x64_startup.o
- .debug_line    0x000000000000106b       0xe9 ./app/main.o
+ .debug_line    0x0000000000000112      0x194 ./x64_driver/x64_serial.o
+ .debug_line    0x00000000000002a6      0x154 ./x64_driver/x86_pic.o
+ .debug_line    0x00000000000003fa      0x1f3 ./x64_cpu_drivers/x64_apic.o
+ .debug_line    0x00000000000005ed      0x163 ./x64_cpu_drivers/x64_dt.o
+ .debug_line    0x0000000000000750       0x3f ./x64_cpu_drivers/x64_mmu.o
+ .debug_line    0x000000000000078f      0x456 ./startup/multiboot2.o
+ .debug_line    0x0000000000000be5       0xd2 ./startup/x64_boot.o
+ .debug_line    0x0000000000000cb7      0x16a ./startup/x64_isr.o
+ .debug_line    0x0000000000000e21      0x12c ./startup/x64_isr_handler.o
+ .debug_line    0x0000000000000f4d      0x1bb ./startup/x64_startup.o
+ .debug_line    0x0000000000001108       0xe9 ./app/main.o
 
-.debug_str      0x0000000000000000     0xa980
+.debug_str      0x0000000000000000     0xa9cc
  .debug_str     0x0000000000000000     0x5c22 ./x64_driver/i8253_timer.o
                                        0x5dfb (size before relaxing)
- .debug_str     0x0000000000005c22       0x74 ./x64_driver/x64_serial.o
-                                       0x5af1 (size before relaxing)
- .debug_str     0x0000000000005c96      0x1e6 ./x64_driver/x86_pic.o
+ .debug_str     0x0000000000005c22       0xe7 ./x64_driver/x64_serial.o
+                                       0x5b7f (size before relaxing)
+ .debug_str     0x0000000000005d09      0x1e6 ./x64_driver/x86_pic.o
                                        0x5582 (size before relaxing)
- .debug_str     0x0000000000005e7c     0x1706 ./x64_cpu_drivers/x64_apic.o
+ .debug_str     0x0000000000005eef     0x1706 ./x64_cpu_drivers/x64_apic.o
                                        0x71ac (size before relaxing)
- .debug_str     0x0000000000007582     0x1cd0 ./x64_cpu_drivers/x64_dt.o
+ .debug_str     0x00000000000075f5     0x1cca ./x64_cpu_drivers/x64_dt.o
                                        0x6eb1 (size before relaxing)
- .debug_str     0x0000000000009252      0x788 ./x64_cpu_drivers/x64_mmu.o
+ .debug_str     0x00000000000092bf      0x788 ./x64_cpu_drivers/x64_mmu.o
                                        0x32c6 (size before relaxing)
- .debug_str     0x00000000000099da      0xabe ./startup/multiboot2.o
+ .debug_str     0x0000000000009a47      0xabe ./startup/multiboot2.o
                                        0x369d (size before relaxing)
- .debug_str     0x000000000000a498       0x54 ./startup/x64_boot.o
- .debug_str     0x000000000000a4ec       0x15 ./startup/x64_isr.o
-                                         0x53 (size before relaxing)
- .debug_str     0x000000000000a501       0x7a ./startup/x64_isr_handler.o
-                                       0x5afb (size before relaxing)
- .debug_str     0x000000000000a57b      0x400 ./startup/x64_startup.o
+ .debug_str     0x000000000000a505       0x52 ./startup/x64_boot.o
+ .debug_str     0x000000000000a557       0x15 ./startup/x64_isr.o
+                                         0x51 (size before relaxing)
+ .debug_str     0x000000000000a56c       0x5b ./startup/x64_isr_handler.o
+                                       0x5b44 (size before relaxing)
+ .debug_str     0x000000000000a5c7      0x400 ./startup/x64_startup.o
                                        0x7ad5 (size before relaxing)
- .debug_str     0x000000000000a97b        0x5 ./app/main.o
-                                       0x5c6d (size before relaxing)
+ .debug_str     0x000000000000a9c7        0x5 ./app/main.o
+                                       0x5c7b (size before relaxing)
 
 .debug_line_str
-                0x0000000000000000      0x635
+                0x0000000000000000      0x64f
  .debug_line_str
-                0x0000000000000000      0x332 ./x64_driver/i8253_timer.o
-                                        0x3ad (size before relaxing)
+                0x0000000000000000      0x328 ./x64_driver/i8253_timer.o
+                                        0x3a1 (size before relaxing)
  .debug_line_str
-                0x0000000000000332       0x28 ./x64_driver/x64_serial.o
-                                        0x36f (size before relaxing)
+                0x0000000000000328       0x5e ./x64_driver/x64_serial.o
+                                        0x3a6 (size before relaxing)
  .debug_line_str
-                0x000000000000035a       0x22 ./x64_driver/x86_pic.o
-                                        0x2fe (size before relaxing)
+                0x0000000000000386       0x22 ./x64_driver/x86_pic.o
+                                        0x2f2 (size before relaxing)
  .debug_line_str
-                0x000000000000037c       0x74 ./x64_cpu_drivers/x64_apic.o
-                                        0x367 (size before relaxing)
+                0x00000000000003a8       0x74 ./x64_cpu_drivers/x64_apic.o
+                                        0x35b (size before relaxing)
  .debug_line_str
-                0x00000000000003f0       0x89 ./x64_cpu_drivers/x64_dt.o
-                                        0x399 (size before relaxing)
+                0x000000000000041c       0x89 ./x64_cpu_drivers/x64_dt.o
+                                        0x38d (size before relaxing)
  .debug_line_str
-                0x0000000000000479       0x27 ./x64_cpu_drivers/x64_mmu.o
-                                         0xb2 (size before relaxing)
- .debug_line_str
-                0x00000000000004a0       0x25 ./startup/multiboot2.o
+                0x00000000000004a5       0x27 ./x64_cpu_drivers/x64_mmu.o
                                          0xae (size before relaxing)
  .debug_line_str
-                0x00000000000004c5        0xb ./startup/x64_boot.o
-                                         0x53 (size before relaxing)
+                0x00000000000004cc       0x25 ./startup/multiboot2.o
+                                         0xaa (size before relaxing)
  .debug_line_str
-                0x00000000000004d0        0xa ./startup/x64_isr.o
+                0x00000000000004f1        0xb ./startup/x64_boot.o
                                          0x51 (size before relaxing)
  .debug_line_str
-                0x00000000000004da       0x9b ./startup/x64_isr_handler.o
-                                        0x383 (size before relaxing)
+                0x00000000000004fc        0xa ./startup/x64_isr.o
+                                         0x4f (size before relaxing)
  .debug_line_str
-                0x0000000000000575       0x19 ./startup/x64_startup.o
-                                        0x3c3 (size before relaxing)
+                0x0000000000000506       0x89 ./startup/x64_isr_handler.o
+                                        0x377 (size before relaxing)
  .debug_line_str
-                0x000000000000058e       0xa7 ./app/main.o
-                                        0x398 (size before relaxing)
+                0x000000000000058f       0x19 ./startup/x64_startup.o
+                                        0x3b7 (size before relaxing)
+ .debug_line_str
+                0x00000000000005a8       0xa7 ./app/main.o
+                                        0x38c (size before relaxing)
 
 .comment        0x0000000000000000       0x20
  .comment       0x0000000000000000       0x20 ./x64_driver/i8253_timer.o
