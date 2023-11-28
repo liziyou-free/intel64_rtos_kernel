@@ -3,7 +3,8 @@
 #include "../../startup/multiboot2.h"
 
 
-#define MY_DISP_HOR_RES  (1280)
+#define MY_DISP_HOR_RES  (1920)
+#define MY_DISP_VOR_RES  (1080)
 
 #define put_px(x, y, v) ((*((uint32_t *)(p_dispdev->common.framebuffer_addr + \
                          p_dispdev->common.framebuffer_pitch * y + x * 3))) = (v))
@@ -16,14 +17,14 @@ static void flush_cb(lv_display_t * disp, const lv_area_t * area, uint8_t * px_m
 
 void x64_lvgl_init (void)
 {
-    static uint32_t buf1[MY_DISP_HOR_RES * 10];
-    static uint32_t buf2[MY_DISP_HOR_RES * 10];
+    static uint32_t buf1[MY_DISP_HOR_RES * MY_DISP_VOR_RES * 4];
+//    static uint32_t buf2[MY_DISP_HOR_RES * 10];
     static lv_disp_t * disp;
 
     lv_init();
     disp = lv_disp_create(p_dispdev->common.framebuffer_width,
                           p_dispdev->common.framebuffer_height);
-    lv_disp_set_draw_buffers(disp, buf1, buf2, sizeof(buf1), LV_DISP_RENDER_MODE_PARTIAL);
+    lv_disp_set_draw_buffers(disp, buf1, NULL, sizeof(buf1), LV_DISP_RENDER_MODE_PARTIAL);
     lv_disp_set_color_format(disp, LV_COLOR_FORMAT_ARGB8888);
     lv_disp_set_flush_cb(disp, flush_cb);
 }

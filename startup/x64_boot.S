@@ -261,6 +261,9 @@ _pdt_loop:
     mov     %ax,    %fs
     mov     %ax,    %gs
 
+	//now enable SSE and the like
+    call    __enable_sse_avx
+
     pop     %rdi
     pop     %rsi
     call    cmain
@@ -279,6 +282,31 @@ _loop_:
     X64_FUNC_END()
 
 
+/******************************************
+ *            SSE AVX
+ ******************************************/
+    .type   __enable_sse_avx, @function
+
+__enable_sse_avx:
+    // Enable SSE
+    mov     %cr0,   %rax
+    mov     $(X64_CR0_EM_BIT), %rbx
+    not     %rbx
+    and     %rbx,   %rax
+    or      $(X64_CR0_MP_BIT), %rax
+    mov     %rax,   %cr0
+
+    // Enable Saving XMM context
+    mov     %cr4,   %rax
+    or      $(X64_CR4_OSFXSR_BIT | X64_CR4_OSXMMEXCPT_BIT),   %rax
+    mov     %rax,   %cr4
+
+    // Setup MXCSR, masking all SSE precision exception
+    ldmxcsr     mxcsr_mem
+
+    ret
+
+    .size    __enable_sse_avx, . - __enable_sse_avx
 
 
 
@@ -364,4 +392,7 @@ X64_ASM_DATA(x64_pte_table)
 g_kernel_stack:
     .fill    STACKSIZE,    1,    0
 
+
+mxcsr_mem:
+    .long   0x00001f80
 
