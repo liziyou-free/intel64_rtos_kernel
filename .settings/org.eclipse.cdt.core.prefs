@@ -6,6 +6,11 @@ doxygen/doxygen_use_structural_commands=false
 eclipse.preferences.version=1
 environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.2052317558/append=true
 environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.2052317558/appendContributed=true
+environment/project/cdt.managedbuild.config.gnu.cross.exe.release.1933995220/CCFLAGS/delimiter=\:
+environment/project/cdt.managedbuild.config.gnu.cross.exe.release.1933995220/CCFLAGS/operation=append
+environment/project/cdt.managedbuild.config.gnu.cross.exe.release.1933995220/CCFLAGS/value=--specs\=nosys.specs  -nostartfiles  -msoft-float  -m64    -mno-sse3  -mno-ssse3 -mno-sse4.1  -mno-sse4.2  -mno-sse4a
+environment/project/cdt.managedbuild.config.gnu.cross.exe.release.1933995220/append=true
+environment/project/cdt.managedbuild.config.gnu.cross.exe.release.1933995220/appendContributed=true
 org.eclipse.cdt.core.formatter.alignment_for_arguments_in_method_invocation=18
 org.eclipse.cdt.core.formatter.alignment_for_assignment=16
 org.eclipse.cdt.core.formatter.alignment_for_base_clause_in_type_declaration=80

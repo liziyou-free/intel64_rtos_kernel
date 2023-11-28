@@ -173,6 +173,9 @@ cmain (unsigned long magic, unsigned long addr)
                 break;
               }
             
+            /* Printf blue line */
+            extern struct multiboot_tag_framebuffer *p_dispdev;
+            p_dispdev = tagfb;
             for (i = 0; i < tagfb->common.framebuffer_width
                    && i < tagfb->common.framebuffer_height; i++)
               {

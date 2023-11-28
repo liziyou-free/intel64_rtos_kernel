@@ -27,7 +27,7 @@
 
 
 /* Set stack size */
-#define STACKSIZE    0x10000
+#define STACKSIZE    (1024*256)
 
 
 .global main
