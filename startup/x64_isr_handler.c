@@ -25,7 +25,7 @@
 static x64_irq_hanlder_t x64_irq_handler[256];
 
 
-int8_t x64_irq_handler_register(uint8_t vector, void(*p_fun)(void), void* param)
+int8_t x64_irq_handler_register(uint8_t vector, void(*p_fun)(void*), void* param)
 {
   uint32_t elements;
 

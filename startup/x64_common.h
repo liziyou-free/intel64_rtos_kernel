@@ -76,9 +76,24 @@ BUILDIO(l,  , u32)
 
 
 /* transplant */
-#define atomic_read32(reg)  (*((uint32_t*)(reg)))
-#define atomic_write32(reg, value)  ((*((uint32_t*)(reg))) = (value))
+//#define atomic_read32(reg)
+//#define atomic_write32(reg, value)
+
+static __always_inline  uint32_t atomic_read32(uint64_t reg) {
+  uint32_t value;
+  __asm__ __volatile__("mov %1, %0"
+                       : "=r"(value)
+                       : "0"(*((uint32_t*)reg)));
+  return value;
+}
 
 
+static __always_inline void atomic_write32(uint64_t reg, uint32_t value) {
+  __asm__ __volatile__("mov %0, %1"
+                       :
+                       : "r"(value), "o"(*((uint32_t*)reg))
+                       );
+  return;
+}
 
 #endif /* X64_DRIVER_X86_COMMON_H_ */

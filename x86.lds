@@ -7,10 +7,10 @@ ENTRY (_start)
 MEMORY
 {   
     MULTIBOOT(r)        : ORIGIN = 0x00001000, LENGTH = 8K
-    CODE(rx)            : ORIGIN = 0x00100000, LENGTH = 16M
-    RAM(rw)             : ORIGIN = 0x01100000, LENGTH = 64M
-    HEAP (rw)           : ORIGIN = 0x05100000, LENGTH = 64M
-    DATA_ROM (r)        : ORIGIN = 0x09100000, LENGTH = 16M
+    CODE(rx)            : ORIGIN = 0x00100000, LENGTH = 64M
+    RAM(rw)             : ORIGIN = 0x04100000, LENGTH = 64M
+    HEAP (rw)           : ORIGIN = 0x08100000, LENGTH = 64M
+    DATA_ROM (r)        : ORIGIN = 0x0C100000, LENGTH = 64M
     
     /*
     DMAZONE (rw)        : ORIGIN = 0x65F00000, LENGTH = 1M
@@ -70,7 +70,7 @@ SECTIONS
     *(.data)
     *(.data.*)
     __data_end = .;
-  } > RAM AT > DATA_ROM
+  } > RAM AT > CODE
   
   .bss : 
   {

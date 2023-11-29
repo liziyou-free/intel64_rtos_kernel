@@ -20,27 +20,31 @@
 #include "../x64_cpu_drivers/x64_apic.h"
 #include "../x64_driver/i8253_timer.h"
 #include "../x64_driver/x64_serial.h"
+#include "../Board/x64_pc_board.h"
 
 void x86_timer_init (void);
 void lv_demo_stress(void);
+void lv_demo_benchmark(void);
+void lv_demo_music(void);
 void x64_lvgl_init (void);
 void lvgl_tick_and_handle (void);
+
 
 int main(int argc, char**arg) {
 
     volatile long long count = 0;
-    read(0,arg,5);
+
     x86_timer_init();
-    x86_isa_serial_init();
-    x86_serial_send_str("Application Start!");
+    serial_init(X64_PORT_COM1, 115200, 1);
+    x86_serial_send_str(X64_PORT_COM1, "Application Start!");
     x64_lvgl_init();
-    lv_demo_stress();
+    lv_demo_benchmark();
       for (;;) {
           count ++;
-          if (count > 1000000) {
+          if (count > 10000) {
               count = 0;
               lvgl_tick_and_handle();
-              x86_serial_send_str("FreedomLi \r\n");
+              //x86_serial_send_str("FreedomLi \r\n");
               continue;
           }
       }

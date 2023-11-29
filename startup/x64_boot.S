@@ -243,12 +243,10 @@ _pdt_loop:
     .global x64_tss_init
     .global x64_idt_init
     .global x64_arch_init
-    .global divided_zero, main
+    .global divided_zero, main, x86_isa_serial_init
     X64_CODE64_FUNC_BEGIN(x64_start)
     cli
-
     lgdt    g_x64_gdtr_loader
-
     // Set Segement Registers for proper iret, etc. operation
     mov    $X64_GET_SEGMENT_SELECTOR_VALUE(
                             X64_GDT_DATA_INDEX, \
@@ -261,20 +259,25 @@ _pdt_loop:
     mov     %ax,    %fs
     mov     %ax,    %gs
 
-	//now enable SSE and the like
-    call    __enable_sse_avx
-
+    /* pop the parameters of the cmain function  */
     pop     %rdi
     pop     %rsi
+
+	//now enable SSE and the like
+    call    x64_enable_SSE
+
+    /* After turning on SSE, before entering the C environment, RSP must be 16-byte
+     * aligned,otherwise an exception will be triggered when executing SSE instructions.
+     */
+    movq    $stack_end,    %rsp
+    andq   $(~(16-1)),     %rsp   /* init stack pointer, 16byte align */
+
     call    cmain
     call    x64_arch_init
     call    x64_idt_init
     call    x64_tss_init
     sti
     call    main
-    int     $36
-    call    divided_zero
-
 _loop_:
     nop
     jmp    _loop_
@@ -282,12 +285,10 @@ _loop_:
     X64_FUNC_END()
 
 
-/******************************************
- *            SSE AVX
- ******************************************/
-    .type   __enable_sse_avx, @function
-
-__enable_sse_avx:
+/**
+ * \brief enable SSE
+ */
+    X64_CODE64_FUNC_BEGIN(x64_enable_SSE)
     // Enable SSE
     mov     %cr0,   %rax
     mov     $(X64_CR0_EM_BIT), %rbx
@@ -295,18 +296,14 @@ __enable_sse_avx:
     and     %rbx,   %rax
     or      $(X64_CR0_MP_BIT), %rax
     mov     %rax,   %cr0
-
-    // Enable Saving XMM context
+    /* Enable Saving XMM context */
     mov     %cr4,   %rax
     or      $(X64_CR4_OSFXSR_BIT | X64_CR4_OSXMMEXCPT_BIT),   %rax
     mov     %rax,   %cr4
-
-    // Setup MXCSR, masking all SSE precision exception
+    /* Setup MXCSR, masking all SSE precision exception */
     ldmxcsr     mxcsr_mem
-
     ret
-
-    .size    __enable_sse_avx, . - __enable_sse_avx
+    X64_FUNC_END()
 
 
 
