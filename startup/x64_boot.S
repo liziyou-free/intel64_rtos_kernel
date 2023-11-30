@@ -213,7 +213,7 @@ mmu_translate_table_init:
     movl    $x64_pde0_table,   %edi
     movl    $0,                %edx
 
-    movl    $(X64_MMU_4LEVEL_PAGE_ENTRIES * 0x03),    %ecx
+    movl    $(X64_MMU_4LEVEL_PAGE_ENTRIES * 0x04),    %ecx
 _pde_loop:
     movl    %esi,    %eax
     add     $(X64_MMU_PRESENT_BIT|X64_MMU_RW_BIT),    %eax
@@ -242,7 +242,7 @@ _pdt_loop:
     .global x64_tss_init
     .global x64_idt_init
     .global x64_arch_init
-    .global divided_zero, main, x86_isa_serial_init
+    .global divided_zero, main, printf_init
     X64_CODE64_FUNC_BEGIN(x64_start)
     cli
     lgdt    g_x64_gdtr_loader
@@ -270,6 +270,12 @@ _pdt_loop:
      */
     movq    $stack_end,    %rsp
     andq   $(~(16-1)),     %rsp   /* init stack pointer, 16byte align */
+
+    push     %rsi
+    push     %rdi
+    call    printf_init
+    pop     %rdi
+    pop     %rsi
 
     call    cmain
     call    x64_arch_init

@@ -52,6 +52,9 @@ cmain (unsigned long magic, unsigned long addr)
   struct multiboot_tag *tag;
   unsigned size;
 
+ #include "./x64_startup.h"
+  print_func_name();
+
   /*  Clear the screen. */
   cls ();
 

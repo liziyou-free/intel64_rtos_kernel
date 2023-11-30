@@ -77,6 +77,8 @@ void x64_tss_init (void) {
     x64_tss_ldt_dt_t *p_tss_descriptor;
     static x64_tss_t g_x64_tss_obj;
 
+    print_func_name();
+
     /* Get stack top */
     interrupt_stack_top = ((uint64_t)&g_interrupt_stack[0]) +  \
                           sizeof(g_interrupt_stack) - 1;
@@ -138,6 +140,8 @@ void x64_idt_init (void)
     pf_interrupt_table = ((pf_isr_handler_t *)__INTERRUPT_TABLE_ADDR__);
     pf_exception_table = ((pf_isr_handler_t *)__EXCEPTION_TABLE_ADDR__);
 
+    print_func_name();
+
     for (int j = 0; j < idt_elements; j++) {
         if (j < 32) {
             /* exception */
@@ -196,6 +200,8 @@ static void disable_intel_8259_intc (void)
 
 void x64_arch_init (void)
 {
+  print_func_name();
+
     /* Disable 8259, avoiding false triggering */
     disable_intel_8259_intc();
 

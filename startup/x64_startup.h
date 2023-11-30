@@ -44,6 +44,11 @@
 #define X64_GDT_TSS_INDEX               0x04
 
 
+#define print_func_name() \
+    x86_serial_send_str(0x3f8, __FILE__); \
+    x86_serial_send_str(0x3f8, "    "); \
+    x86_serial_send_str(0x3f8, __FUNCTION__); \
+    x86_serial_send_str(0x3f8, "\r\n"); \
 
 #endif /* STARTUP_X64_STARTUP_H_ */
 

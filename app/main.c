@@ -37,7 +37,7 @@ int main (void)
 
     x86_timer_init();
     serial_init(X64_PORT_COM1, 115200, 1);
-    x86_serial_send_str(X64_PORT_COM1, "Application Start!");
+    x86_serial_send_str(X64_PORT_COM1, "Application Start!\r\n");
     x64_lvgl_init();
     lv_demo_benchmark();
       for (;;) {
@@ -52,7 +52,9 @@ int main (void)
 }
 
 
-
+void printf_init(void){
+    serial_init(X64_PORT_COM1, 115200, 1);
+}
 
 
 
