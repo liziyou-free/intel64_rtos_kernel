@@ -30,7 +30,8 @@ void x64_lvgl_init (void);
 void lvgl_tick_and_handle (void);
 
 
-int main(int argc, char**arg) {
+int main (void)
+{
 
     volatile long long count = 0;
 
@@ -44,7 +45,6 @@ int main(int argc, char**arg) {
           if (count > 10000) {
               count = 0;
               lvgl_tick_and_handle();
-              //x86_serial_send_str("FreedomLi \r\n");
               continue;
           }
       }

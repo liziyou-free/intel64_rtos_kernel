@@ -24,7 +24,7 @@ static uint32_t buf1[MY_DISP_HOR_RES * MY_DISP_VOR_RES * 4];
 
 void lvgl_tick_and_handle (void)
 {
-  lv_tick_inc(1);
+  //lv_tick_inc(1);
 #if LVGL_MASTER_VERSION
   lv_timer_handler_run_in_period(1);
 #else

@@ -63,11 +63,13 @@ void x64_common_isr (uint64_t inum)
 
     elements = sizeof(x64_irq_handler) / sizeof(x64_irq_handler[0]);
 
-    if (inum >= elements || x64_irq_handler[inum].pfn_handler == NULL) {
+    if (inum < elements || x64_irq_handler[inum].pfn_handler != NULL) {
+
+        (x64_irq_handler[inum].pfn_handler)(x64_irq_handler[inum].param);
+    }
+    else {
         for (;;);
     }
-
-    (x64_irq_handler[inum].pfn_handler)(x64_irq_handler[inum].param);
 
     if (inum >=32 ) {
         apic_eoi_hook();

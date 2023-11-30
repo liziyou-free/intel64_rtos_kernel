@@ -134,8 +134,9 @@
 /**
  * \brief Generates a segment descriptor by passing in arguments.
  *
- * \note  All parameters must be uint64_t!
- * \note  Not applicable to TSS, LDT and 64bit-code-segment descriptor.
+ * \note  All parameters must be uint64_t!!!
+ *
+ * \note  Not applicable to TSS, LDT.
  *
  * \param addr[in]  segment base address (linear address space)
  * \param len[in]   size of the segment (In units of one byte, MAX:1MB)
@@ -151,8 +152,9 @@
 /**
  * \brief Generates a segment descriptor by passing in arguments.
  *
- * \note  All parameters must be uint64_t!
- * \note  Not applicable to TSS, LDT and 64bit-code-segment descriptor.
+ * \note  All parameters must be uint64_t!!!
+ *
+ * \note  Not applicable to TSS, LDT.
  *
  * \param addr[in]  segment base address (linear address space)
  * \param len[in]   size of the segment (In units of 4 Kilobytes, MAX:4GB)
@@ -165,12 +167,7 @@
                          __CREATE_GDT_ITEM__(addr, seg_len, type, dpl, 1)
 
 
-
-#define X64_CREATE_GDT_ITEM_CODE64(type, dpl, d) \
-                        (type << 40 | dpl << 45 | 1 << 47 | d << 54 | 1 << 55)
-
-
-#ifndef COMPILER_ASM_FILE
+#ifndef __ASSEMBLY__
 #pragma pack(push)
 #pragma pack(1)
 
@@ -331,7 +328,7 @@ uint8_t x64_flush_tr_register(x64_tr_t tr);
 
 
 
-#endif /* COMPILER_ASM_FILE */
+#endif /* __ASSEMBLY__ */
 #endif /* X64_SEGMENT_DEF_H_ */
 
 

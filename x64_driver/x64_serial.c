@@ -7,6 +7,7 @@
 
 #include "x64_serial.h"
 #include "../startup/x64_common.h"
+#include "../Board/x64_pc_board.h"
 #include "../startup/x64_isr_handler.h"
 #include "../x64_cpu_drivers/x64_apic.h"
 

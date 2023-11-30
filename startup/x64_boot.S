@@ -18,10 +18,8 @@
 *******************************************************************************/
 #include "x64_startup.h"
 #include "x64_asm_common.h"
-#define  COMPILER_ASM_FILE
 #include "multiboot2.h"
 #include "../x64_cpu_drivers/x64_segment_def.h"
-#undef COMPILER_ASM_FILE
 #include "../x64_cpu_drivers/x64_mmu.h"
 #include "../startup/x64_arch_def.h"
 
@@ -204,8 +202,9 @@ copy_data_section:
 X64_FUNC_END()
 
 
-/*
- * init 4-level page table
+
+/**
+ * \brief Init 4-level page table
  */
     X64_CODE32_FUNC_BEGIN(mmu_translate_table_init)
 mmu_translate_table_init:
@@ -214,16 +213,16 @@ mmu_translate_table_init:
     movl    $x64_pde0_table,   %edi
     movl    $0,                %edx
 
-    movl    $(X64_MMU_4LEVEL_PAGE_ENTRIES * 0x04),    %ecx
+    movl    $(X64_MMU_4LEVEL_PAGE_ENTRIES * 0x03),    %ecx
 _pde_loop:
     movl    %esi,    %eax
-    add     $(X64_PDE_PT_PRESENT_BIT|X64_PDE_PT_RW_BIT),    %eax
+    add     $(X64_MMU_PRESENT_BIT|X64_MMU_RW_BIT),    %eax
     movl    %eax,    0(%edi)
     add     $(X86_MMU_PAGE_ENTRY_SIZE),    %edi
 
     movl    $X64_MMU_4LEVEL_PAGE_ENTRIES,    %ebx
 _pdt_loop:
-    movl    $(X64_PT_4KB_PRESENT_BIT|X64_PT_4KB_RW_BIT),    %eax
+    movl    $(X64_MMU_PRESENT_BIT|X64_MMU_RW_BIT),    %eax
     addl    %edx,       %eax
     movl    %eax,       0(%esi)
     addl    $0x1000,    %edx    /* 4096bytes */
@@ -286,7 +285,7 @@ _loop_:
 
 
 /**
- * \brief enable SSE
+ * \brief Enable SSE
  */
     X64_CODE64_FUNC_BEGIN(x64_enable_SSE)
     // Enable SSE
@@ -335,20 +334,26 @@ _gdt_end:
 
 
 /*******************************************************************************
-  build 4-level paging (MAX MAP:4GB)
+  Build 4-level paging (range: 0 ~ 4GB)
 *******************************************************************************/
+
+/**
+ * \note Since the registers of some peripherals (such as localapic, ioapic)
+ * are mapped to logical addresses, in order to cover these areas, we set the
+ * mapping range to 0~4GB(VA == PA).
+ */
 	.align  4096
 X64_ASM_DATA(x64_pml4e_table)
-    .quad    (x64_pdpte_table + X64_PML4E_PRESENT_BIT + X64_PML4E_RW_BIT)
+    .quad    (x64_pdpte_table + X64_MMU_PRESENT_BIT + X64_MMU_RW_BIT)
 	/* Reserve space, but do not use it for the time being */
 	.fill    (512-1),  X86_MMU_PAGE_ENTRY_SIZE,  0
 
 	.align  4096
 X64_ASM_DATA(x64_pdpte_table)
-    .quad    (x64_pde0_table + X64_PDPTE_PDE_PRESENT_BIT + X64_PDPTE_PDE_RW_BIT)
-    .quad    (x64_pde1_table + X64_PDPTE_PDE_PRESENT_BIT + X64_PDPTE_PDE_RW_BIT)
-    .quad    (x64_pde2_table + X64_PDPTE_PDE_PRESENT_BIT + X64_PDPTE_PDE_RW_BIT)
-    .quad    (x64_pde3_table + X64_PDPTE_PDE_PRESENT_BIT + X64_PDPTE_PDE_RW_BIT)
+    .quad    (x64_pde0_table + X64_MMU_PRESENT_BIT + X64_MMU_RW_BIT)
+    .quad    (x64_pde1_table + X64_MMU_PRESENT_BIT + X64_MMU_RW_BIT)
+    .quad    (x64_pde2_table + X64_MMU_PRESENT_BIT + X64_MMU_RW_BIT)
+    .quad    (x64_pde3_table + X64_MMU_PRESENT_BIT + X64_MMU_RW_BIT)
     /* Reserve space, but do not use it for the time being */
     .fill    (X64_MMU_4LEVEL_PAGE_ENTRIES - 4), X86_MMU_PAGE_ENTRY_SIZE, 0
 
@@ -381,7 +386,7 @@ X64_ASM_DATA(x64_pte_table)
 
 
 /*******************************************************************************
-  stack
+  Stack
 *******************************************************************************/
     .section  .kernel.stack
     .align  64

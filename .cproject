@@ -56,7 +56,7 @@
 							</tool>
 							<tool command="gcc  -nostartfiles  -m64 -march=x86-64  -T${CWD}/../x86.lds  -Wl,-Map,${CDW}/../x86.map" id="cdt.managedbuild.tool.gnu.cross.cpp.linker.1019645262" name="Cross G++ Linker" superClass="cdt.managedbuild.tool.gnu.cross.cpp.linker"/>
 							<tool command="gcc  -nostartfiles  -m64 -march=x86-64  -T${CWD}/../x86.lds  -Wl,-Map,${CDW}/../x86.map" id="cdt.managedbuild.tool.gnu.cross.archiver.196813304" name="Cross GCC Archiver" superClass="cdt.managedbuild.tool.gnu.cross.archiver"/>
-							<tool command="gcc  ${CCFLAGS} ${CFLAGS}" id="cdt.managedbuild.tool.gnu.cross.assembler.1985262317" name="Cross GCC Assembler" superClass="cdt.managedbuild.tool.gnu.cross.assembler">
+							<tool command="gcc  ${CCFLAGS} ${CFLAGS} -D __ASSEMBLY__" id="cdt.managedbuild.tool.gnu.cross.assembler.1985262317" name="Cross GCC Assembler" superClass="cdt.managedbuild.tool.gnu.cross.assembler">
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.1824359292" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>
 						</toolChain>

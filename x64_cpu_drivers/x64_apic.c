@@ -217,7 +217,7 @@ void ioapic_mask_irq (uint8_t inum)
   uint32_t cur_v;
   uint32_t reg_offset;
 
-  reg_offset = IOAPIC_REG_TABLE + (inum - IRQ0) * 2;
+  reg_offset = IOAPIC_REG_TABLE + (inum - X64_INTERRUPT_VECTOR_BASE) * 2;
   cur_v = ioapic_read(reg_offset);
   cur_v |= 1 << 16;
   ioapic_write(reg_offset, cur_v);
@@ -230,7 +230,7 @@ void ioapic_unmask_irq (uint8_t inum)
   uint32_t cur_v;
   uint32_t reg_offset;
 
-  reg_offset = IOAPIC_REG_TABLE + (inum - IRQ0) * 2;
+  reg_offset = IOAPIC_REG_TABLE + (inum - X64_INTERRUPT_VECTOR_BASE) * 2;
   cur_v = ioapic_read(reg_offset);
   cur_v &= ~(1 << 16);
   ioapic_write(reg_offset, cur_v);
@@ -267,7 +267,7 @@ void intel_ioapic_init (void)
 
     /* Init all interrupt line */
     for (vector_cnt = 0; vector_cnt <= max_irq_num; vector_cnt++) {
-        int_cfg.vector = IRQ0 + vector_cnt;
+        int_cfg.vector = X64_INTERRUPT_VECTOR_BASE + vector_cnt;
         ioapic_config_int_line(vector_cnt, &int_cfg);
     }
 

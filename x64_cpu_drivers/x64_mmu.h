@@ -30,98 +30,51 @@
 #define X86_MMU_PAGE_ENTRY_SIZE           8
 
 
-
 /**
- *\brief Field of a PML4 Entry (PML4E)
+ *\brief Entry field definition
  */
-#define X64_PML4E_PRESENT_BIT             (1 << 0)
-#define X64_PML4E_RW_BIT                  (1 << 1)
-#define X64_PML4E_US_BIT                  (1 << 2)
-#define X64_PML4E_PWT_BIT                 (1 << 3)
-#define X64_PML4E_PCD_BIT                 (1 << 4)
-#define X64_PML4E_ACCESSED_BIT            (1 << 5)
-#define X64_PML4E_PS_BIT                  (1 << 7)  /* Reserved (must be 0) */
-#define X64_PML4E_R_BIT                   (1 << 11)
-#define X64_PML4E_XD_BIT                  (1 << 63)
+#define X64_MMU_PRESENT_BIT             (1ULL << 0)
+#define X64_MMU_RW_BIT                  (1ULL << 1)
+#define X64_MMU_US_BIT                  (1ULL << 2)
+#define X64_MMU_PWT_BIT                 (1ULL << 3)
+#define X64_MMU_PCD_BIT                 (1ULL << 4)
+#define X64_MMU_ACCESSED_BIT            (1ULL << 5)
+#define X64_MMU_PS_BIT                  (1ULL << 7)  /* Reserved (must be 0) */
+#define X64_MMU_GLOBAL_BIT              (1ULL << 8)
+#define X64_MMU_R_BIT                   (1ULL << 11)
+#define X64_MMU_PAT_BIT                 (1ULL << 12)
+#define X64_MMU_XD_BIT                  (1ULL << 63)
 
 
+#ifndef __ASSEMBLY__
 /**
- *\brief Field of a Page-Directory-Pointer-Table Entry (PDPTE)
- * that Maps a 1-GByte Page
+ *\brief Entry type
  */
-#define X64_PDPTE_1GB_PRESENT_BIT         (1 << 0)
-#define X64_PDPTE_1GB_RW_BIT              (1 << 1)
-#define X64_PDPTE_1GB_US_BIT              (1 << 2)
-#define X64_PDPTE_1GB_PWT_BIT             (1 << 3)
-#define X64_PDPTE_1GB_PCD_BIT             (1 << 4)
-#define X64_PDPTE_1GB_ACCESSED_BIT        (1 << 5)
-#define X64_PDPTE_1GB_DIRTY_BIT           (1 << 6)
-#define X64_PDPTE_1GB_PS_BIT              (1 << 7)
-#define X64_PDPTE_1GB_GLOBAL_BIT          (1 << 8)
-#define X64_PDPTE_1GB_R_BIT               (1 << 11)
-/*The PAT is supported on all processors that support 4-level paging*/
-#define X64_PDPTE_1GB_PAT_BIT             (1 << 12)
-#define X64_PDPTE_1GB_XD_BIT              (1 << 63)
+typedef enum {
+  x64_mmu_pml5e = 0,  /* current, not support */
+  x64_mmu_pml4e,
+  x64_mmu_pdpte_pde,
+  x64_mmu_pdpte_1g,
+  x64_mmu_pde_pt,
+  x64_mmu_pde_2m,
+  x64_mmu_pte_4k
+} x64_mmu_entry_t;
+
 
 
 /**
- *\brief Field of a Page-Directory-Pointer-Table Entry (PDPTE)
- * that References a Page Directory
+ * \brief Align check
+ *
+ * \param addr[in]  address to check
+ * \param align[in] number of bytes to align
+ *
+ * \retval 0: align
+ * \retval 1: not align
  */
-#define X64_PDPTE_PDE_PRESENT_BIT         (1 << 0)
-#define X64_PDPTE_PDE_RW_BIT              (1 << 1)
-#define X64_PDPTE_PDE_US_BIT              (1 << 2)
-#define X64_PDPTE_PDE_PWT_BIT             (1 << 3)
-#define X64_PDPTE_PDE_PCD_BIT             (1 << 4)
-#define X64_PDPTE_PDE_ACCESSED_BIT        (1 << 5)
-#define X64_PDPTE_PDE_PS_BIT              (1 << 7)
-#define X64_PDPTE_PDE_R_BIT               (1 << 11)
-#define X64_PDPTE_PDE_XD_BIT              (1 << 63)
+#define ALIGN_CHECK(addr, align)   (addr & (~(align##ULL))) ? 0 : 1
 
 
-/**
- *\brief Field of a Page-Directory Entry that Maps a 2-MByte Page
- */
-#define X64_PDE_2MB_PRESENT_BIT           (1 << 0)
-#define X64_PDE_2MB_RW_BIT                (1 << 1)
-#define X64_PDE_2MB_US_BIT                (1 << 2)
-#define X64_PDE_2MB_PWT_BIT               (1 << 3)
-#define X64_PDE_2MB_PCD_BIT               (1 << 4)
-#define X64_PDE_2MB_ACCESSED_BIT          (1 << 5)
-#define X64_PDE_2MB_DIRTY_BIT             (1 << 6)
-#define X64_PDE_2MB_PS_BIT                (1 << 7)
-#define X64_PDE_2MB_GLOBAL_BIT            (1 << 8)
-#define X64_PDE_2MB_PAT_BIT               (1 << 12)
-
-
-/**
- *\brief Field of a Page-Directory Entry that References a Page Table
- */
-#define X64_PDE_PT_PRESENT_BIT           (1 << 0)
-#define X64_PDE_PT_RW_BIT                (1 << 1)
-#define X64_PDE_PT_US_BIT                (1 << 2)
-#define X64_PDE_PT_PWT_BIT               (1 << 3)
-#define X64_PDE_PT_PCD_BIT               (1 << 4)
-#define X64_PDE_PT_ACCESSED_BIT          (1 << 5)
-#define X64_PDE_PT_PS_BIT                (1 << 7)
-#define X64_PDE_PT_R_BIT                 (1 << 11)
-
-
-/**
-*\brief Field of a Page-Table Entry that Maps a 4-KByte Page
-*/
-#define X64_PT_4KB_PRESENT_BIT           (1 << 0)
-#define X64_PT_4KB_RW_BIT                (1 << 1)
-#define X64_PT_4KB_US_BIT                (1 << 2)
-#define X64_PT_4KB_PWT_BIT               (1 << 3)
-#define X64_PT_4KB_PCD_BIT               (1 << 4)
-#define X64_PT_4KB_ACCESSED_BIT          (1 << 5)
-#define X64_PT_4KB_DIRTY_BIT             (1 << 6)
-#define X64_PT_4KB_PS_BIT                (1 << 7)
-#define X64_PT_4KB_GLOBAL_BIT            (1 << 8)
-#define X64_PT_4KB_R_BIT                 (1 << 11)
-
-
+#endif /* __ASSEMBLY__ */
 #endif /* X64_DRIVER_MMU_H_ */
 
 
