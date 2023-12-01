@@ -18,31 +18,56 @@
 *******************************************************************************/
 
 
-/*
-       Handler's Stack
-        +-----------+
-        |           |
-        +-----------+
-        |    SS     |    + 40
-        +-----------+
-        |    RSP    |    + 32
-        +-----------+
-        |   RFLAGS  |    + 24
-        +-----------+
-        |    CS     |    + 16
-        +-----------+
-        |    RIP    |    + 8
-        +-----------+
-        |  ERR CODE |    + 0 ==>>  Stack pointer after transfer
-        +-----------+        to handler
-        |           |
-        +-----------+
+/**
+ * \brief  System V ABI
+ *
+ * \note Caller Regsiters: rax，rdi，rsi，rdx，rcx，r8，r9，r10，r11
+ * \note Callee Registers: rbx，rsp，rbp，r12，r13，r14, r15
+ *
+ * \note Integer Pass arguments Registers: rdi，rsi，rdx，rcx，r8，r9
+ * \note Floating point arguments Registers: xmm0 ~ xmm7
+ *
+ * \note Integer Return Registers: rax, rdx
+ * \note Floating Return Registers: xmm0, xmm1
+ * \note LongDouble Return Registers: st0, st1
+ *
+ * ... ...
+ **/
 
-*/
+
+/**
+ * \note Not all exceptions have error codes, but we push (uint64_t)0x00
+ * for those exceptions that do not have error codes,  so after jumping
+ * to "_isr_handler_", the stack frame is always consistent, as follows:
+ *
+ *       Handler's Stack
+ *        +-----------+
+ *        |    SS     |    + 40
+ *        +-----------+
+ *        |    RSP    |    + 32
+ *        +-----------+
+ *        |   RFLAGS  |    + 24
+ *        +-----------+
+ *        |    CS     |    + 16
+ *        +-----------+
+ *        |    RIP    |    + 8
+ *        +-----------+
+ *        |  ERR CODE |    + 0 ==>>  Stack pointer after transfer
+ *        +-----------+        to handler
+ *        |           |
+ *        +-----------+
+ */
+
 
 #include "x64_arch_def.h"
 
 
+/**
+ * \brief A wrapper for exception handlers with error codes.
+ *
+ * \param name[in] function name
+ * \param inum[in] Vector number.
+ */
 #define X64_EXCEPT_HANDLE_WEC_WRAP(name, inum) \
          .global name##_exception_handler; \
          .type name##_exception_handler, %function; \
@@ -58,6 +83,15 @@
          .endfunc; \
 
 
+/**
+ * \brief A wrapper for exception handlers without error codes.
+ *
+ * \note It has no error code. In order to allow all exception programs
+ * to have the same stack structure, we push a (uint64_t)0x00 .
+ *
+ * \param name[in] function name
+ * \param inum[in] Vector number.
+ */
 #define X64_EXCEPT_HANDLE_NEC_WRAP(name, inum) \
          .global name##_exception_handler; \
          .type name##_exception_handler, %function; \
@@ -75,6 +109,14 @@
          .text
 
 
+/**
+ * \brief A wrapper for Interrupt handler .
+ *
+ * \note It has no error code. In order to allow all exception programs
+ * to have the same stack structure, we push a (uint64_t)0x00 .
+ *
+ * \param inum[in] Vector number starting from 32 .
+ */
 #define X64_INTERRUPT_HANDLE_WRAP(inum) \
          .global exit##inum##_handler; \
          .type exit##inum##_handler, %function; \

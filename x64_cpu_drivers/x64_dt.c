@@ -26,12 +26,12 @@
 
 
 uint8_t x64_create_gate_descriptor(x64_idt_int_trap_gate_t *p_obj,
-                                   void(*gp_isrh)(void),
+                                   void(*pfn_isr)(void),
                                    uint8_t ist,
                                    uint8_t type,
                                    uint8_t rpl)
 {
-    uint64_t  handle_addr = (uint64_t)gp_isrh;
+    uint64_t  handle_addr = (uint64_t)pfn_isr;
     uint8_t   dpl = rpl;
 
     if (p_obj == NULL) {

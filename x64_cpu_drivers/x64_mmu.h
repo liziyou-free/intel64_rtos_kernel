@@ -63,6 +63,15 @@ typedef enum {
 
 
 /**
+ * \brief x64_cr3_memory_flag_t
+ *
+ * \note Only works if PCID is disabled.
+ */
+#define CR3_PWT_BIT        (1 << 3)
+#define CR3_PCD_BIT        (1 << 4)
+
+
+/**
  * \brief Align check
  *
  * \param addr[in]  address to check
@@ -71,7 +80,21 @@ typedef enum {
  * \retval 0: align
  * \retval 1: not align
  */
-#define ALIGN_CHECK(addr, align)   (addr & (~(align##ULL))) ? 0 : 1
+#define ALIGN_CHECK(addr, align)   ((((uint64_t)addr) & (~(align##ULL))) ? 0 : 1)
+
+
+/**
+ * \brief Update CR3 register(Write the MMU translation table root address to cr3).
+ *
+ * \param addr[in] Physical address of the 4-KByte aligned PML4 table or PML5
+ * table used for linear-address translation1.
+ * \param attr_flag[in] indirectly determines the memory type used to access
+ * the PML4 table or PML5 table. @ x64_cr3_memory_flag_t
+ *
+ * \retval none
+ */
+void x64_flush_tb_addr(uint64_t addr, uint8_t attr_flag);
+
 
 
 #endif /* __ASSEMBLY__ */

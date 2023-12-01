@@ -26,15 +26,17 @@
  */
 
 
-void x64_flush_tb_addr(uint64_t addr, uint8_t attribute)
+/*-----------------------------------------------------------------------------*/
+
+void x64_flush_tb_addr(uint64_t addr, uint8_t attr_flag)
 {
     uint64_t cr3 = 0;
 
+    /* 4K aligned ? */
     if (ALIGN_CHECK(addr, 4096)) {
-        /* Not 4K aligned */
         for (;;);
     }
-    cr3 = addr | attribute;
+    cr3 = addr | attr_flag;
     __asm__ __volatile__("mov %0, %%cr3"::"r"(cr3));
     return;
 }
@@ -73,7 +75,7 @@ uint8_t x64_mmu_create_entry (uint64_t *p_entry,
         ret = ALIGN_CHECK(addr, 0x1000);  /* 4KB align check */
         break;
     default:
-      for (;;);
+        for (;;);
     }
 
     if (!ret){
@@ -82,6 +84,34 @@ uint8_t x64_mmu_create_entry (uint64_t *p_entry,
 
     return ret;
 }
+
+
+
+int8_t x64_mmu_mmap_setup (uint64_t va,
+                           uint64_t pa,
+                           uint64_t size,
+                           void(*pfn_alloc)(void))
+{
+    /* Must meet at least 4K alignment requirements */
+    if (ALIGN_CHECK(va, 0x1000) && ALIGN_CHECK(pa, 0x1000) && \
+        ALIGN_CHECK(size, 0x1000) && (size != 0)) {
+        /* Unable to setup address mapping */
+        return -1;
+    }
+
+
+
+    return 0;
+}
+
+
+
+
+
+
+
+
+
 
 
 

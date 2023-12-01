@@ -125,6 +125,12 @@ void x64_tss_init (void) {
 }
 
 
+/**
+ * \brief Install the defined exception or interrupt handling function
+ * into the IDT according to the vector number.
+ *
+ * \retval none
+ */
 void x64_idt_init (void)
 {
     uint16_t idt_elements;
@@ -142,37 +148,30 @@ void x64_idt_init (void)
 
     print_func_name();
 
-    for (int j = 0; j < idt_elements; j++) {
-        if (j < 32) {
-            /* exception */
-            if (exceptiont_table_elements) {
-                x64_create_gate_descriptor(&obj, \
-                                           *pf_exception_table++, \
-                                           X64_EXCEPTION_IST_INDEX, \
-                                           TRAP_GATE_64BIT, \
-                                           PRIVILEGE_LEVEL_0);
-                --exceptiont_table_elements;
-            }
-            else {
-                continue;
-            }
+    for (int vector = 0; vector < idt_elements; vector++) {
+        /* exception */
+        if (vector < 32 && exceptiont_table_elements) {
+            x64_create_gate_descriptor(&obj, \
+                                       *pf_exception_table++, \
+                                       X64_EXCEPTION_IST_INDEX, \
+                                       TRAP_GATE_64BIT, \
+                                       PRIVILEGE_LEVEL_0);
+            --exceptiont_table_elements;
+            /* Add to IDT */
+            x64_add_descriptor_to_idt(&obj, &g_x64_idt[0], vector);
         }
-        else if (j >= 32) {
-            /* interrupt */
-            if (interrupt_table_elements) {
-                x64_create_gate_descriptor(&obj, \
-                                           *pf_interrupt_table++, \
-                                           X64_INTERRUPT_IST_INDEX, \
-                                           INTERRUPT_GATE_64BIT, \
-                                           PRIVILEGE_LEVEL_0);
-                --interrupt_table_elements;
-            }
-            else {
-                break;
-            }
+        /* interrupt */
+        else if (vector >= 32 && interrupt_table_elements) {
+
+            x64_create_gate_descriptor(&obj, \
+                                       *pf_interrupt_table++, \
+                                       X64_INTERRUPT_IST_INDEX, \
+                                       INTERRUPT_GATE_64BIT, \
+                                       PRIVILEGE_LEVEL_0);
+            --interrupt_table_elements;
+            /* Add to IDT */
+            x64_add_descriptor_to_idt(&obj, &g_x64_idt[0], vector);
         }
-        /* Add to IDT */
-        x64_add_descriptor_to_idt(&obj, &g_x64_idt[0], j);
     }
 
     /* Update to IDTR register */
@@ -185,7 +184,7 @@ void x64_idt_init (void)
 static void disable_intel_8259_intc (void)
 {
   /**
-   * \note interl 8259 does not have a real disable bit, we mask all
+   * \brief interl 8259 does not have a real disable bit, we mask all
    * interrupt sources to achieve this purpose.
    */
     __asm__ __volatile__("movb  $0xff,  %al  \n\t"

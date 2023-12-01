@@ -67,7 +67,7 @@
 #define X64_CR0_NW_BIT                 (1 << 29)
 #define X64_CR0_CD_BIT                 (1 << 30)
 #define X64_CR0_PG_BIT                 (1 << 31)
-//CR3
+//CR3 (CR4.PCIDE = 0)
 #define X64_CR3_PWT_BIT                (1 << 3)
 #define X64_CR3_PCD_BIT                (1 << 4)
 //CR4
@@ -98,7 +98,7 @@
 
 
 /**
- *\brief Model-Specific Registers
+ *\brief Model-Specific Registers.
  */
 #define IA32_EFER_MSR			       0xC0000080U
 #define IA32_EFER_MSR_SCE		       (1 << 0)    /* R/W */

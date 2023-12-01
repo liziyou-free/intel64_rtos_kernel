@@ -273,7 +273,7 @@ typedef uint16_t x64_tr_t;
  * \brief Generate an interrupt or trap gate descriptor in ia-32e mode.
  *
  * \param p_obj[out]  interrupt or trap gate descriptor
- * \param gp_isrh[in] interrupt or exception handle function
+ * \param pfn_isr[in] interrupt or exception handle function
  * \param ist[in]     index of interrupt stack table
  * \param type[in]    descriptor type: INTERRUPT_GATE_386 or TRAP_GATE_386
  * \param dpl[in]     descriptor privilege level: @ dt_privilege_t
@@ -282,7 +282,7 @@ typedef uint16_t x64_tr_t;
  * \retval 1:fail
  */
 uint8_t x64_create_gate_descriptor (x64_idt_int_trap_gate_t *p_obj,
-                                    void(*gp_isrh)(void),
+                                    void(*pfn_isr)(void),
                                     uint8_t ist,
                                     uint8_t type,
                                     uint8_t rpl);
