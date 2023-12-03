@@ -18,9 +18,11 @@
 *******************************************************************************/
 
 #include "../x64_cpu_drivers/x64_apic.h"
+#include "../x64_cpu_drivers/x64_mmu.h"
 #include "../x64_driver/i8253_timer.h"
 #include "../x64_driver/x64_serial.h"
 #include "../Board/x64_pc_board.h"
+
 
 void x86_timer_init (void);
 void lv_demo_stress(void);
@@ -32,8 +34,18 @@ void lvgl_tick_and_handle (void);
 
 int main (void)
 {
-
+    phyaddr_info phyaddrinfo = {0, 0};
     volatile long long count = 0;
+
+    table_unit_t *addr;
+    x64_lookup_phyaddr(&phyaddrinfo, 0xfee00000ull);
+    addr = x64_mmu_alloc_table(2);
+    mmu_print_tb_poor_bitmap();
+    x64_mmu_alloc_table(5);
+    mmu_print_tb_poor_bitmap();
+    x64_mmu_free_table(addr);
+    x64_mmu_free_table(++addr);
+    mmu_print_tb_poor_bitmap();
 
     x86_timer_init();
     serial_init(X64_PORT_COM1, 115200, 1);

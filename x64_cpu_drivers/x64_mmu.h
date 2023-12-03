@@ -39,7 +39,7 @@
 #define X64_MMU_PWT_BIT                 (1ULL << 3)
 #define X64_MMU_PCD_BIT                 (1ULL << 4)
 #define X64_MMU_ACCESSED_BIT            (1ULL << 5)
-#define X64_MMU_PS_BIT                  (1ULL << 7)  /* Reserved (must be 0) */
+#define X64_MMU_PS_BIT                  (1ULL << 7)
 #define X64_MMU_GLOBAL_BIT              (1ULL << 8)
 #define X64_MMU_R_BIT                   (1ULL << 11)
 #define X64_MMU_PAT_BIT                 (1ULL << 12)
@@ -60,6 +60,21 @@ typedef enum {
   x64_mmu_pte_4k
 } x64_mmu_entry_t;
 
+
+
+typedef struct {
+  /**
+   * \brief The paging type used to map this physical address.
+   *
+   * \note  1: 1GB page   2: 2MB page  4: 4KB page
+   */
+  uint8_t   page_type;
+
+  uint64_t  phy_addr;  /* Returned physical address */
+} phyaddr_info;
+
+
+typedef uint64_t table_unit_t[512];
 
 
 /**
@@ -95,6 +110,13 @@ typedef enum {
  */
 void x64_flush_tb_addr(uint64_t addr, uint8_t attr_flag);
 
+uint8_t x64_lookup_phyaddr (phyaddr_info *p_info, uint64_t va);
+
+table_unit_t *x64_mmu_alloc_table (uint32_t blocks);
+
+void x64_mmu_free_table (void *p_addr);
+
+void mmu_print_tb_poor_bitmap (void);
 
 
 #endif /* __ASSEMBLY__ */
