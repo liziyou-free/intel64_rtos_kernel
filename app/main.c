@@ -31,6 +31,7 @@ void lv_demo_music(void);
 void x64_lvgl_init (void);
 void lvgl_tick_and_handle (void);
 
+extern uint8_t test_data[];
 
 int main (void)
 {
@@ -40,12 +41,16 @@ int main (void)
     table_unit_t *addr;
     x64_lookup_phyaddr(&phyaddrinfo, 0xfee00000ull);
     addr = x64_mmu_alloc_table(2);
-    mmu_print_tb_poor_bitmap();
+    mmu_print_table_poor_bitmap();
     x64_mmu_alloc_table(5);
-    mmu_print_tb_poor_bitmap();
+    mmu_print_table_poor_bitmap();
     x64_mmu_free_table(addr);
     x64_mmu_free_table(++addr);
-    mmu_print_tb_poor_bitmap();
+    mmu_print_table_poor_bitmap();
+
+    uint64_t flag = X64_MMU_PRESENT_BIT | X64_MMU_RW_BIT;
+    x64_mmu_mmap_setup(0x40000000,test_data,0x201000,flag,1,x64_mmu_alloc_table);
+    mmu_print_table_poor_bitmap();
 
     x86_timer_init();
     serial_init(X64_PORT_COM1, 115200, 1);

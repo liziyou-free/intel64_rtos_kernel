@@ -404,3 +404,21 @@ g_kernel_stack:
 mxcsr_mem:
     .long   0x00001f80
 
+
+
+	.align  4096
+X64_ASM_DATA(test_data)
+    .fill (1024*1024), 1, 0xa5
+    .fill (1024*1024), 1, 0x5a
+    .fill (1024*4-10), 1, 8
+    .byte 1,2,3,4,5,6,7,8,9,10
+
+
+
+
+
+
+
+
+
+
