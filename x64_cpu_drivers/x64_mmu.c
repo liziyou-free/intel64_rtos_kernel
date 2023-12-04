@@ -331,6 +331,7 @@ static uint8_t mmu_setup_table (uint64_t va,
     uint8_t   n;
     uint8_t   shift;
     uint64_t  index;
+    uint64_t  *root;
     uint64_t  *tb;
     uint64_t  *addr;
     uint64_t  entry;
@@ -365,31 +366,35 @@ static uint8_t mmu_setup_table (uint64_t va,
     }
 
     /* Start searching from the root address */
-    tb = (uint64_t *)x64_get_translate_table_addr();
+    root = (uint64_t *)x64_get_translate_table_addr();
 
-    for (int8_t j = 3; j >= n; j--) {
-        shift = ((j * index_bits) + addr_bits);
-        index = (va >> shift) & 0x01ffull;
+    for (uint64_t k = 0; k < num; k++) {
+        tb = root;
+        for (int8_t j = 3; j >= n; j--) {
+            shift = ((j * index_bits) + addr_bits);
+            index = (va >> shift) & 0x01ffull;
 
-        if (tb == NULL) {
-            return 1;  /* Error */
-        }
-
-        if (j == n) {
-            /* Write physical address */
-            for (uint16_t k = 0; k < num; k++) {
-                tb[index + k] = (pa + offset *k) | flag;
+            if (tb == NULL) {
+                return 1;  /* Error */
             }
-        } else {
-            entry = tb[index];
-            if (entry == 0) {
-                addr = (uint64_t *)pfn_alloc(1);
-                tb[index] = ((uint64_t)addr) | flag;
+
+            if (j == n) {
+                /* Write physical address */
+                tb[index] = pa | flag;
+                break;
             } else {
-                addr = (uint64_t *)(entry & 0x0000fffffffff000ull);
+                entry = tb[index];
+                if (entry == 0) {
+                    addr = (uint64_t *)pfn_alloc(1);
+                    tb[index] = ((uint64_t)addr) | flag;
+                } else {
+                    addr = (uint64_t *)(entry & 0x0000fffffffff000ull);
+                }
+                tb = addr;
             }
-            tb = addr;
         }
+        pa += offset;
+        va += offset;
     }
     return 0;
 }
