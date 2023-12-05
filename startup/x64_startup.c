@@ -22,6 +22,7 @@
 #include "./x64_startup.h"
 #include "./x64_common.h"
 #include "../x64_cpu_drivers/x64_apic.h"
+#include "../x64_cpu_drivers/x64_mmu.h"
 #include "../x64_cpu_drivers/x64_segment_def.h"
 
 
@@ -181,6 +182,23 @@ void x64_idt_init (void)
 }
 
 
+
+/**
+ * \brief Rebuild the MMU page table structure for kernel management.
+ */
+void mmu_init(void) {
+
+}
+
+
+
+
+/**
+ * \brief Install the defined exception or interrupt handling function
+ * into the IDT according to the vector number.
+ *
+ * \retval none
+ */
 static void disable_intel_8259_intc (void)
 {
   /**
@@ -214,11 +232,5 @@ void x64_arch_init (void)
 }
 
 
-int divided_zero (void) {
-  int a = 0, b = 0;
-  a = 1000;
-  a = a / b;
-  return a;
-}
 
 

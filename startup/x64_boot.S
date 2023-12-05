@@ -317,9 +317,8 @@ _loop_:
 *******************************************************************************/
 
 /* X86 Global Descriptor Table */
-    .align     8
     .global    g_gdt_tss_pos, g_x64_tss_obj_test
-    X64_ASM_DATA(g_x64_gdt)
+    X64_ASM_DATA(g_x64_gdt, 8)
 _gdt_start:
 
     .quad    0    /* Must is 0! */
@@ -332,8 +331,7 @@ _gdt_end:
 
 
 /* X86 Global Descriptor Table Loader */
-    .align     4
-    X64_ASM_DATA(g_x64_gdtr_loader)
+    X64_ASM_DATA(g_x64_gdtr_loader, 4)
     .word    _gdt_end - _gdt_start -1  /* Limit = Total-bytes - 1 */
     .quad    _gdt_start                /* GDT base address */
 
@@ -348,14 +346,12 @@ _gdt_end:
  * are mapped to logical addresses, in order to cover these areas, we set the
  * mapping range to 0~4GB(VA == PA).
  */
-	.align  4096
-X64_ASM_DATA(x64_pml4e_table)
+X64_ASM_DATA(x64_pml4e_table, 4096)
     .quad    (x64_pdpte_table + X64_MMU_PRESENT_BIT + X64_MMU_RW_BIT)
 	/* Reserve space, but do not use it for the time being */
 	.fill    (512-1),  X86_MMU_PAGE_ENTRY_SIZE,  0
 
-	.align  4096
-X64_ASM_DATA(x64_pdpte_table)
+X64_ASM_DATA(x64_pdpte_table, 4096)
     .quad    (x64_pde0_table + X64_MMU_PRESENT_BIT + X64_MMU_RW_BIT)
     .quad    (x64_pde1_table + X64_MMU_PRESENT_BIT + X64_MMU_RW_BIT)
     .quad    (x64_pde2_table + X64_MMU_PRESENT_BIT + X64_MMU_RW_BIT)
@@ -363,27 +359,24 @@ X64_ASM_DATA(x64_pdpte_table)
     /* Reserve space, but do not use it for the time being */
     .fill    (X64_MMU_4LEVEL_PAGE_ENTRIES - 4), X86_MMU_PAGE_ENTRY_SIZE, 0
 
-	.align  4096
-X64_ASM_DATA(x64_pde0_table)
+
+X64_ASM_DATA(x64_pde0_table, 4096)
     .fill    X64_MMU_4LEVEL_PAGE_ENTRIES,  X86_MMU_PAGE_ENTRY_SIZE,  0
 
 
-	.align  4096
-X64_ASM_DATA(x64_pde1_table)
-    .fill    X64_MMU_4LEVEL_PAGE_ENTRIES,  X86_MMU_PAGE_ENTRY_SIZE,  0
-
-	.align  4096
-X64_ASM_DATA(x64_pde2_table)
+X64_ASM_DATA(x64_pde1_table, 4096)
     .fill    X64_MMU_4LEVEL_PAGE_ENTRIES,  X86_MMU_PAGE_ENTRY_SIZE,  0
 
 
-	.align  4096
-X64_ASM_DATA(x64_pde3_table)
+X64_ASM_DATA(x64_pde2_table, 4096)
     .fill    X64_MMU_4LEVEL_PAGE_ENTRIES,  X86_MMU_PAGE_ENTRY_SIZE,  0
 
 
-	.align  4096
-X64_ASM_DATA(x64_pte_table)
+X64_ASM_DATA(x64_pde3_table, 4096)
+    .fill    X64_MMU_4LEVEL_PAGE_ENTRIES,  X86_MMU_PAGE_ENTRY_SIZE,  0
+
+
+X64_ASM_DATA(x64_pte_table, 4096)
     .fill    (X64_MMU_4LEVEL_PAGE_ENTRIES * X64_MMU_4LEVEL_PAGE_ENTRIES),  X86_MMU_PAGE_ENTRY_SIZE,  0
     .fill    (X64_MMU_4LEVEL_PAGE_ENTRIES * X64_MMU_4LEVEL_PAGE_ENTRIES),  X86_MMU_PAGE_ENTRY_SIZE,  0
     .fill    (X64_MMU_4LEVEL_PAGE_ENTRIES * X64_MMU_4LEVEL_PAGE_ENTRIES),  X86_MMU_PAGE_ENTRY_SIZE,  0
@@ -395,8 +388,8 @@ X64_ASM_DATA(x64_pte_table)
   Stack
 *******************************************************************************/
     .section  .kernel.stack
+    .global   g_kernel_stack
     .align  64
-    .global  g_kernel_stack
 g_kernel_stack:
     .fill    STACKSIZE,    1,    0
 
@@ -405,11 +398,10 @@ mxcsr_mem:
     .long   0x00001f80
 
 
-
-	.align  4096
-X64_ASM_DATA(test_data)
+X64_ASM_DATA(test_data, 0x100000)
     .fill (1024*1024), 1, 0xa5
     .fill (1024*1024), 1, 0x5a
+    .fill (1024*1024), 1, 0x23
     .fill (1024*4-10), 1, 8
     .byte 1,2,3,4,5,6,7,8,9,10
 

@@ -12,13 +12,14 @@
                                              X64_LOCAL_BSS_DATA(name)
 
 
-#define X64_ASM_LOCAL_DATA(name)           .section .data.name;        \
+#define X64_ASM_LOCAL_DATA(name, aligned)  .data;        \
                                            .type name, %object;        \
+                                           .align aligned;             \
                                             name:                      \
 
 
-#define X64_ASM_DATA(name)                 .global name;               \
-                                            X64_ASM_LOCAL_DATA(name)
+#define X64_ASM_DATA(name, aligned)         .global name;               \
+                                            X64_ASM_LOCAL_DATA(name, aligned)
 
 
 #define X64_CODE32_LOCAL_FUNC_BEGIN(name)  .section .text.name;        \
