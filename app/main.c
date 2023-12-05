@@ -48,8 +48,8 @@ int main (void)
     x64_mmu_free_table(++addr);
     mmu_print_table_poor_bitmap();
 
-    uint64_t flag = X64_MMU_PRESENT_BIT;
-    x64_mmu_mmap_setup(0x140100000,(uint64_t)test_data,0x301000,flag,1,x64_mmu_alloc_table);
+    uint64_t flag = X64_MMU_PRESENT_BIT | X64_MMU_RW_BIT;
+    x64_mmu_mmap_setup(0x140100000, (uint64_t)test_data, 0x301000, flag, x64_mmu_alloc_table);
     mmu_print_table_poor_bitmap();
 
     uint8_t *dst, *src;

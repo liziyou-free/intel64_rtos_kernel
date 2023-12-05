@@ -31,7 +31,7 @@
 
 
 /**
- *\brief Entry field definition
+ *\brief x64_mmu_entry_flags_t
  */
 #define X64_MMU_PRESENT_BIT             (1ULL << 0)
 #define X64_MMU_RW_BIT                  (1ULL << 1)
@@ -137,12 +137,21 @@ void mmu_print_table_poor_bitmap (void);
 
 uint8_t x64_lookup_phyaddr (phyaddr_info *p_info, uint64_t va);
 
+/**
+ * \brief Create a mapping table and update each parameter
+ *
+ * \param va[in]        physical address
+ * \param pa[in]        virtual address address
+ * \param map_size[in]  Total length to be mapped; unit: byte
+ * \param flag[in]      memory attribute flag @x64_mmu_entry_flags_t
+ * \param pfn_alloc[in] translate table memory alloc callback function
+ */
 uint8_t x64_mmu_mmap_setup (uint64_t va,
                             uint64_t pa,
-                            uint64_t size,
+                            uint64_t map_size,
                             uint64_t flag,
-                            uint8_t  cover,
                             table_unit_t *(*pfn_alloc) (uint32_t blocks));
+
 #endif /* __ASSEMBLY__ */
 #endif /* X64_DRIVER_MMU_H_ */
 

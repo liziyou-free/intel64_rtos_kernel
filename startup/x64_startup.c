@@ -138,14 +138,14 @@ void x64_idt_init (void)
     x64_idt_int_trap_gate_t  obj;
     uint16_t interrupt_table_elements;
     uint16_t exceptiont_table_elements;
-    pf_isr_handler_t *pf_interrupt_table;
-    pf_isr_handler_t *pf_exception_table;
+    pf_isr_handler_t *pfn_interrupt_table;
+    pf_isr_handler_t *pfn_exception_table;
 
     idt_elements = sizeof(g_x64_idt) / 16; /* a descriptor:16bytes */
     interrupt_table_elements = __INTERRUPT_TABLE_BYTES__ / 8;
     exceptiont_table_elements = __EXCEPTION_TABLE_BYTES__ / 8;
-    pf_interrupt_table = ((pf_isr_handler_t *)__INTERRUPT_TABLE_ADDR__);
-    pf_exception_table = ((pf_isr_handler_t *)__EXCEPTION_TABLE_ADDR__);
+    pfn_interrupt_table = ((pf_isr_handler_t *)__INTERRUPT_TABLE_ADDR__);
+    pfn_exception_table = ((pf_isr_handler_t *)__EXCEPTION_TABLE_ADDR__);
 
     print_func_name();
 
@@ -153,7 +153,7 @@ void x64_idt_init (void)
         /* exception */
         if (vector < 32 && exceptiont_table_elements) {
             x64_create_gate_descriptor(&obj, \
-                                       *pf_exception_table++, \
+                                       *pfn_exception_table++, \
                                        X64_EXCEPTION_IST_INDEX, \
                                        TRAP_GATE_64BIT, \
                                        PRIVILEGE_LEVEL_0);
@@ -165,7 +165,7 @@ void x64_idt_init (void)
         else if (vector >= 32 && interrupt_table_elements) {
 
             x64_create_gate_descriptor(&obj, \
-                                       *pf_interrupt_table++, \
+                                       *pfn_interrupt_table++, \
                                        X64_INTERRUPT_IST_INDEX, \
                                        INTERRUPT_GATE_64BIT, \
                                        PRIVILEGE_LEVEL_0);

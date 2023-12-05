@@ -291,22 +291,28 @@ itoa (char *buf, int base, int d)
 static void
 putchar (int c)
 {
-  if (c == '\n' || c == '\r')
-    {
-    newline:
-      xpos = 0;
-      ypos++;
-      if (ypos >= LINES)
-        ypos = 0;
+  if (c == '\r' || c == '\n') {
+      x86_serial_send(0x3f8, '\r');
+      x86_serial_send(0x3f8, '\n');
       return;
-    }
-
-  *(video + (xpos + ypos * COLUMNS) * 2) = c & 0xFF;
-  *(video + (xpos + ypos * COLUMNS) * 2 + 1) = ATTRIBUTE;
-
-  xpos++;
-  if (xpos >= COLUMNS)
-    goto newline;
+  }
+  x86_serial_send(0x3f8, c);
+//  if (c == '\n' || c == '\r')
+//    {
+//    newline:
+//      xpos = 0;
+//      ypos++;
+//      if (ypos >= LINES)
+//        ypos = 0;
+//      return;
+//    }
+//
+//  *(video + (xpos + ypos * COLUMNS) * 2) = c & 0xFF;
+//  *(video + (xpos + ypos * COLUMNS) * 2 + 1) = ATTRIBUTE;
+//
+//  xpos++;
+//  if (xpos >= COLUMNS)
+//    goto newline;
 }
 
 /*  Format a string and print it on the screen, just like the libc

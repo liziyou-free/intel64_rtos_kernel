@@ -91,10 +91,15 @@
 
 #ifndef __ASSEMBLY__
 
-typedef unsigned char           multiboot_uint8_t;
-typedef unsigned short          multiboot_uint16_t;
-typedef unsigned int            multiboot_uint32_t;
-typedef unsigned long long      multiboot_uint64_t;
+//typedef unsigned char           multiboot_uint8_t;
+//typedef unsigned short          multiboot_uint16_t;
+//typedef unsigned int            multiboot_uint32_t;
+//typedef unsigned long long      multiboot_uint64_t;
+#include <stdint.h>
+#define multiboot_uint8_t     uint8_t
+#define multiboot_uint16_t    uint16_t
+#define multiboot_uint32_t    uint32_t
+#define multiboot_uint64_t    uint64_t
 
 struct multiboot_header
 {
