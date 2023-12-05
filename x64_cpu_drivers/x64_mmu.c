@@ -361,7 +361,9 @@ static uint8_t mmu_setup_table (uint64_t va,
 
 
 
-
+/**
+ * \brief Create a mapping table and update each parameter
+ */
 #define MMU_SETUP_TABLE(va, pa, flag, type, pages, page_size, map_size, pfn_alloc) \
   do { \
     mmu_setup_table(va, pa, flag, type, pages, pfn_alloc); \
@@ -371,17 +373,6 @@ static uint8_t mmu_setup_table (uint64_t va,
 } while(0)
 
 
-
-
-/**
- * \brief Create a mapping table and update each parameter
- *
- * \param va[in]        physical address
- * \param pa[in]        virtual address address
- * \param map_size[in]  Total length to be mapped; unit: byte
- * \param flag[in]      memory attribute flag @x64_mmu_entry_flags_t
- * \param pfn_alloc[in] translate table memory alloc callback function
- */
 uint8_t x64_mmu_mmap_setup (uint64_t va,
                             uint64_t pa,
                             uint64_t map_size,
@@ -404,26 +395,26 @@ uint8_t x64_mmu_mmap_setup (uint64_t va,
     }
 
     /* size < 2MB */
-    if (map_size < 0x200000ull) {
+    if (map_size < 0x200000) {
         /* all using 4k pages */
         goto  use_4kpages;
     }
 
     /* 2MB <= size < 1GB */
-    else if (map_size >= 0x200000ull && map_size < 0x40000000ull) {
+    else if (map_size >= 0x200000 && map_size < 0x40000000) {
         if (ALIGN_CHECK(pa, 0x200000) && ALIGN_CHECK(va, 0x200000)){
             /* PA and VA are both 2MB aligned */
-            page2m_num = map_size / 0x200000ull;
+            page2m_num = map_size / 0x200000;
             MMU_SETUP_TABLE(va, pa, flag, mmu_table_2m, page2m_num, \
-                            0x200000ull, map_size, pfn_alloc);
+                            0x200000, map_size, pfn_alloc);
 
             /* The remaining memory area, all using 4k pages */
             goto  use_4kpages;
         }
         else {
             /* Find how many 4k-pages there are from the nearest 2MB alignment */
-            pa_blocks = (((pa / 0x200000ull + 1ull) * 0x200000ull) - pa) / 0x1000;
-            va_blocks = (((va / 0x200000ull + 1ull) * 0x200000ull) - va) / 0x1000;
+            pa_blocks = (((pa / 0x200000 + 1) * 0x200000) - pa) / 0x1000;
+            va_blocks = (((va / 0x200000 + 1) * 0x200000) - va) / 0x1000;
             if (pa_blocks == va_blocks) {
                 /**
                  * \note Step:
@@ -434,11 +425,11 @@ uint8_t x64_mmu_mmap_setup (uint64_t va,
                  */
                 /* Step 1 */
                 MMU_SETUP_TABLE(va, pa, flag, mmu_table_4k, pa_blocks, \
-                                0x1000ull, map_size, pfn_alloc);
+                                0x1000, map_size, pfn_alloc);
                 /* Step 2 */
-                page2m_num = map_size / 0x200000ull;
+                page2m_num = map_size / 0x200000;
                 MMU_SETUP_TABLE(va, pa, flag, mmu_table_2m, page2m_num, \
-                                0x200000ull, map_size, pfn_alloc);
+                                0x200000, map_size, pfn_alloc);
                 /* Step 3 */
                 goto  use_4kpages;
             }
@@ -452,42 +443,41 @@ uint8_t x64_mmu_mmap_setup (uint64_t va,
     else {
         if (ALIGN_CHECK(pa, 0x40000000) && ALIGN_CHECK(va, 0x40000000)) {
             /* PA and VA are both 1GB aligned */
-            page1g_num = map_size / 0x40000000ull;
+            page1g_num = map_size / 0x40000000;
             MMU_SETUP_TABLE(va, pa, flag, mmu_table_1g, page1g_num, \
                             0x40000000, map_size, pfn_alloc);
 
-            page2m_num = map_size / 0x200000ull;
+            page2m_num = map_size / 0x200000;
             MMU_SETUP_TABLE(va, pa, flag, mmu_table_2m, page2m_num, \
-                            0x200000ull, map_size, pfn_alloc);
+                            0x200000, map_size, pfn_alloc);
 
             /* The remaining memory area, all using 4k pages */
             goto  use_4kpages;
         }
         else {
             /* Find how many bytes there are from the nearest 1GB alignment */
-            pa_prefix_byts = (((pa / 0x40000000ull + 1) * 0x40000000ull) - pa);
-            va_prefix_byts = (((va / 0x40000000ull + 1) * 0x40000000ull) - va);
+            pa_prefix_byts = (((pa / 0x40000000 + 1) * 0x40000000) - pa);
+            va_prefix_byts = (((va / 0x40000000 + 1) * 0x40000000) - va);
             if (pa_prefix_byts == va_prefix_byts) {
-                if (!ALIGN_CHECK(pa, 0x200000ull) || \
-                    !ALIGN_CHECK(va, 0x200000ull)) {
+                if (!ALIGN_CHECK(pa, 0x200000) || !ALIGN_CHECK(va, 0x200000)) {
                     /* 4k aligned! */
                     /* Find how many 4k-pages there are from the nearest 2MB alignment */
-                    pa_blocks = (((pa / 0x200000ull + 1) * 0x200000ull) - pa) / 0x1000;
-                    va_blocks = (((va / 0x200000ull + 1) * 0x200000ull) - pa) / 0x1000;
+                    pa_blocks = (((pa / 0x200000 + 1) * 0x200000) - pa) / 0x1000;
+                    va_blocks = (((va / 0x200000 + 1) * 0x200000) - pa) / 0x1000;
                     MMU_SETUP_TABLE(va, pa, flag, mmu_table_4k, pa_blocks, \
-                                    0x1000ull, map_size, pfn_alloc);
+                                    0x1000, map_size, pfn_alloc);
                 }
-                page2m_num = map_size / 0x200000ull;
+                page2m_num = map_size / 0x200000;
                 MMU_SETUP_TABLE(va, pa, flag, mmu_table_2m, page2m_num, \
-                                0x200000ull, map_size, pfn_alloc);
+                                0x200000, map_size, pfn_alloc);
 
-                page1g_num = map_size / 0x40000000ull;
+                page1g_num = map_size / 0x40000000;
                 MMU_SETUP_TABLE(va, pa, flag, mmu_table_1g, page1g_num, \
                                 0x40000000, map_size, pfn_alloc);
 
-                page2m_num = map_size / 0x200000ull;
+                page2m_num = map_size / 0x200000;
                 MMU_SETUP_TABLE(va, pa, flag, mmu_table_2m, page2m_num, \
-                                0x200000ull, map_size, pfn_alloc);
+                                0x200000, map_size, pfn_alloc);
                 /* The remaining memory area, all using 4k pages */
                 goto  use_4kpages;
             }
@@ -500,7 +490,7 @@ uint8_t x64_mmu_mmap_setup (uint64_t va,
 use_4kpages:
     page4k_num = map_size / 0x1000;
     MMU_SETUP_TABLE(va, pa, flag, mmu_table_4k, page4k_num, \
-                    0x1000ull, map_size, pfn_alloc);
+                    0x1000, map_size, pfn_alloc);
     return 0;
 }
 

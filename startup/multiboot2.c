@@ -16,6 +16,7 @@
  */
 
 #include "multiboot2.h"
+#include <stdio.h>
 
 /*  Macros. */
 
@@ -41,8 +42,8 @@ static volatile unsigned char *video;
 void cmain (unsigned long magic, unsigned long addr);
 static void cls (void);
 static void itoa (char *buf, int base, int d);
-static void putchar (int c);
-void printf (const char *format, ...);
+//static void putchar (int c);
+//void printf (const char *format, ...);
 
 /*  Check if MAGIC is valid and print the Multiboot information structure
    pointed by ADDR. */
@@ -73,6 +74,7 @@ cmain (unsigned long magic, unsigned long addr)
 
   size = *(unsigned *) addr;
   printf ("Announced mbi size 0x%x\n", size);
+  fflush(stdout);
   for (tag = (struct multiboot_tag *) (addr + 8);
        tag->type != MULTIBOOT_TAG_TYPE_END;
        tag = (struct multiboot_tag *) ((multiboot_uint8_t *) tag
@@ -288,96 +290,96 @@ itoa (char *buf, int base, int d)
 }
 
 /*  Put the character C on the screen. */
-static void
-putchar (int c)
-{
-  if (c == '\r' || c == '\n') {
-      x86_serial_send(0x3f8, '\r');
-      x86_serial_send(0x3f8, '\n');
-      return;
-  }
-  x86_serial_send(0x3f8, c);
-//  if (c == '\n' || c == '\r')
-//    {
-//    newline:
-//      xpos = 0;
-//      ypos++;
-//      if (ypos >= LINES)
-//        ypos = 0;
+//static void
+//putchar (int c)
+//{
+//  if (c == '\r' || c == '\n') {
+//      x86_serial_send(0x3f8, '\r');
+//      x86_serial_send(0x3f8, '\n');
 //      return;
+//  }
+//  x86_serial_send(0x3f8, c);
+////  if (c == '\n' || c == '\r')
+////    {
+////    newline:
+////      xpos = 0;
+////      ypos++;
+////      if (ypos >= LINES)
+////        ypos = 0;
+////      return;
+////    }
+////
+////  *(video + (xpos + ypos * COLUMNS) * 2) = c & 0xFF;
+////  *(video + (xpos + ypos * COLUMNS) * 2 + 1) = ATTRIBUTE;
+////
+////  xpos++;
+////  if (xpos >= COLUMNS)
+////    goto newline;
+//}
+//
+///*  Format a string and print it on the screen, just like the libc
+//   function printf. */
+//void
+//printf (const char *format, ...)
+//{
+//  char **arg = (char **) &format;
+//  int c;
+//  char buf[20];
+//
+//  arg++;
+//
+//  while ((c = *format++) != 0)
+//    {
+//      if (c != '%')
+//        putchar (c);
+//      else
+//        {
+//          char *p, *p2;
+//          int pad0 = 0, pad = 0;
+//
+//          c = *format++;
+//          if (c == '0')
+//            {
+//              pad0 = 1;
+//              c = *format++;
+//            }
+//
+//          if (c >= '0' && c <= '9')
+//            {
+//              pad = c - '0';
+//              c = *format++;
+//            }
+//
+//          switch (c)
+//            {
+//            case 'd':
+//            case 'u':
+//            case 'x':
+//              itoa (buf, c, *((int *) arg++));
+//              p = buf;
+//              goto string;
+//              break;
+//
+//            case 's':
+//              p = *arg++;
+//              if (! p)
+//                p = "(null)";
+//
+//            string:
+//              for (p2 = p; *p2; p2++);
+//              for (; p2 < p + pad; p2++)
+//                putchar (pad0 ? '0' : ' ');
+//              while (*p)
+//                putchar (*p++);
+//              break;
+//
+//            default:
+//              putchar (*((int *) arg++));
+//              break;
+//            }
+//        }
 //    }
-//
-//  *(video + (xpos + ypos * COLUMNS) * 2) = c & 0xFF;
-//  *(video + (xpos + ypos * COLUMNS) * 2 + 1) = ATTRIBUTE;
-//
-//  xpos++;
-//  if (xpos >= COLUMNS)
-//    goto newline;
-}
-
-/*  Format a string and print it on the screen, just like the libc
-   function printf. */
-void
-printf (const char *format, ...)
-{
-  char **arg = (char **) &format;
-  int c;
-  char buf[20];
-
-  arg++;
-  
-  while ((c = *format++) != 0)
-    {
-      if (c != '%')
-        putchar (c);
-      else
-        {
-          char *p, *p2;
-          int pad0 = 0, pad = 0;
-          
-          c = *format++;
-          if (c == '0')
-            {
-              pad0 = 1;
-              c = *format++;
-            }
-
-          if (c >= '0' && c <= '9')
-            {
-              pad = c - '0';
-              c = *format++;
-            }
-
-          switch (c)
-            {
-            case 'd':
-            case 'u':
-            case 'x':
-              itoa (buf, c, *((int *) arg++));
-              p = buf;
-              goto string;
-              break;
-
-            case 's':
-              p = *arg++;
-              if (! p)
-                p = "(null)";
-
-            string:
-              for (p2 = p; *p2; p2++);
-              for (; p2 < p + pad; p2++)
-                putchar (pad0 ? '0' : ' ');
-              while (*p)
-                putchar (*p++);
-              break;
-
-            default:
-              putchar (*((int *) arg++));
-              break;
-            }
-        }
-    }
-}
+//}
 
 
 int sumab(int a, int b) {

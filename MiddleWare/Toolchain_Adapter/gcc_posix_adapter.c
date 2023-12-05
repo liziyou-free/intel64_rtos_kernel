@@ -44,11 +44,31 @@ int _close      (int){return 1;}
 int _swiclose   (int){return 1;}
 int _open       (const char *, int, ...){return 1;}
 int _swiopen    (const char *, int){return 1;}
-int _write      (int, const void *, size_t){return 1;}
+//int _write      (int, const void *, size_t){return 1;}
 int _swiwrite   (int, const void *, size_t){return 1;}
 _off_t  _lseek      (int, _off_t, int){return 1;}
 _off_t  _swilseek   (int, _off_t, int){return 1;}
 int _read       (int, void *, size_t){return 1;}
 int _swiread    (int, void *, size_t){return 1;}
 void    initialise_monitor_handles (void){}
+
+
+#include "../../x64_driver/x64_serial.h"s
+
+int _write (int file, const void *src, size_t num)
+{
+  char *ch = (char*)src;
+  int cnt = num;
+
+  while(cnt--) {
+      if (*ch == '\n') {
+          x86_serial_send(0x3f8, '\r');
+      }
+      x86_serial_send(0x3f8, *ch++);
+  }
+  return num;
+}
+
+
+
 

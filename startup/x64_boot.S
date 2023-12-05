@@ -37,8 +37,6 @@
 .global bss_end
 
 
-
-
 /*  C symbol format. HAVE_ASM_USCORE is defined by configure. */
 #ifdef HAVE_ASM_USCORE
 # define EXT_C(sym)                     _ ## sym

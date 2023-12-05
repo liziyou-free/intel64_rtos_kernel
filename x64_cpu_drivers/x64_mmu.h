@@ -138,7 +138,7 @@ void mmu_print_table_poor_bitmap (void);
 uint8_t x64_lookup_phyaddr (phyaddr_info *p_info, uint64_t va);
 
 /**
- * \brief Create a mapping table and update each parameter
+ * \brief Create memory mapping from VA to PA
  *
  * \param va[in]        physical address
  * \param pa[in]        virtual address address

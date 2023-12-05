@@ -87,6 +87,12 @@ void printf_init(void){
 
 
 
+int __io_putchar(int ch) {
+    x86_serial_send(0x3f8, ch);
+}
+
+
+
 /******************************************************************************/
 //
 //void task0 (void *p_arg) {
