@@ -81,7 +81,7 @@ void x64_lvgl_init (void)
 
     lv_init();
 
-    lv_disp_draw_buf_init(&disp_buf, buf1, NULL, 1920*1080);
+    lv_disp_draw_buf_init(&disp_buf, buf1, NULL, 1920*1080*1000);
 
     lv_disp_drv_init(&disp_drv);            /*Basic initialization*/
     disp_drv.draw_buf = &disp_buf;              /*Set an initialized buffer*/

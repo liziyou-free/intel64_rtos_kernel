@@ -11,14 +11,6 @@ MEMORY
     RAM(rw)             : ORIGIN = 0x04100000, LENGTH = 64M
     HEAP (rw)           : ORIGIN = 0x08100000, LENGTH = 64M
     DATA_ROM (r)        : ORIGIN = 0x0C100000, LENGTH = 64M
-    
-    /*
-    DMAZONE (rw)        : ORIGIN = 0x65F00000, LENGTH = 1M
-    lcd_vram (rw)       : ORIGIN = 0x66000000, LENGTH = 16M
-    user_code(rx)       : ORIGIN = 0x67000000, LENGTH = 8M 
-    user_data(rw)       : ORIGIN = 0x67800000, LENGTH = 4M
-    user_heap(rw)       : ORIGIN = 0x67C00000, LENGTH = 4M
-    */
 }
 
 
@@ -87,6 +79,11 @@ SECTIONS
     KEEP(*(.kernel.stack))
   } > RAM
   __stack_end = .;
+  
+  .heap : {
+      . = ALIGN(64);
+      __malloc_start = .;
+  } > HEAP
 }
 
 
@@ -107,4 +104,6 @@ PROVIDE(bss_end = __bss_end);
 PROVIDE(stack_start = __stack_start);
 PROVIDE(stack_end = __stack_end);
 
+PROVIDE(malloc_region_start = __malloc_start);
+PROVIDE(malloc_region_size = LENGTH(HEAP));
 
