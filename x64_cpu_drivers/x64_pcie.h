@@ -20,19 +20,19 @@
 #ifndef X64_PCIE_H_
 #define X64_PCIE_H_
 
-struct  config_header_type0{
-
-};
-
-
-struct  config_header_type1{
-
-};
-
-
-struct {
-
-}pci_compatible_config_space_t;
+//struct  config_header_type0{
+//
+//};
+//
+//
+//struct  config_header_type1{
+//
+//};
+//
+//
+//struct {
+//
+//}pci_compatible_config_space_t;
 
 
 /**
@@ -46,6 +46,10 @@ struct {
 #define CONFIG_ADDRESS_PORT        0x0CF8
 
 #define CONFIG_DATA_PORT           0x0CFC
+
+
+void pcie_device_enum();
+
 
 #endif /* X64_PCIE_H_ */
 

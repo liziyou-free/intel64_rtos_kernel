@@ -23,9 +23,13 @@
 #include <stdint.h>
 #include <sys/cdefs.h>
 
-typedef  unsigned char       u8;
-typedef  unsigned short int  u16;
-typedef  unsigned long int   u32;
+//typedef  unsigned char       u8;
+//typedef  unsigned short int  u16;
+//typedef  unsigned long int   u32;
+
+typedef  uint8_t    u8;
+typedef  uint16_t   u16;
+typedef  uint32_t   u32;
 
 
 static inline uint64_t x64_read_msr(uint32_t msr)

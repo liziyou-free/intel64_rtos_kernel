@@ -23,6 +23,7 @@
 #include "./x64_common.h"
 #include "../x64_cpu_drivers/x64_apic.h"
 #include "../x64_cpu_drivers/x64_acpi.h"
+#include "../x64_cpu_drivers/x64_pcie.h"
 #include "../x64_cpu_drivers/x64_mmu.h"
 #include "../x64_cpu_drivers/x64_segment_def.h"
 
@@ -231,6 +232,7 @@ void x64_arch_init (void)
 
 #endif
     acpi_init();
+    pcie_device_enum();
 }
 
 
