@@ -129,6 +129,12 @@ void x86_serial_send_str(uint16_t port, char *str) {
 }
 
 
+void x86_serial_send_bin(uint16_t port, char *src, uint64_t len) {
+    while(len--) {
+        x86_serial_send(port, *src++);
+    }
+}
+
 char x86_serial_receive(uint16_t port) {
     while ((inb(port + 5) & 1) == 0);
     return inb(port);

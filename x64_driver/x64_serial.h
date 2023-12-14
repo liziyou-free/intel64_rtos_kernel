@@ -150,6 +150,7 @@ void serial_init(uint16_t port_base, uint32_t baudrate, uint8_t parity);
 
 void x86_serial_send(uint16_t port, char c);
 void x86_serial_send_str(uint16_t port, char *str);
+void x86_serial_send_bin(uint16_t port, char *src, uint64_t len);
 char x86_serial_receive(uint16_t port);
 void X86_uart_enable(uint16_t port_base);
 void X86_uart_disable(uint16_t port_base);

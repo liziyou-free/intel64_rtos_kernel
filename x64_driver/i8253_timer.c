@@ -58,10 +58,16 @@ void x86_timer_init (void)
 
 void timer_interrupt_handler (void *p_param)
 {
+    static uint16_t global_tick = 0;
     /* LVGL tick */
     void lv_tick_inc(uint32_t tick_period);
-    //lv_tick_inc(1);
-    x86_serial_send(0X3F8, '#');
+    lv_tick_inc(1);
+
+    global_tick++;
+    if(global_tick == 1000) {
+        x86_serial_send(0X3F8, '#');
+        global_tick = 0;
+    }
 }
 
 

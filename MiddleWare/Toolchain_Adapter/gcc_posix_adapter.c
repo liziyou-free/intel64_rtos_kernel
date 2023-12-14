@@ -71,9 +71,9 @@ _write(fd, buf, nbytes)
 
   for (i = 0; i < nbytes; i++) {
     if (*(buf + i) == '\n') {
-//        x86_serial_send(0x3f8, '\r');
+        x86_serial_send(0x3f8, '\r');
     }
-//    x86_serial_send (0x3f8, *(buf + i));
+    x86_serial_send (0x3f8, *(buf + i));
   }
   return (nbytes);
 }

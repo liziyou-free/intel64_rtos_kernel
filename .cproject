@@ -26,7 +26,7 @@
 							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.ELF" id="cdt.managedbuild.targetPlatform.gnu.cross.1888155554" isAbstract="false" osList="all" superClass="cdt.managedbuild.targetPlatform.gnu.cross"/>
 							<builder buildPath="${workspace_loc:/x86_64_prj}/Debug" id="cdt.managedbuild.builder.gnu.cross.554764850" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="Gnu Make Builder" parallelBuildOn="true" parallelizationNumber="4" superClass="cdt.managedbuild.builder.gnu.cross"/>
 							<tool command="gcc  ${CCFLAGS}  ${CFLAGS}   -T${CWD}/../x86.lds" commandLinePattern="${COMMAND} ${FLAGS} ${OUTPUT_FLAG} ${OUTPUT_PREFIX}${OUTPUT} ${INPUTS} ${EXTRA_FLAGS}" id="cdt.managedbuild.tool.gnu.cross.c.compiler.1212671178" name="Cross GCC Compiler" superClass="cdt.managedbuild.tool.gnu.cross.c.compiler">
-								<option defaultValue="gnu.c.optimization.level.none" id="gnu.c.compiler.option.optimization.level.1570126238" name="Optimization Level" superClass="gnu.c.compiler.option.optimization.level" useByScannerDiscovery="false" value="gnu.c.optimization.level.most" valueType="enumerated"/>
+								<option defaultValue="gnu.c.optimization.level.none" id="gnu.c.compiler.option.optimization.level.1570126238" name="Optimization Level" superClass="gnu.c.compiler.option.optimization.level" useByScannerDiscovery="false" value="gnu.c.optimization.level.none" valueType="enumerated"/>
 								<option id="gnu.c.compiler.option.debugging.level.1263447196" name="Debug Level" superClass="gnu.c.compiler.option.debugging.level" useByScannerDiscovery="false" value="gnu.c.debugging.level.max" valueType="enumerated"/>
 								<option id="gnu.c.compiler.option.dialect.std.287651428" name="Language standard" superClass="gnu.c.compiler.option.dialect.std" useByScannerDiscovery="true" value="gnu.c.compiler.dialect.c99" valueType="enumerated"/>
 								<option id="gnu.c.compiler.option.dialect.flags.1668619279" name="Other dialect flags" superClass="gnu.c.compiler.option.dialect.flags" useByScannerDiscovery="true" value="" valueType="string"/>
@@ -62,7 +62,7 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="MiddleWare/toolchain_adapter|toolchain_adapter|MiddleWare/LVGL/docs|MiddleWare/LVGL/env_support|MiddleWare/LVGL/scripts|MiddleWare/LVGL/tests|startup/x86_startup.c|startup/startup.S|x64_cpu_drivers|startup/x86_isr.S" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="MiddleWare/ACPICA|MiddleWare/toolchain_adapter|toolchain_adapter|MiddleWare/LVGL/docs|MiddleWare/LVGL/env_support|MiddleWare/LVGL/scripts|MiddleWare/LVGL/tests|startup/x86_startup.c|startup/startup.S|x64_cpu_drivers|startup/x86_isr.S" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="x64_cpu_drivers"/>
 					</sourceEntries>
 				</configuration>
@@ -115,7 +115,7 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="MiddleWare/toolchain_adapter|toolchain_adapter|MiddleWare/LVGL/docs|MiddleWare/LVGL/env_support|MiddleWare/LVGL/scripts|MiddleWare/LVGL/tests|startup/x86_startup.c|startup/startup.S|x64_cpu_drivers|startup/x86_isr.S" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="MiddleWare/ACPICA|MiddleWare/toolchain_adapter|toolchain_adapter|MiddleWare/LVGL/docs|MiddleWare/LVGL/env_support|MiddleWare/LVGL/scripts|MiddleWare/LVGL/tests|startup/x86_startup.c|startup/startup.S|x64_cpu_drivers|startup/x86_isr.S" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="x64_cpu_drivers"/>
 					</sourceEntries>
 				</configuration>

@@ -113,11 +113,21 @@ cmain (unsigned long magic, unsigned long addr)
             multiboot_memory_map_t *mmap;
 
             printf ("mmap\n");
-            printf("test 64bit hex: %#llx \n",0x1234123400000000ull);
             for (mmap = ((struct multiboot_tag_mmap *) tag)->entries;
                 (multiboot_uint8_t *) mmap < (multiboot_uint8_t *) tag + tag->size;
-                 mmap = (multiboot_memory_map_t *) ((unsigned long) mmap + ((struct multiboot_tag_mmap *) tag)->entry_size))
-              printf (" base_addr = %llx,length = %llx, type = %x\n", mmap->addr, mmap->len, mmap->type);
+                 mmap = (multiboot_memory_map_t *) ((unsigned long) mmap + ((struct multiboot_tag_mmap *) tag)->entry_size)) {
+
+                printf (" base_addr = %llx,length = %llx, type = %x\n", mmap->addr, mmap->len, mmap->type);
+                if (mmap->type == 3) {
+                    extern uint64_t  g_acpi_config_space_addr;
+                    extern uint64_t  g_acpi_config_space_len;
+                    if (g_acpi_config_space_addr)
+                        continue;
+                    g_acpi_config_space_addr = mmap->addr;
+                    g_acpi_config_space_len  = mmap->len;
+                    printf("\r\n ****** Config space addr %#llx \r\n", g_acpi_config_space_addr);
+                }
+            }
           }
           break;
         case MULTIBOOT_TAG_TYPE_FRAMEBUFFER:

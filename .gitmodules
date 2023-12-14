@@ -1,3 +1,6 @@
 [submodule "MiddleWare/LVGL"]
 	path = MiddleWare/LVGL
 	url = https://github.com/lvgl/lvgl.git
+[submodule "MiddleWare/ACPICA"]
+	path = MiddleWare/ACPICA
+	url = https://github.com/acpica/acpica.git

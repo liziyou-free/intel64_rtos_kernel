@@ -44,8 +44,8 @@ typedef enum {
  * \brief Intel 8253 timer data format
  */
 typedef enum{
-    bcd_format = 0,    /* 4 decades */
-    binary_format,     /* 16-bit binary */
+    binary_format = 0,     /* 16-bit binary */
+    bcd_format,    /* 4 decades */
 }data_format_t;
 
 
