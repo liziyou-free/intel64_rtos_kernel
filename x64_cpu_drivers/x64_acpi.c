@@ -74,12 +74,6 @@ void acpi_init(void)
 
 static char *string_search(char* src, uint64_t range, const char* need)
 {
-//    if (*src == 0) {
-//        if (*need)
-//           return (char *) NULL;
-//        return (char *) src;
-//     }
-
     while (range--) {
         size_t i;
         i = 0;

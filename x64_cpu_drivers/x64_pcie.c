@@ -17,6 +17,7 @@
 * web site:    http://www.zlg.cn/
 *******************************************************************************/
 
+#include <stdio.h>
 #include <stdint.h>
 #include "./x64_pcie.h"
 #include "../startup/x64_common.h"
@@ -57,9 +58,11 @@ void pcie_device_enum()
 
     for (int j = 0; j < 16; j++) {
         info[j] = pci_config_space_read(0, j);
+        if (j == 4)    printf("Root Complex Config Base Address: %llx \r\n", info[4]);
     }
     for (int j = 0; j < 16; j++) {
         info[j] = pci_config_space_read(BDF(0, 3, 0), j);
+        if (j == 4)    printf("Device Config Base Address: %#llx \r\n", info[4]);
     }
     return;
 }
