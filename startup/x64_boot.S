@@ -272,7 +272,6 @@ _pdt_loop:
     push     %rsi
     push     %rdi
     call    printf_init
-    call    printf_init
     pop     %rdi
     pop     %rsi
 
