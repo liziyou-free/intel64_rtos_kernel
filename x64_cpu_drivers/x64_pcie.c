@@ -19,6 +19,7 @@
 
 #include <stdint.h>
 #include <stdio.h>
+#include <string.h>
 #include "./x64_pcie.h"
 #include "../startup/x64_common.h"
 
@@ -95,19 +96,24 @@ void dump_pcie_dev_info(uint32_t bdf)
 
     if (obj->vendor_id == 0xffff) return;
     if (obj->class_code.base_class == 6) {
-        obj_type1 = (cfg_header_type0_t *)&pci_cfg[0];
+        obj_type1 = (cfg_header_type1_t *)&pci_cfg[0];
         PRINT_PCI_BRIDGE_SYMBOL();
         PRINT_LINE("BDF:  %d:%d:%d", (bdf >> 8), ((bdf >> 3) & 0x01F), (bdf & 0x07));
         PRINT_LINE("Class-Code: %s", classcode_to_text(&obj_type1->class_code));
         PRINT_LINE("Vendor-ID: %#x", obj_type1->vendor_id);
         PRINT_LINE("Device-ID: %#x", obj_type1->device_id);
         PRINT_LINE("Header-Type: %#x", obj_type1->header_type);
+        PRINT_LINE("Command: %#x", obj_type1->command);
+        PRINT_LINE("Status: %#x", obj_type1->status);
         PRINT_LINE("BA0: %#x", obj_type1->base_addr[0]);
         PRINT_LINE("BA1: %#x", obj_type1->base_addr[1]);
-
         PRINT_LINE("Primary bus num: %#x", obj_type1->primary_bus_num);
         PRINT_LINE("Secondary bus num: %#x", obj_type1->secondary_bus_num);
         PRINT_LINE("Subordinate bus num: %#x", obj_type1->subordinate_bus_num);
+        PRINT_LINE("I/O base: %#x", obj_type1->io_base);
+        PRINT_LINE("I/O limit: %#x", obj_type1->io_limit);
+        PRINT_LINE("Memory base: %#x", obj_type1->memory_base);
+        PRINT_LINE("Memory limit: %#x", obj_type1->memory_limit);
 
         PRINT_LINE("Interrupt-Line: %#x", obj_type1->interrupt_line);
         PRINT_LINE("Interrupt-Pin: %#x", obj_type1->interrupt_pin);
@@ -118,6 +124,8 @@ void dump_pcie_dev_info(uint32_t bdf)
         PRINT_LINE("Vendor-ID: %#x", obj->vendor_id);
         PRINT_LINE("Device-ID: %#x", obj->device_id);
         PRINT_LINE("Header-Type: %#x", obj->header_type);
+        PRINT_LINE("Command: %#x", obj->command);
+        PRINT_LINE("Status: %#x", obj->status);
         PRINT_LINE("BA0: %#x", obj->base_addr[0]);
         PRINT_LINE("BA1: %#x", obj->base_addr[1]);
         PRINT_LINE("BA2: %#x", obj->base_addr[2]);
@@ -144,8 +152,34 @@ void pcie_device_enum()
         }
     }
 
-//    dump_pcie_dev_info(BDF(0, 1, 3));
     return;
+}
+
+
+
+int8_t pcie_search_dev(uint16_t vendor_id, uint16_t dev_id, cfg_header_type0_t *obj)
+{
+    uint8_t pci_cfg[sizeof(cfg_header_type0_t)];
+    cfg_header_type0_t *cfg;
+    uint32_t bdf;
+
+    for (uint16_t bus = 0; bus < 256; bus++) {
+        for (uint8_t device = 0; device < 32; device++) {
+            for (uint8_t function = 0; function < 8; function++) {
+                bdf = BDF(bus, device, function);
+                memset(pci_cfg, 0, sizeof(*pci_cfg));
+                pcie_read_config_header(bdf, (void *)&pci_cfg[0]);
+                cfg = (cfg_header_type0_t *)&pci_cfg[0];
+                if (cfg->vendor_id == vendor_id && cfg->device_id == dev_id)
+                {
+                    memcpy(obj, cfg, sizeof(*cfg));
+                    return 0;
+                }
+            }
+        }
+    }
+
+    return 1;
 }
 
 
@@ -238,7 +272,7 @@ char* classcode_to_text(class_code_t *classcode)
           break;
     }
 
-    return p_text;
+    return (char*)p_text;
 }
 
 

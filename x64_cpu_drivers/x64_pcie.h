@@ -122,6 +122,7 @@ typedef struct {
 
 
 void pcie_device_enum();
+int8_t pcie_search_dev(uint16_t vendor_id, uint16_t dev_id, cfg_header_type0_t *obj);
 
 
 #endif /* X64_PCIE_H_ */

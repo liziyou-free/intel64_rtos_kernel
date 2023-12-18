@@ -20,6 +20,7 @@
 #include "../x64_cpu_drivers/x64_apic.h"
 #include "../x64_cpu_drivers/x64_mmu.h"
 #include "../x64_driver/i8253_timer.h"
+#include "../x64_driver/ch382_driver.h"
 #include "../x64_driver/x64_serial.h"
 #include "../Board/x64_pc_board.h"
 
@@ -67,6 +68,34 @@ int main (void)
     }
 
     x86_timer_init();
+    ch382_device_init();
+    ch382_serial_send_str(0, "I'm CH382 Serial !!!\r\n");
+    ch382_serial_send_str(0, "I'm CH382 Serial !!!\r\n");
+    ch382_serial_send_str(0, "I'm CH382 Serial !!!\r\n");
+    ch382_serial_send_str(0, "I'm CH382 Serial !!!\r\n");
+    ch382_serial_send_str(0, "I'm CH382 Serial !!!\r\n");
+    ch382_serial_send_str(0, "I'm CH382 Serial !!!\r\n");
+    ch382_serial_send_str(0, "I'm CH382 Serial !!!\r\n");
+    ch382_serial_send_str(0, "I'm CH382 Serial !!!\r\n");
+    ch382_serial_send_str(0, "I'm CH382 Serial !!!\r\n");
+    ch382_serial_send_str(0, "I'm CH382 Serial !!!\r\n");
+    ch382_serial_send_str(0, "I'm CH382 Serial !!!\r\n");
+    ch382_serial_send_str(0, "I'm CH382 Serial !!!\r\n");
+    ch382_serial_send_str(0, "I'm CH382 Serial !!!\r\n");
+    ch382_serial_send_str(0, "I'm CH382 Serial !!!\r\n");
+    ch382_serial_send_str(0, "I'm CH382 Serial !!!\r\n");
+    ch382_serial_send_str(0, "I'm CH382 Serial !!!\r\n");
+    ch382_serial_send_str(0, "I'm CH382 Serial !!!\r\n");
+    ch382_serial_send_str(0, "I'm CH382 Serial !!!\r\n");
+    ch382_serial_send_str(0, "I'm CH382 Serial !!!\r\n");
+    ch382_serial_send_str(0, "I'm CH382 Serial !!!\r\n");
+    ch382_serial_send_str(0, "I'm CH382 Serial !!!\r\n");
+    ch382_serial_send_str(0, "I'm CH382 Serial !!!\r\n");
+    ch382_serial_send_str(0, "I'm CH382 Serial !!!\r\n");
+    ch382_serial_send_str(0, "I'm CH382 Serial !!!\r\n");
+    ch382_serial_send_str(0, "I'm CH382 Serial !!!\r\n");
+
+
     serial_init(X64_PORT_COM1, 115200, 1);
     x86_serial_send_str(X64_PORT_COM1, "Application Start!\r\n");
     x64_lvgl_init();
