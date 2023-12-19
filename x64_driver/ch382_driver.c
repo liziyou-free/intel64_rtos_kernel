@@ -17,14 +17,24 @@ static uint32_t __g_ch382_currunt_clk = CH382_CRYSTAL;
 static uint16_t __g_port_base;
 
 
-static void ch382_enale_pll(uint32_t io_port)
+static void ch382_enable_pll(uint32_t port_base)
 {
-  __g_ch382_currunt_clk *= 2;
+    uint8_t reg;
+    reg = inb(port_base + IER_REG_OFFSET);
+    reg |= IER_CK2X_BIT;
+    outb(reg, port_base + IER_REG_OFFSET);
+    __g_ch382_currunt_clk *= 2;
+    return;
 }
 
-static void ch382_disable_pll(uint16_t io_port)
+static void ch382_disable_pll(uint16_t port_base)
 {
-  __g_ch382_currunt_clk = CH382_CRYSTAL;
+    uint8_t reg;
+    reg = inb(port_base + IER_REG_OFFSET);
+    reg &= ~IER_CK2X_BIT;
+    outb(reg, port_base + IER_REG_OFFSET);
+    __g_ch382_currunt_clk = CH382_CRYSTAL;
+    return;
 }
 
 
@@ -33,13 +43,14 @@ void ch382_serial_set_baudrate(uint16_t io_port, uint32_t baudrate)
     uint8_t  reg;
     uint16_t divisor;
 
-    /* Unlock DLAB */
+    /* Setup DLAB */
     reg = inb(io_port + LCR_REG_OFFSET);
     outb((reg | LCR_DLAB_BIT), io_port + LCR_REG_OFFSET);
-    divisor = __g_ch382_currunt_clk / 12 / baudrate;
+    divisor = __g_ch382_currunt_clk / 16 / baudrate;
     outb((divisor & 0x00ff), io_port + DLL_REG_OFFSET);
     outb((divisor >> 8), io_port + DLM_REG_OFFSET);
-    /* Recovery register */
+    /* Clear DLAB */
+    reg &= ~LCR_DLAB_BIT;
     outb(reg, io_port + LCR_REG_OFFSET);
     return;
 }
@@ -48,8 +59,9 @@ void ch382_serial_set_baudrate(uint16_t io_port, uint32_t baudrate)
 void ch383_serial_init(uint16_t port_base, uint32_t baudrate, uint8_t parity)
 {
     uint8_t    reg;
-    uint16_t   data;
-    void*      p_para;
+
+    /* Enable PLL */
+    ch382_enable_pll(port_base);
 
     /* Set baud rate */
     ch382_serial_set_baudrate(port_base, baudrate);
@@ -106,7 +118,7 @@ void ch382_device_init ()
         return;
     }
 
-    ch383_serial_init(io_addr, 9600, 1);
+    ch383_serial_init(io_addr, 115200, 1);
     return;
 }
 

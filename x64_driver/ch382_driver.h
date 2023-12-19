@@ -13,10 +13,21 @@
 
 #define CH382_CRYSTAL      22118400  /* 22.1184MHz */
 
+/* Register Define */
 #define RBR_REG_OFFSET     0xC0
 #define THR_REG_OFFSET     0xC0
 #define DLL_REG_OFFSET     0xC0      /* DLAB == 1 */
+
 #define IER_REG_OFFSET     0xC1
+# define IER_RESET_BIT     (1 << 7)
+# define IER_LOWPOWER_BIT  (1 << 6)
+# define IER_CK2X_BIT      (1 << 5)
+# define IER_MODEM_BIT     (1 << 3)
+# define IER_LINES_BIT     (1 << 2)
+# define IER_THRE_BIT      (1 << 1)
+# define IER_RECV_BIT      (1 << 0)
+
+
 #define DLM_REG_OFFSET     0xC1      /* DLAB == 1 */
 #define IIR_REG_OFFSET     0xC2
 #define FCR_REG_OFFSET     0xC2
@@ -24,8 +35,8 @@
 #define LCR_REG_OFFSET     0xC3
 # define LCR_DLAB_BIT      (1 << 7)
 # define LCR_BREAKEN_BIT   (1 << 6)
-# define LCR_ODD_PARITY    (1 << 4)
-# define LCR_EVEN_PARITY   (3 << 4)
+# define LCR_ODD_PARITY    (0 << 4)
+# define LCR_EVEN_PARITY   (1 << 4)
 # define LCR_PARITY_EN     (1 << 3)
 # define LCR_ONE_STOP      (0 << 2)
 # define LCR_TWO_STOP      (1 << 2)
