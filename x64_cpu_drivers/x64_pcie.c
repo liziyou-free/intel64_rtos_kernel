@@ -20,8 +20,13 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdbool.h>
 #include "./x64_pcie.h"
 #include "../startup/x64_common.h"
+
+
+#define ALIGNED(addr, align)    ((~(align - 1)) & addr)
+
 
 #define PRINT_PCI_DEV_SYMBOL() \
     printf("\r\n"); \
@@ -44,7 +49,7 @@
 char* classcode_to_text(class_code_t *classcode);
 
 
-void pci_atomic_write(uint32_t bdf, uint32_t reg, uint32_t data)
+void pcie_atomic_write(uint32_t bdf, uint32_t reg, uint32_t data)
 {
     uint32_t addr_port;
 
@@ -55,7 +60,7 @@ void pci_atomic_write(uint32_t bdf, uint32_t reg, uint32_t data)
 }
 
 
-uint32_t pci_atomic_read(uint32_t bdf, uint32_t reg)
+uint32_t pcie_atomic_read(uint32_t bdf, uint32_t reg)
 {
     uint32_t addr_port;
     uint32_t data;
@@ -76,7 +81,7 @@ void pcie_read_config_header(uint32_t bdf, void *obj)
     info = (uint32_t *)obj;
 
     for (int j = 0; j < 16; j++) {
-        info[j] = pci_atomic_read(bdf, j);
+        info[j] = pcie_atomic_read(bdf, j);
     }
     return;
 }
@@ -181,6 +186,59 @@ int8_t pcie_search_dev(uint16_t vendor_id, uint16_t dev_id, cfg_header_type0_t *
 
     return 1;
 }
+
+
+static uint32_t pcie_read_register(uint32_t bdf, uint32_t offset)
+{
+    uint32_t off;
+    uint32_t reg;
+    uint8_t  shiftbit;
+
+    off = ALIGNED(offset, 4);
+    reg = pcie_atomic_read(bdf, off);
+    shiftbit = (offset - off) * 8;
+    reg >>= shiftbit;
+    return reg;
+}
+
+
+#define REG_OFFSET(struct_type, element) \
+                  ((uint32_t)(&(((struct_type *)0)->element)))
+
+
+
+uint32_t pcie_get_capbility (uint32_t bdf, uint16_t cap_id, bool *ret)
+{
+    uint32_t offset;
+    uint32_t reg;
+    uint32_t cap_pointor;
+    uint32_t id;
+
+    if (!ret) {
+        for (;;);
+    }
+
+    offset = REG_OFFSET(cfg_header_type0_t, status);
+    reg = pcie_read_register(bdf, offset);
+    cap_pointor = 0;
+    if (reg & PCI_STA_REG_CAP_BIT) {
+        offset = REG_OFFSET(cfg_header_type0_t, capability_pointer);
+        reg = pcie_read_register(bdf, offset);
+        cap_pointor = (reg & 0x00ffu);
+    }
+
+    while (cap_pointor != 0) {
+        reg = pcie_atomic_read(bdf, cap_pointor);
+        id = reg & 0x00ffu;
+        if (id == cap_id) {
+            *ret = true;
+            return reg;
+        }
+        cap_pointor = (reg >> 8) & 0x00ffu;
+    }
+    return 0;
+}
+
 
 
 char* classcode_to_text(class_code_t *classcode)

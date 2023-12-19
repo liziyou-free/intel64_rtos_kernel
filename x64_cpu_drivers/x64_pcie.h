@@ -21,6 +21,39 @@
 #define X64_PCIE_H_
 
 
+/**
+ * \brief pci capability id assigned by PCI-SIG
+ */
+#define NULL_ID                          0x00
+#define POWER_MANAGE_INTERFACE_ID        0x01
+#define AGP_ID                           0x02
+#define VPD_ID                           0x03
+#define SLOT_IDENTIFICATION_ID           0x04
+#define MSI_ID                           0x05
+#define COMPACT_PCI_HOT_SWAP_ID          0x06
+#define PCI_X_ID                         0x07
+#define HYPER_TRANSPORT_ID               0x08
+#define VENDOR_SPECIFIC_ID               0x09
+#define DEBUG_PORT_OD                    0x0A
+#define COMPACT_PCI_CENTRAL_RESORCE_ID   0x0B
+#define PCI_HOT_PLUG_ID                  0x0C
+#define PCI_BRIDGE_SUBSYS_VENDOR_ID      0x0D
+#define AGP_8X_ID                        0x0E
+#define SECURE_DEVICE_ID                 0x0F
+#define PCI_EXPRESS_ID                   0x10
+#define MSI_X_ID                         0x11
+#define SERIAL_ATA_ID                    0x12
+#define ADVANCED_FEATURES_ID             0x13
+#define ENHANCED_ALLOCA_ID               0x14
+#define FLATTENING_PORTAL_BRIDGE_ID      0x15
+
+
+
+
+#define PCI_STA_REG_CAP_BIT              (1 << 4)
+
+
+
 #pragma pack(push)
 #pragma pack(1)
 
