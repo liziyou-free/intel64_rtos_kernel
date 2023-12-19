@@ -162,7 +162,7 @@ void pcie_device_enum()
 
 
 
-int8_t pcie_search_dev(uint16_t vendor_id, uint16_t dev_id, cfg_header_type0_t *obj)
+int8_t pcie_search_dev(uint16_t vendor_id, uint16_t dev_id, uint32_t *p_bdf, cfg_header_type0_t *obj)
 {
     uint8_t pci_cfg[sizeof(cfg_header_type0_t)];
     cfg_header_type0_t *cfg;
@@ -178,6 +178,7 @@ int8_t pcie_search_dev(uint16_t vendor_id, uint16_t dev_id, cfg_header_type0_t *
                 if (cfg->vendor_id == vendor_id && cfg->device_id == dev_id)
                 {
                     memcpy(obj, cfg, sizeof(*cfg));
+                    *p_bdf = bdf;
                     return 0;
                 }
             }
@@ -188,29 +189,12 @@ int8_t pcie_search_dev(uint16_t vendor_id, uint16_t dev_id, cfg_header_type0_t *
 }
 
 
-static uint32_t pcie_read_register(uint32_t bdf, uint32_t offset)
-{
-    uint32_t off;
-    uint32_t reg;
-    uint8_t  shiftbit;
-
-    off = ALIGNED(offset, 4);
-    reg = pcie_atomic_read(bdf, off);
-    shiftbit = (offset - off) * 8;
-    reg >>= shiftbit;
-    return reg;
-}
-
-
-#define REG_OFFSET(struct_type, element) \
-                  ((uint32_t)(&(((struct_type *)0)->element)))
-
-
-
 uint32_t pcie_get_capbility (uint32_t bdf, uint16_t cap_id, bool *ret)
 {
+    #define PCI_STATU_CMD_REG_OFFSET         0x01
+    #define PCI_CAP_POINTOR_REG_OFFSET       0x0D
     uint32_t offset;
-    uint32_t reg;
+    uint32_t regval;
     uint32_t cap_pointor;
     uint32_t id;
 
@@ -218,24 +202,29 @@ uint32_t pcie_get_capbility (uint32_t bdf, uint16_t cap_id, bool *ret)
         for (;;);
     }
 
-    offset = REG_OFFSET(cfg_header_type0_t, status);
-    reg = pcie_read_register(bdf, offset);
     cap_pointor = 0;
-    if (reg & PCI_STA_REG_CAP_BIT) {
-        offset = REG_OFFSET(cfg_header_type0_t, capability_pointer);
-        reg = pcie_read_register(bdf, offset);
-        cap_pointor = (reg & 0x00ffu);
+    regval = pcie_atomic_read(bdf, PCI_STATU_CMD_REG_OFFSET);
+    /* Get the value of the status register */
+    regval >>= 16;
+    if (regval & PCI_STA_REG_CAP_BIT) {
+        regval = pcie_atomic_read(bdf, PCI_CAP_POINTOR_REG_OFFSET);
+        cap_pointor = (regval & 0x00ffu);
+        printf("### Cap_Pointer:%#x ...\r\n", cap_pointor);
     }
 
     while (cap_pointor != 0) {
-        reg = pcie_atomic_read(bdf, cap_pointor);
-        id = reg & 0x00ffu;
+        printf("find out...\r\n");
+        /* 该指针以字节为单位，但I/O访问 必须以uint32_t 为单位，故处以4 */
+        cap_pointor /= 4;
+        regval = pcie_atomic_read(bdf, cap_pointor);
+        id = regval & 0x00ffu;
         if (id == cap_id) {
             *ret = true;
-            return reg;
+            return regval;
         }
-        cap_pointor = (reg >> 8) & 0x00ffu;
+        cap_pointor = (regval >> 8) & 0x00ffu;
     }
+    *ret = false;
     return 0;
 }
 

@@ -21,6 +21,8 @@
 #define X64_PCIE_H_
 
 
+#include <stdbool.h>
+
 /**
  * \brief pci capability id assigned by PCI-SIG
  */
@@ -155,8 +157,8 @@ typedef struct {
 
 
 void pcie_device_enum();
-int8_t pcie_search_dev(uint16_t vendor_id, uint16_t dev_id, cfg_header_type0_t *obj);
-
+int8_t pcie_search_dev(uint16_t vendor_id, uint16_t dev_id, uint32_t *p_bdf, cfg_header_type0_t *obj);
+uint32_t pcie_get_capbility (uint32_t bdf, uint16_t cap_id, bool *ret);
 
 #endif /* X64_PCIE_H_ */
 

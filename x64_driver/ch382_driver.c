@@ -7,6 +7,7 @@
 
 #include <stdio.h>
 #include <stdint.h>
+#include <stdbool.h>
 #include "./ch382_driver.h"
 #include "../startup/x64_common.h"
 #include "../x64_cpu_drivers/x64_pcie.h"
@@ -100,18 +101,34 @@ void ch383_serial_init(uint16_t port_base, uint32_t baudrate, uint8_t parity)
 }
 
 
+#define BDF(b, d, f)    ((b << 8) | (d << 3) | f)
+
+
 void ch382_device_init ()
 {
+    bool     rtn;
     uint8_t  ret;
     uint16_t reg;
     uint16_t io_addr;
+    uint32_t capbility;
+    uint32_t bdf;
     cfg_header_type0_t cfg;
 
-    ret = pcie_search_dev(CH382_VENDOR_ID, CH382_DEVICE_ID, &cfg);
+    ret = pcie_search_dev(CH382_VENDOR_ID, CH382_DEVICE_ID, &bdf, &cfg);
     if (ret == 0)
     {
+        printf("###### Cap_Pointer:%#x ...\r\n", cfg.capability_pointer);
         io_addr = cfg.base_addr[0] & 0xfffe;
         __g_port_base = io_addr;
+
+        capbility = pcie_get_capbility(bdf, MSI_ID, &rtn);
+        if (rtn == true) {
+            printf("Capbility: %#x\r\n", capbility);
+        } else {
+            printf("Capbility: Error!\r\n");
+        }
+
+
         printf("__g_port_base: %#x\r\n", __g_port_base);
     } else {
         printf("\r\n\r\n No CH382 Device!!! \r\n");
