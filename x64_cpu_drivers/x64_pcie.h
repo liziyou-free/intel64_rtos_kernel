@@ -157,8 +157,11 @@ typedef struct {
 
 
 void pcie_device_enum();
+uint32_t pcie_atomic_read(uint32_t bdf, uint32_t reg);
 int8_t pcie_search_dev(uint16_t vendor_id, uint16_t dev_id, uint32_t *p_bdf, cfg_header_type0_t *obj);
 uint32_t pcie_get_capbility (uint32_t bdf, uint16_t cap_id, bool *ret);
+uint32_t pcie_get_capbility_base_addr (uint32_t bdf, uint16_t cap_id);
+
 
 #endif /* X64_PCIE_H_ */
 

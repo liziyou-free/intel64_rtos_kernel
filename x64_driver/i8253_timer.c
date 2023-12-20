@@ -65,7 +65,7 @@ void timer_interrupt_handler (void *p_param)
 
     global_tick++;
     if(global_tick == 1000) {
-        x86_serial_send(0X3F8, '#');
+//        x86_serial_send(0X3F8, '#');
         global_tick = 0;
     }
 }

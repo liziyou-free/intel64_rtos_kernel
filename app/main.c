@@ -68,22 +68,23 @@ int main (void)
     }
 
     x86_timer_init();
-    ch382_device_init();
-    while (1) {
-        ch382_serial_send_str(0, "12345");
-        int t = 1234567;
-        while(t--);
-    }
 
     serial_init(X64_PORT_COM1, 115200, 1);
     x86_serial_send_str(X64_PORT_COM1, "Application Start!\r\n");
+
+    ch382_device_init();
+
     x64_lvgl_init();
+
     lv_demo_benchmark();
+
       for (;;) {
           count ++;
           if (count > 10000) {
               count = 0;
               lvgl_tick_and_handle();
+              ch382_serial_send_str(0, "12345\r\n");
+              print_ch382();
               continue;
           }
       }

@@ -193,7 +193,6 @@ uint32_t pcie_get_capbility (uint32_t bdf, uint16_t cap_id, bool *ret)
 {
     #define PCI_STATU_CMD_REG_OFFSET         0x01
     #define PCI_CAP_POINTOR_REG_OFFSET       0x0D
-    uint32_t offset;
     uint32_t regval;
     uint32_t cap_pointor;
     uint32_t id;
@@ -228,6 +227,43 @@ uint32_t pcie_get_capbility (uint32_t bdf, uint16_t cap_id, bool *ret)
     return 0;
 }
 
+
+
+uint32_t pcie_get_capbility_base_addr (uint32_t bdf, uint16_t cap_id)
+{
+    #define PCI_STATU_CMD_REG_OFFSET         0x01
+    #define PCI_CAP_POINTOR_REG_OFFSET       0x0D
+    uint32_t regval;
+    uint32_t cap_pointor;
+    uint32_t offset;
+    uint32_t id;
+
+    cap_pointor = 0;
+    regval = pcie_atomic_read(bdf, PCI_STATU_CMD_REG_OFFSET);
+    /* Get the value of the status register */
+    regval >>= 16;
+    if (regval & PCI_STA_REG_CAP_BIT) {
+        regval = pcie_atomic_read(bdf, PCI_CAP_POINTOR_REG_OFFSET);
+        cap_pointor = (regval & 0x00ffu);
+        printf("### Cap_Pointer:%#x ...\r\n", cap_pointor);
+    }
+
+    while (cap_pointor != 0) {
+        printf("find out...\r\n");
+        /* 该指针以字节为单位，但I/O访问 必须以uint32_t 为单位，故处以4 */
+        offset = cap_pointor / 4;
+        regval = pcie_atomic_read(bdf, offset);
+        id = regval & 0x00ffu;
+        if (id == cap_id) {
+            return cap_pointor;
+        }
+        cap_pointor = (regval >> 8) & 0x00ffu;
+    }
+    return (uint32_t)(-1);
+}
+
+
+void pcie_msi_config(uint32_t bdf, uint8_t vector_base);
 
 
 char* classcode_to_text(class_code_t *classcode)
