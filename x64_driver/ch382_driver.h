@@ -30,7 +30,9 @@
 
 #define DLM_REG_OFFSET     0xC1      /* DLAB == 1 */
 #define IIR_REG_OFFSET     0xC2
+
 #define FCR_REG_OFFSET     0xC2
+
 
 #define LCR_REG_OFFSET     0xC3
 # define LCR_DLAB_BIT      (1 << 7)
@@ -72,6 +74,8 @@
 void ch382_device_init ();
 void ch382_serial_send(uint16_t port, char c);
 void ch382_serial_send_str(uint16_t port, char *str);
+char ch382_serial_receive(uint16_t port);
+
 
 #endif /* X64_DRIVER_CH382_DRIVER_H_ */
 

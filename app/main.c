@@ -67,16 +67,19 @@ int main (void)
         src++;
     }
 
-    x86_timer_init();
+   // x86_timer_init();
 
-    serial_init(X64_PORT_COM1, 115200, 1);
-    x86_serial_send_str(X64_PORT_COM1, "Application Start!\r\n");
+    //serial_init(X64_PORT_COM1, 115200, 1);
+    //x86_serial_send_str(X64_PORT_COM1, "Application Start!\r\n");
 
     ch382_device_init();
 
     x64_lvgl_init();
 
     lv_demo_benchmark();
+
+    ch382_serial_send_str(0, "Intel-I3-8100 FreedomLi!\r\n");
+    while(1) print_ch382();
 
       for (;;) {
           count ++;

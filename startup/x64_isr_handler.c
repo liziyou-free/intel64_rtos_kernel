@@ -62,7 +62,7 @@ void x64_common_isr (uint64_t inum)
     uint32_t elements;
 
     elements = sizeof(x64_irq_handler) / sizeof(x64_irq_handler[0]);
-
+//    /for(;;);
     if (inum < elements || x64_irq_handler[inum].pfn_handler != NULL) {
 
         (x64_irq_handler[inum].pfn_handler)(x64_irq_handler[inum].param);
