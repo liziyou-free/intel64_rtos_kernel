@@ -78,6 +78,8 @@ int main (void)
 
     lv_demo_benchmark();
 
+    cpu_send_ipi_to_self();
+
     ch382_serial_send_str(0, "Intel-I3-8100 FreedomLi!\r\n");
     while(1) print_ch382();
 

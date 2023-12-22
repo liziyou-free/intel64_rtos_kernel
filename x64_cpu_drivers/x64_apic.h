@@ -157,7 +157,7 @@ void ioapic_mask_irq (uint8_t inum);
 
 void ioapic_unmask_irq (uint8_t inum);
 
-
+void cpu_send_ipi_to_self();
 
 #endif /* X64_APIC_H_ */
 

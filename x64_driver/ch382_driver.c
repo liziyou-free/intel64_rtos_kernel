@@ -18,23 +18,12 @@ static uint32_t __g_ch382_currunt_clk = CH382_CRYSTAL;
 static uint16_t __g_port_base;
 
 
-static void ch382_interrupt_handler(void *param)
+ void ch382_interrupt_handler(void *param)
 {
     printf("\r\n%%%%%%%%%%%%% CH382 IRQ %%%%%%%%%%%%%%%%%%\r\n");
     printf("\r\n%%%%%%%%%%%%% CH382 IRQ %%%%%%%%%%%%%%%%%%\r\n");
     printf("\r\n%%%%%%%%%%%%% CH382 IRQ %%%%%%%%%%%%%%%%%%\r\n");
-    printf("\r\n%%%%%%%%%%%%% CH382 IRQ %%%%%%%%%%%%%%%%%%\r\n");
-    printf("\r\n%%%%%%%%%%%%% CH382 IRQ %%%%%%%%%%%%%%%%%%\r\n");
-    printf("\r\n%%%%%%%%%%%%% CH382 IRQ %%%%%%%%%%%%%%%%%%\r\n");
-    printf("\r\n%%%%%%%%%%%%% CH382 IRQ %%%%%%%%%%%%%%%%%%\r\n");
-    printf("\r\n%%%%%%%%%%%%% CH382 IRQ %%%%%%%%%%%%%%%%%%\r\n");
-    printf("\r\n%%%%%%%%%%%%% CH382 IRQ %%%%%%%%%%%%%%%%%%\r\n");
-    printf("\r\n%%%%%%%%%%%%% CH382 IRQ %%%%%%%%%%%%%%%%%%\r\n");
-    printf("\r\n%%%%%%%%%%%%% CH382 IRQ %%%%%%%%%%%%%%%%%%\r\n");
-    printf("\r\n%%%%%%%%%%%%% CH382 IRQ %%%%%%%%%%%%%%%%%%\r\n");
-    printf("\r\n%%%%%%%%%%%%% CH382 IRQ %%%%%%%%%%%%%%%%%%\r\n");
-    printf("\r\n%%%%%%%%%%%%% CH382 IRQ %%%%%%%%%%%%%%%%%%\r\n");
-    printf("\r\n%%%%%%%%%%%%% CH382 IRQ %%%%%%%%%%%%%%%%%%\r\n");
+    while(1);
 }
 
 
@@ -240,7 +229,7 @@ void ch382_device_init ()
         data &= (~(7 << 20));
 //        data |= ((0 << 20) | (1 << 16));
 
-        data = ((5 << 20) | (1 << 16));
+        data |= ((5 << 20) | (1 << 16));
         pcie_atomic_write(bdf, addr + 0, data);
 
 
@@ -261,6 +250,14 @@ void ch382_device_init ()
 
     ch383_serial_init(io_addr, 115200, 1);
 
+
+    printf("CH382 REG0: %#x \r\n", inb(io_addr + 0xc0));
+    printf("CH382 REG1: %#x \r\n", inb(io_addr + 0xc1));
+    printf("CH382 REG2: %#x \r\n", inb(io_addr + 0xc2));
+    printf("CH382 REG3: %#x \r\n", inb(io_addr + 0xc3));
+    printf("CH382 REG4: %#x \r\n", inb(io_addr + 0xc4));
+    printf("CH382 REG5: %#x \r\n", inb(io_addr + 0xc5));
+    printf("CH382 REG6: %#x \r\n", inb(io_addr + 0xc6));
     return;
 }
 

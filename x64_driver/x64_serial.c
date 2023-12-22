@@ -29,8 +29,8 @@ void X86_uart_enable(uint16_t port_base)
     reg &= ~ COM_LCR_DIVISOR_LATCH_ACCESS;
     outb(reg, port_base + X86_COM_LCR_REG_OFFSET);
 
-    reg = COM_IER_RECEIVER_LINE_STATUS | COM_IER_RECEIVED_DATA_AVAILABLE;
-    outb(reg, port_base + X86_COM_IER_REG_OFFSET);
+//    reg = COM_IER_RECEIVER_LINE_STATUS | COM_IER_RECEIVED_DATA_AVAILABLE;
+//    outb(reg, port_base + X86_COM_IER_REG_OFFSET);
 
     reg = COM_FCR_TRIGGER_LEVEL_14BYTE | COM_FCR_CLEAR_TRANSMIT_FIFO |
           COM_FCR_CLEAR_RECEIVE_FIFO | COM_FCR_FIFO_ENABLE;
@@ -108,6 +108,7 @@ void serial_init(uint16_t port_base, uint32_t baudrate, uint8_t parity)
     /* 使能中断线 */
     //enable_8259A_irq(36);
     ioapic_unmask_irq(IRQ4);
+    ioapic_mask_irq(IRQ4);
 
     X86_uart_enable(port_base);
 

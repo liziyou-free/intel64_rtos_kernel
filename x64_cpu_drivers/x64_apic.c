@@ -176,6 +176,20 @@ void intel_local_apic_init (uint16_t core_id)
 }
 
 
+void cpu_send_ipi_to_self(void) {
+
+    uint64_t regval;
+    uint64_t loapic_addr;
+
+    loapic_addr = get_local_apic_base_addr();
+
+    regval =  80 | (1 << 11) | (1 << 15) | (1 << 18) | (0x01ull << 56);
+
+    atomic_write32(loapic_addr + APIC_ICR_HIGH_REG_OFFSET, (regval >> 32) );
+    /* 向低32bit寄存器写，出发IPI发送 */
+    atomic_write32(loapic_addr + APIC_ICR_LOW_REG_OFFSET, (uint32_t)regval );
+}
+
 
 
 //static __inline__
