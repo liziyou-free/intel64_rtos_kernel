@@ -39,6 +39,7 @@ int main (void)
     phyaddr_info phyaddrinfo = {0, 0};
     volatile long long count = 0;
 
+    /*
     char *p = (char*)malloc(1024*1024);
 
     table_unit_t *addr;
@@ -66,6 +67,8 @@ int main (void)
         dst++;
         src++;
     }
+    */
+
 
    // x86_timer_init();
 
@@ -81,6 +84,7 @@ int main (void)
     cpu_send_ipi_to_self();
 
     ch382_serial_send_str(0, "Intel-I3-8100 FreedomLi!\r\n");
+
     while(1) print_ch382();
 
       for (;;) {

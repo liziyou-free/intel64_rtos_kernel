@@ -100,7 +100,8 @@ void dump_pcie_dev_info(uint32_t bdf)
     obj = (cfg_header_type0_t *)&pci_cfg[0];
 
     if (obj->vendor_id == 0xffff) return;
-    if (obj->class_code.base_class == 6) {
+//    if (obj->class_code.base_class == 6) {
+    if ((obj->header_type & 0x7F)) {
         obj_type1 = (cfg_header_type1_t *)&pci_cfg[0];
         PRINT_PCI_BRIDGE_SYMBOL();
         PRINT_LINE("BDF:  %d:%d:%d", (bdf >> 8), ((bdf >> 3) & 0x01F), (bdf & 0x07));
@@ -115,8 +116,8 @@ void dump_pcie_dev_info(uint32_t bdf)
         PRINT_LINE("Primary bus num: %#x", obj_type1->primary_bus_num);
         PRINT_LINE("Secondary bus num: %#x", obj_type1->secondary_bus_num);
         PRINT_LINE("Subordinate bus num: %#x", obj_type1->subordinate_bus_num);
-        PRINT_LINE("I/O base: %#x", obj_type1->io_base);
-        PRINT_LINE("I/O limit: %#x", obj_type1->io_limit);
+        PRINT_LINE("I/O base: %#x", obj_type1->io_base | (obj_type1->io_base_upper16 << 8));
+        PRINT_LINE("I/O limit: %#x", obj_type1->io_limit | (obj_type1->io_limit_upper16 << 8));
         PRINT_LINE("Memory base: %#x", obj_type1->memory_base);
         PRINT_LINE("Memory limit: %#x", obj_type1->memory_limit);
 
@@ -148,6 +149,11 @@ void dump_pcie_dev_info(uint32_t bdf)
 
 void pcie_device_enum()
 {
+
+  uint32_t temp = pcie_atomic_read(BDF(0, 1, 0), 12);
+  temp &= ~0xffff0000;
+  temp |= 0xffff0000;
+  pcie_atomic_write(BDF(0, 1, 0), 12, temp);
 
     for (uint16_t bus = 0; bus < 256; bus++) {
         for (uint8_t device = 0; device < 32; device++) {

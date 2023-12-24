@@ -163,9 +163,9 @@ void print_ch382()
 
 
 
-uint64_t arch_msi_address(uint64_t *data, size_t vector, uint32_t processor, uint8_t edgetrigger, uint8_t deassert) {
+uint32_t arch_msi_address(uint32_t *data, size_t vector, uint32_t processor, uint8_t edgetrigger, uint8_t deassert) {
     *data = (vector & 0xFF) | (edgetrigger == 1 ? 0 : (1 << 15)) | (deassert == 1 ? 0 : (1 << 14));
-    return ((0x0FEE << 20) | (processor << 12) | (3 << 2));
+    return ((0xFEEull << 20) | (processor << 12) | (3 << 2));
 }
 
 void ch382_device_init ()
@@ -194,7 +194,7 @@ void ch382_device_init ()
         }
 
         uint32_t command_reg = pcie_atomic_read(bdf, 1);
-        command_reg |= ((1 << 4) | (1 << 10) | (1 << 8));
+        command_reg |= ((1 << 4) | (0 << 10) | (1 << 8));
         pcie_atomic_write(bdf, 1, command_reg);
 
 
@@ -208,9 +208,9 @@ void ch382_device_init ()
         }
         printf("\r\n-----------------------------\r\n");
 
-        uint64_t datareg;
-        uint64_t addreg;
-        addreg = arch_msi_address(&datareg, 80, 1, 1, 1);
+        uint32_t datareg;
+        uint32_t addreg;
+        addreg = arch_msi_address(&datareg, 80, 0xff, 1, 1);
 
 //        pcie_atomic_write(bdf, addr + 1, (0xFEE << 20) | (0 << 12) | (1 << 2));
 //        addreg = 0xfee00398;
