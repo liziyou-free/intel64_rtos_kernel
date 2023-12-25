@@ -70,30 +70,30 @@ int main (void)
     */
 
 
-   // x86_timer_init();
+//    x64_lvgl_init();
+//
+//    lv_demo_benchmark();
 
-    //serial_init(X64_PORT_COM1, 115200, 1);
-    //x86_serial_send_str(X64_PORT_COM1, "Application Start!\r\n");
+//    x86_timer_init();
+
+    serial_init(X64_PORT_COM1, 115200, 1);
+
+    x86_serial_send_str(X64_PORT_COM1, "Application Start!\r\n");
 
     ch382_device_init();
 
-    x64_lvgl_init();
-
-    lv_demo_benchmark();
-
-    cpu_send_ipi_to_self();
+//    cpu_send_ipi_to_self();
 
     ch382_serial_send_str(0, "Intel-I3-8100 FreedomLi!\r\n");
 
-    while(1) print_ch382();
+//    while(1) print_ch382();
 
       for (;;) {
           count ++;
-          if (count > 10000) {
+          if (count > 10000000) {
               count = 0;
-              lvgl_tick_and_handle();
-              ch382_serial_send_str(0, "12345\r\n");
-              print_ch382();
+//              lvgl_tick_and_handle();
+//              printf(".\r\n");
               continue;
           }
       }

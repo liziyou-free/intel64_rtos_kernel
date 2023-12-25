@@ -185,7 +185,7 @@ void cpu_send_ipi_to_self(void) {
     loapic_addr = get_local_apic_base_addr();
 
     regval_lower =  80 | (1 << 11) | (0 << 15) | (0 << 18);
-    regval_high = 2ull << 24;
+    regval_high = 1ull << 24;
 
     atomic_write32(loapic_addr + APIC_ICR_HIGH_REG_OFFSET, regval_high);
     /* 向低32bit寄存器写，出发IPI发送 */
@@ -276,7 +276,7 @@ void intel_ioapic_init (void)
     max_irq_num = (ver_info >> 16) & 0x00ff;
 
     int_cfg.trigger_mode = TRIGGER_RISING_EDGE;
-    int_cfg.mask = 1;  /* defualt mask interrupt */
+    int_cfg.mask = 0; //1;  /* defualt mask interrupt */
     int_cfg.destination_mode = LOGICAL_DESTINATION;  /* use logic id */
     int_cfg.destination = 1;  /* BSP core defualt logic id */
     int_cfg.delivery_mode = DELIVERY_MODE_FIXED;    /* fixed mode */
@@ -287,6 +287,7 @@ void intel_ioapic_init (void)
         ioapic_config_int_line(vector_cnt, &int_cfg);
     }
 
+    ioapic_mask_irq(34);  // 暂时屏蔽8254timer, 它太烦了!
     return;
 }
 

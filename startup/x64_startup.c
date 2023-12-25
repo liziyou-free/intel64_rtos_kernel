@@ -231,7 +231,7 @@ void x64_arch_init (void)
 #else
 
 #endif
-    acpi_init();
+//    acpi_init();
     pcie_device_enum();
 }
 

@@ -55,20 +55,19 @@ int8_t x64_irq_handler_destroy(uint8_t vector)
 }
 
 
-void ch382_interrupt_handler(void *param);
 
 void x64_common_isr (uint64_t inum)
 {
     uint32_t elements;
 
     elements = sizeof(x64_irq_handler) / sizeof(x64_irq_handler[0]);
-    printf("INUM: %d \r\n", inum);
-    if (inum < elements || x64_irq_handler[inum].pfn_handler != NULL) {
+//    printf("\r\n INUM: %d \r\n", inum);
+    if (inum < elements && x64_irq_handler[inum].pfn_handler != NULL) {
 
         (x64_irq_handler[inum].pfn_handler)(x64_irq_handler[inum].param);
     }
     else {
-        for (;;);
+        //for (;;);
     }
 
     if (inum >=32 ) {

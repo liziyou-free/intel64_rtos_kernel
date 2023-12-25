@@ -275,9 +275,9 @@ _pdt_loop:
     pop     %rdi
     pop     %rsi
 
+//    call    cmain
     call    x64_idt_init
     call    x64_tss_init
-    call    cmain
     call    x64_arch_init
     sti
     call    main

@@ -9,6 +9,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include "./ch382_driver.h"
+#include "./x64_serial.h"
 #include "../startup/x64_common.h"
 #include "../x64_cpu_drivers/x64_pcie.h"
 
@@ -18,13 +19,66 @@ static uint32_t __g_ch382_currunt_clk = CH382_CRYSTAL;
 static uint16_t __g_port_base;
 
 
- void ch382_interrupt_handler(void *param)
-{
-    printf("\r\n%%%%%%%%%%%%% CH382 IRQ %%%%%%%%%%%%%%%%%%\r\n");
-    printf("\r\n%%%%%%%%%%%%% CH382 IRQ %%%%%%%%%%%%%%%%%%\r\n");
-    printf("\r\n%%%%%%%%%%%%% CH382 IRQ %%%%%%%%%%%%%%%%%%\r\n");
-    while(1);
-}
+// void ch382_interrupt_handler(void *param)
+//{
+//
+//   inb(__g_port_base + IIR_REG_OFFSET);
+//   inb(__g_port_base + MSR_REG_OFFSET);
+//   inb(__g_port_base + LSR_REG_OFFSET);
+//   ch382_serial_send(0, '%');
+//   while (inb(__g_port_base + LSR_REG_OFFSET) & LSR_DATARDY_BIT) {
+//       ch382_serial_send(0, ch382_serial_receive(0));
+//   }
+//   return;
+//}
+
+ void ch382_interrupt_handler (void *p_param)
+ {
+     uint8_t     inchar;
+     uint8_t     status;
+     uint8_t     cnt;
+     uint16_t    port_base;
+
+     port_base = __g_port_base; //(uint16_t)((uint64_t) p_param);
+     cnt = 0;
+     while (cnt++ < 10) {
+         /* Read IIR register */
+         status = inb(port_base + IIR_REG_OFFSET);
+         if ((status & 0x01) != 0) {
+             return;
+         }
+         switch (status & 0x0e) {
+         case COM_IIR_MODEM_STATUS_INT:
+             inb(port_base + MSR_REG_OFFSET);
+             break;
+
+         case COM_IIR_RECEIVER_LINE_STATUS_INT:
+             inb(port_base + LSR_REG_OFFSET);
+
+             break;
+
+         case COM_IIR_TRANS_HOLD_EMPTY_INT:
+             /*
+              *  ... 用于非阻塞发送
+              */
+             break;
+
+         case COM_IIR_RECEIVED_AVAILABLE_DATA_INIT:
+         case COM_IIR_TIMEOUT_PENDING_INT:
+           /* Read all data in fifo */
+             do {
+                 inchar = inb(port_base + RBR_REG_OFFSET);
+                 /* echo */
+                 ch382_serial_send(port_base, inchar);
+             } while (inb(port_base + LSR_REG_OFFSET) & LSR_DATARDY_BIT);
+             break;
+
+         default:
+             break;
+         }
+     }
+     return;
+ }
 
 
 static void ch382_enable_pll(uint32_t port_base)
@@ -92,6 +146,11 @@ void ch382_serial_enable(uint16_t port_base)
     reg |= IER_LINES_BIT | IER_RECV_BIT | IER_THRE_BIT;
     outb(reg, port_base + IER_REG_OFFSET);
 
+    reg = 0;
+    reg |= MCR_OUT2_BIT;
+//    reg |= MCR_DTR_BIT | MCR_RTS_BIT;
+    outb(reg, port_base + MCR_REG_OFFSET);
+
 //    reg = COM_FCR_TRIGGER_LEVEL_14BYTE | COM_FCR_CLEAR_TRANSMIT_FIFO |
 //          COM_FCR_CLEAR_RECEIVE_FIFO | COM_FCR_FIFO_ENABLE;
 //    outb(reg, port_base + FCR_REG_OFFSET);
@@ -124,11 +183,6 @@ void ch383_serial_init(uint16_t port_base, uint32_t baudrate, uint8_t parity)
     reg |= LCR_EIGHT_BITS;
     outb(reg, port_base + LCR_REG_OFFSET);
 
-    reg = 0;
-    reg |= MCR_OUT2_BIT;
-//    reg |= MCR_DTR_BIT;
-    outb(reg, port_base + MCR_REG_OFFSET);
-
     reg = 0x0;
     outb(reg, port_base + FCR_REG_OFFSET);
 
@@ -153,10 +207,10 @@ void print_ch382()
   char c0 = ch382_serial_receive(0);
 
   if ((reg & 0x0f) > 1) {
-     printf("\r\n IIR-reg: %#x, Pending-Reg %#x, Receive: %c", (uint32_t)reg, data, c0);
+     printf("\r\n IIR-reg: %#x, Pending-Reg %#x, Receive: %c \r\n", (uint32_t)reg, data, c0);
      c = c0;
    } else  {
-       printf(".");
+//       printf(".");
    }
    return;
 }
@@ -198,47 +252,47 @@ void ch382_device_init ()
         pcie_atomic_write(bdf, 1, command_reg);
 
 
-        uint32_t addr = pcie_get_capbility_base_addr(bdf, MSI_ID);
-        addr /= 4;
-        g_cap_addr = addr;
-        printf("\r\n---------- MSI-X No.1-----addr: %#x-------\r\n", addr);
-        for(int j = 0; j < 6; j++) {
-            uint32_t regval = pcie_atomic_read(bdf, addr + j);
-            printf("info %d: %#x\r\n", j, regval);
-        }
-        printf("\r\n-----------------------------\r\n");
-
-        uint32_t datareg;
-        uint32_t addreg;
-        addreg = arch_msi_address(&datareg, 80, 0xff, 1, 1);
-
-//        pcie_atomic_write(bdf, addr + 1, (0xFEE << 20) | (0 << 12) | (1 << 2));
-//        addreg = 0xfee00398;
-        pcie_atomic_write(bdf, addr + 1, addreg);
-
-        pcie_atomic_write(bdf, addr + 2, 0);
-
-//        pcie_atomic_write(bdf, addr + 3, 80);
-        pcie_atomic_write(bdf, addr + 3, datareg);
-
-        pcie_atomic_write(bdf, addr + 4, 0x00); //mask
-
-        pcie_atomic_write(bdf, addr + 5, 0x00); //pend
-
-        uint32_t data = pcie_atomic_read(bdf, addr + 0);
-        data &= (~(7 << 20));
-//        data |= ((0 << 20) | (1 << 16));
-
-        data |= ((5 << 20) | (1 << 16));
-        pcie_atomic_write(bdf, addr + 0, data);
-
-
-        printf("\r\n---------- MSI-X No.2-----addr: %#x-------\r\n", addr);
-        for(int j = 0; j < 6; j++) {
-            uint32_t regval = pcie_atomic_read(bdf, addr + j);
-            printf("info %d: %#x\r\n", j, regval);
-        }
-        printf("\r\n-----------------------------\r\n");
+//        uint32_t addr = pcie_get_capbility_base_addr(bdf, MSI_X_ID);
+//        addr /= 4;
+//        g_cap_addr = addr;
+//        printf("\r\n---------- MSI-X No.1-----addr: %#x-------\r\n", addr);
+//        for(int j = 0; j < 6; j++) {
+//            uint32_t regval = pcie_atomic_read(bdf, addr + j);
+//            printf("info %d: %#x\r\n", j, regval);
+//        }
+//        printf("\r\n-----------------------------\r\n");
+//
+//        uint32_t datareg;
+//        uint32_t addreg;
+//        addreg = arch_msi_address(&datareg, 80, 0xff, 1, 0);
+//
+////        pcie_atomic_write(bdf, addr + 1, (0xFEE << 20) | (0 << 12) | (1 << 2));
+////        addreg = 0xfee00398;
+//        pcie_atomic_write(bdf, addr + 1, addreg);
+//
+//        pcie_atomic_write(bdf, addr + 2, 0);
+//
+////        pcie_atomic_write(bdf, addr + 3, 80);
+//        pcie_atomic_write(bdf, addr + 3, datareg);
+//
+//        pcie_atomic_write(bdf, addr + 4, 0x00); //mask
+//
+//        pcie_atomic_write(bdf, addr + 5, 0x00); //pend
+//
+//        uint32_t data = pcie_atomic_read(bdf, addr + 0);
+//        data &= (~(7 << 20));
+////        data |= ((0 << 20) | (1 << 16));
+//
+//        data |= ((5 << 20) | (1 << 16));
+//        pcie_atomic_write(bdf, addr + 0, data);
+//
+//
+//        printf("\r\n---------- MSI-X No.2-----addr: %#x-------\r\n", addr);
+//        for(int j = 0; j < 6; j++) {
+//            uint32_t regval = pcie_atomic_read(bdf, addr + j);
+//            printf("info %d: %#x\r\n", j, regval);
+//        }
+//        printf("\r\n-----------------------------\r\n");
 
     } else {
         printf("\r\n\r\n No CH382 Device!!! \r\n");
@@ -246,7 +300,7 @@ void ch382_device_init ()
     }
 
     /* register interrupt handler */
-    x64_irq_handler_register(80, ch382_interrupt_handler, NULL);
+    x64_irq_handler_register(42, ch382_interrupt_handler, NULL);
 
     ch383_serial_init(io_addr, 115200, 1);
 
@@ -264,7 +318,8 @@ void ch382_device_init ()
 
 
 void ch382_serial_send(uint16_t port, char c) {
-    while ((inb(port + LSR_REG_OFFSET) & LSR_THRE_BIT) == 0);
+    port = __g_port_base;
+//    while ((inb(port + LSR_REG_OFFSET) & LSR_THRE_BIT) == 0);
     outb(c, port + THR_REG_OFFSET);
     return;
 }
@@ -284,7 +339,7 @@ char ch382_serial_receive(uint16_t port) {
     char c;
     port = __g_port_base;
 //    while ((inb(port + LSR_REG_OFFSET) & LSR_DATARDY_BIT) == 0);
- //   while (inb(port + LSR_REG_OFFSET) & LSR_DATARDY_BIT) {
+//    while (inb(port + LSR_REG_OFFSET) & LSR_DATARDY_BIT) {
        c = inb(port + RBR_REG_OFFSET);
 //    }
     return c;
