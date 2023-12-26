@@ -23,6 +23,21 @@
 
 #include <stdbool.h>
 
+
+#define PCI_DEV_SYMBOL_STR \
+"\r\n" \
+"****************************************************\r\n" \
+"*            ----- PCI DEVICE INFO -------         *\r\n" \
+"****************************************************\r\n"
+
+
+#define PCI_BRIDGE_SYMBOL_STR \
+"\r\n" \
+"****************************************************\r\n" \
+"*            ----- PCI BRIDGE INFO -------         *\r\n" \
+"****************************************************\r\n"
+
+
 /**
  * \brief pci capability id assigned by PCI-SIG
  */
@@ -48,8 +63,6 @@
 #define ADVANCED_FEATURES_ID             0x13
 #define ENHANCED_ALLOCA_ID               0x14
 #define FLATTENING_PORTAL_BRIDGE_ID      0x15
-
-
 
 
 #define PCI_STA_REG_CAP_BIT              (1 << 4)

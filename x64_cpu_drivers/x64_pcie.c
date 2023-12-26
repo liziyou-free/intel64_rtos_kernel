@@ -27,23 +27,8 @@
 
 #define ALIGNED(addr, align)    ((~(align - 1)) & addr)
 
-
-#define PRINT_PCI_DEV_SYMBOL() \
-    printf("\r\n"); \
-    printf("****************************************************\r\n"); \
-    printf("*            ----- PCI DEVICE INFO -------         *\r\n"); \
-    printf("****************************************************\r\n");
-
-#define PRINT_PCI_BRIDGE_SYMBOL() \
-    printf("\r\n"); \
-    printf("****************************************************\r\n"); \
-    printf("*            ----- PCI BRIDGE INFO -------         *\r\n"); \
-    printf("****************************************************\r\n");
-
-
-#define __ENABLE_CONFIG_SPACE_MAP__    (1ul << 31)
-
 #define BDF(b, d, f)    ((b << 8) | (d << 3) | f)
+
 
 
 char* classcode_to_text(class_code_t *classcode);
@@ -51,6 +36,8 @@ char* classcode_to_text(class_code_t *classcode);
 
 void pcie_atomic_write(uint32_t bdf, uint32_t reg, uint32_t data)
 {
+    #define __ENABLE_CONFIG_SPACE_MAP__    (1ul << 31)
+
     uint32_t addr_port;
 
     addr_port = ((bdf << 8) | (reg << 2)) | __ENABLE_CONFIG_SPACE_MAP__;
@@ -99,11 +86,14 @@ void dump_pcie_dev_info(uint32_t bdf)
     pcie_read_config_header(bdf, (void *)&pci_cfg[0]);
     obj = (cfg_header_type0_t *)&pci_cfg[0];
 
-    if (obj->vendor_id == 0xffff) return;
-//    if (obj->class_code.base_class == 6) {
+    if (obj->vendor_id == 0xffff) {
+        /* Device not present! */
+        return;
+    }
+
     if ((obj->header_type & 0x7F)) {
         obj_type1 = (cfg_header_type1_t *)&pci_cfg[0];
-        PRINT_PCI_BRIDGE_SYMBOL();
+        printf(PCI_BRIDGE_SYMBOL_STR);
         PRINT_LINE("BDF:  %d:%d:%d", (bdf >> 8), ((bdf >> 3) & 0x01F), (bdf & 0x07));
         PRINT_LINE("Class-Code: %s", classcode_to_text(&obj_type1->class_code));
         PRINT_LINE("Vendor-ID: %#x", obj_type1->vendor_id);
@@ -124,7 +114,7 @@ void dump_pcie_dev_info(uint32_t bdf)
         PRINT_LINE("Interrupt-Line: %#x", obj_type1->interrupt_line);
         PRINT_LINE("Interrupt-Pin: %#x", obj_type1->interrupt_pin);
     } else {
-        PRINT_PCI_DEV_SYMBOL();
+        printf(PCI_DEV_SYMBOL_STR);
         PRINT_LINE("BDF:  %d:%d:%d", (bdf >> 8), ((bdf >> 3) & 0x01F), (bdf & 0x07));
         PRINT_LINE("Class-Code: %s", classcode_to_text(&obj->class_code));
         PRINT_LINE("Vendor-ID: %#x", obj->vendor_id);
