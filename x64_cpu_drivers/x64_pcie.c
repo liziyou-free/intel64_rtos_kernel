@@ -264,93 +264,204 @@ void pcie_msi_config(uint32_t bdf, uint8_t vector_base);
 
 char* classcode_to_text(class_code_t *classcode)
 {
+    uint8_t err;
     const char* p_text;
+
+    err = 0;
 
     switch (classcode->base_class) {
       case 0x00:
-          #define  CLASS0_TEXT  "Device "
-          p_text = CLASS0_TEXT;
+          #define  CLASS00_TEXT  "Device/"
+          p_text = CLASS00_TEXT;
           break;
       case 0x01:
-          #define  CLASS1_TEXT   "Mass storage controller "
-          p_text = CLASS1_TEXT;
+          #define  CLASS01_TEXT   "Mass storage controller/"
+          p_text = CLASS01_TEXT;
           break;
       case 0x02:
-          #define  CLASS2_TEXT   "Network controller "
-          p_text = CLASS2_TEXT;
+          #define  CLASS02_TEXT   "Network controller/"
+          p_text = CLASS02_TEXT;
           break;
       case 0x03:
-          #define  CLASS3_TEXT   "Display controller "
-          p_text = CLASS3_TEXT;
+          #define  CLASS03_TEXT   "Display controller/"
+          p_text = CLASS03_TEXT;
           break;
       case 0x04:
-          #define  CLASS4_TEXT   "Multimedia device "
-          p_text = CLASS4_TEXT;
+          #define  CLASS04_TEXT   "Multimedia device/"
+          p_text = CLASS04_TEXT;
           break;
       case 0x05:
-          #define  CLASS5_TEXT   "Memory controller "
-          p_text = CLASS5_TEXT;
+          #define  CLASS05_TEXT   "Memory controller/"
+          p_text = CLASS05_TEXT;
           break;
       case 0x06:
-          #define  CLASS6_TEXT   "Bridge device "
-          p_text = CLASS6_TEXT;
+          #define  CLASS06_TEXT   "Bridge device/"
+          switch (classcode->sub_class) {
+          case 0x00:
+              if (classcode->Programming_Interface == 0) {
+                  p_text = CLASS06_TEXT "Host bridge";
+              } else {
+                  err = 1;
+              }
+          break;
+          case 0x01:
+              if (classcode->Programming_Interface == 0) {
+                  p_text = CLASS06_TEXT "ISA bridge";
+              } else {
+                  err = 1;
+              }
+              break;
+          case 0x02:
+              if (classcode->Programming_Interface == 0) {
+                  p_text = CLASS06_TEXT "EISA bridge";
+              } else {
+                  err = 1;
+              }
+              break;
+          case 0x03:
+              if (classcode->Programming_Interface == 0) {
+                  p_text = CLASS06_TEXT "MCA bridge";
+              } else {
+                  err = 1;
+              }
+              break;
+          case 0x04:
+              if (classcode->Programming_Interface == 0) {
+                  p_text = CLASS06_TEXT "PCI-to-PCI bridge";
+              } else if(classcode->Programming_Interface == 1){
+                  p_text = CLASS06_TEXT "Subtractive Decode "
+                                        "PCI-to-PCI bridge";
+              }
+              break;
+          case 0x05:
+              if (classcode->Programming_Interface == 0) {
+                  p_text = CLASS06_TEXT "PCMCIA bridge";
+              } else {
+                  err = 1;
+              }
+              break;
+          case 0x06:
+            if (classcode->Programming_Interface == 0) {
+                p_text = CLASS06_TEXT "NuBus bridge";
+            } else {
+                err = 1;
+            }
+            break;
+          case 0x07:
+            if (classcode->Programming_Interface == 0) {
+                p_text = CLASS06_TEXT "CardBus bridge";
+            } else {
+                err = 1;
+            }
+            break;
+          case 0x08:
+            if (classcode->Programming_Interface == 0) {
+                p_text = CLASS06_TEXT "RACEway bridge";
+            } else {
+                err = 1;
+            }
+            break;
+          case 0x09:
+            if (classcode->Programming_Interface == 0x40) {
+                p_text = CLASS06_TEXT "Semi-transparent PCI-to-"
+                        "PCI bridge with the primary PCI bus "
+                        "side facing the system host processor";
+            } else if (classcode->Programming_Interface == 0x80) {
+                p_text = CLASS06_TEXT "Semi-transparent PCI-to-"
+                        "PCI bridge with the secondary PCI bus "
+                        "side facing the system host processor";
+            } else {
+                err = 1;
+            }
+            break;
+          case 0x0A:
+            if (classcode->Programming_Interface == 0) {
+                p_text = CLASS06_TEXT "InfiniBand-to-PCI host "
+                         "bridge";
+            } else {
+                err = 1;
+            }
+            break;
+          case 0x0B:
+              if (classcode->Programming_Interface == 0x00) {
+                  p_text = CLASS06_TEXT "Advanced Switching to "
+                          "PCI host bridge–Custom Interface";
+              } else if (classcode->Programming_Interface == 0x01) {
+                  p_text = CLASS06_TEXT "Advanced Switching to "
+                          "PCI host bridge–ASI-SIG Defined Port"
+                          "al Interface";
+              } else {
+                  err = 1;
+              }
+              break;
+          case 0x80:
+              if (classcode->Programming_Interface == 0) {
+                  p_text = CLASS06_TEXT "Other bridge device";
+              } else {
+                  err = 1;
+              }
+              break;
+          }
           break;
       case 0x07:
-          #define  CLASS7_TEXT   "Simple communication controllers "
+          #define  CLASS7_TEXT   "Simple communication controllers/"
           p_text = CLASS7_TEXT;
           break;
       case 0x08:
-          #define  CLASS8_TEXT   "Base system peripherals "
+          #define  CLASS8_TEXT   "Base system peripherals/"
           p_text = CLASS8_TEXT;
           break;
       case 0x09:
-          #define  CLASS9_TEXT   "Input devices "
+          #define  CLASS9_TEXT   "Input devices/"
           p_text = CLASS9_TEXT;
           break;
       case 0x0A:
-          #define  CLASS10_TEXT   "Docking stations "
+          #define  CLASS10_TEXT   "Docking stations/"
           p_text = CLASS10_TEXT;
           break;
       case 0x0B:
-          #define  CLASS11_TEXT   "Processors "
+          #define  CLASS11_TEXT   "Processors/"
           p_text = CLASS11_TEXT;
           break;
       case 0x0C:
-          #define  CLASS12_TEXT   "Serial bus controllers "
+          #define  CLASS12_TEXT   "Serial bus controllers/"
           p_text = CLASS12_TEXT;
           break;
       case 0x0D:
-          #define  CLASS13_TEXT   "Wireless controller "
+          #define  CLASS13_TEXT   "Wireless controller/"
           p_text = CLASS13_TEXT;
           break;
       case 0x0E:
-          #define  CLASS14_TEXT   "Intelligent I/O controllers "
+          #define  CLASS14_TEXT   "Intelligent I/O controllers/"
           p_text = CLASS14_TEXT;
           break;
       case 0x0F:
-          #define  CLASS15_TEXT   "Satellite communication controllers "
+          #define  CLASS15_TEXT   "Satellite communication controllers/"
           p_text = CLASS15_TEXT;
           break;
       case 0x10:
-          #define  CLASS16_TEXT   "Encryption/Decryption controllers "
+          #define  CLASS16_TEXT   "Encryption/Decryption controllers/"
           p_text = CLASS16_TEXT;
           break;
       case 0x11:
-          #define  CLASS17_TEXT   "Data acquisition and signal processing controllers "
+          #define  CLASS17_TEXT   "Data acquisition and signal processing controllers/"
           p_text = CLASS17_TEXT;
           break;
       case 0x12:
-          #define  CLASS18_TEXT   "Processing accelerators "
+          #define  CLASS18_TEXT   "Processing accelerators/"
           p_text = CLASS18_TEXT;
           break;
       case 0x13:
-          #define  CLASS19_TEXT   "Non-Essential Instrumentation "
+          #define  CLASS19_TEXT   "Non-Essential Instrumentation/"
           p_text = CLASS19_TEXT;
           break;
       default:
           break;
     }
 
+    if (err) {
+        p_text = "unknown device";
+    }
     return (char*)p_text;
 }
 
