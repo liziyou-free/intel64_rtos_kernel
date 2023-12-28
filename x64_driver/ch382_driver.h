@@ -28,10 +28,23 @@
 # define IER_RECV_BIT      (1 << 0)
 
 
-#define DLM_REG_OFFSET     0xC1      /* DLAB == 1 */
+#define DLM_REG_OFFSET     0xC1      /* operating conditions :DLAB == 1 */
+
 #define IIR_REG_OFFSET     0xC2
+# define IIR_MS_INT        0x00      /* Modem status interrupt */
+# define IIR_THE_INT       0x02      /* Transfer hold empty interrupt */
+# define IIR_RAD_INT       0x04      /* Received available data interrupt */
+# define IIR_RLS_INT       0x06      /* Receive line status interrupt*/
+# define IIR_TP_INT        0x0C      /* Timeout pending interrupt */
+
 
 #define FCR_REG_OFFSET     0xC2
+# define FCR_RECVTG1_BIT   (1 << 7)
+# define FCR_RECVTG0_BIT   (1 << 6)
+# define FCR_TRIG16_BIT    (1 << 5)
+# define FCR_TFIFORST_BIT  (1 << 2)
+# define FCR_RFIFORST_BIT  (1 << 1)
+# define FCR_FIFOEN_BIT    (1 << 0)
 
 
 #define LCR_REG_OFFSET     0xC3

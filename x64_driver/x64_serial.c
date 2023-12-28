@@ -174,7 +174,7 @@ void serial_interrupt_handler (void *p_param)
              */
             break;
 
-        case COM_IIR_RECEIVED_AVAILABLE_DATA_INIT:
+        case COM_IIR_RECEIVED_AVAILABLE_DATA_INT:
         case COM_IIR_TIMEOUT_PENDING_INT:
           /* Read all data in fifo */
             do {

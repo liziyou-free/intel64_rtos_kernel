@@ -40,7 +40,7 @@
 // bit[3:1]
 #define COM_IIR_MODEM_STATUS_INT                (0 << 1)
 #define COM_IIR_TRANS_HOLD_EMPTY_INT            (1 << 1)
-#define COM_IIR_RECEIVED_AVAILABLE_DATA_INIT    (2 << 1)
+#define COM_IIR_RECEIVED_AVAILABLE_DATA_INT     (2 << 1)
 #define COM_IIR_RECEIVER_LINE_STATUS_INT        (3 << 1)
 #define COM_IIR_TIMEOUT_PENDING_INT             (6 << 1)
 // bit[0]

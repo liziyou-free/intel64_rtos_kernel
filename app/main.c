@@ -70,9 +70,9 @@ int main (void)
     */
 
 
-//    x64_lvgl_init();
-//
-//    lv_demo_benchmark();
+    x64_lvgl_init();
+
+    lv_demo_benchmark();
 
 //    x86_timer_init();
 
@@ -86,14 +86,18 @@ int main (void)
 
     ch382_serial_send_str(0, "Intel-I3-8100 FreedomLi!\r\n");
 
-//    while(1) print_ch382();
-
       for (;;) {
           count ++;
-          if (count > 10000000) {
+          if (count > 500000000) {
               count = 0;
-//              lvgl_tick_and_handle();
-//              printf(".\r\n");
+              lv_tick_inc(1);
+              lvgl_tick_and_handle();
+              print_ch382();
+//              char c = ch382_serial_receive(0);
+//              if (c > '0') {
+//                  x86_serial_send(X64_PORT_COM1, ' ');
+//                  x86_serial_send(X64_PORT_COM1, c);
+//              }
               continue;
           }
       }

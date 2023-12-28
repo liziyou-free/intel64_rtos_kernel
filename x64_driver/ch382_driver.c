@@ -18,19 +18,19 @@ static uint32_t __g_ch382_currunt_clk = CH382_CRYSTAL;
 
 static uint16_t __g_port_base;
 
+/////////////////////////////////////
+uint32_t g_bdf;
+uint32_t g_cap_addr;
+void print_ch382()
+{
+    uint8_t reg;
+    reg = inb(__g_port_base + IIR_REG_OFFSET);
+//    char c =  ch382_serial_receive(0);
+    printf("\r\n IIR-reg: %#x  \r\n", (uint32_t)reg);
+//   printf("\r\n IIR-reg: %#x, Receive: %c \r\n", (uint32_t)reg, c);
+   return;
+}
 
-// void ch382_interrupt_handler(void *param)
-//{
-//
-//   inb(__g_port_base + IIR_REG_OFFSET);
-//   inb(__g_port_base + MSR_REG_OFFSET);
-//   inb(__g_port_base + LSR_REG_OFFSET);
-//   ch382_serial_send(0, '%');
-//   while (inb(__g_port_base + LSR_REG_OFFSET) & LSR_DATARDY_BIT) {
-//       ch382_serial_send(0, ch382_serial_receive(0));
-//   }
-//   return;
-//}
 
  void ch382_interrupt_handler (void *p_param)
  {
@@ -48,24 +48,27 @@ static uint16_t __g_port_base;
              return;
          }
          switch (status & 0x0e) {
-         case COM_IIR_MODEM_STATUS_INT:
+         case IIR_MS_INT:
              inb(port_base + MSR_REG_OFFSET);
+             printf("ch382 IIR_MS_INT\r\n");
              break;
 
-         case COM_IIR_RECEIVER_LINE_STATUS_INT:
+         case IIR_RLS_INT:
              inb(port_base + LSR_REG_OFFSET);
-
+             printf("ch382 IIR_RLS_INT\r\n");
              break;
 
-         case COM_IIR_TRANS_HOLD_EMPTY_INT:
+         case IIR_THE_INT:
+             printf("ch382 IIR_THE_INT\r\n");
              /*
               *  ... 用于非阻塞发送
               */
              break;
 
-         case COM_IIR_RECEIVED_AVAILABLE_DATA_INIT:
-         case COM_IIR_TIMEOUT_PENDING_INT:
-           /* Read all data in fifo */
+         case IIR_TP_INT:
+         case IIR_RAD_INT:
+             /* Read all data in fifo */
+             printf("ch382 IIR_RAD_INT\r\n");
              do {
                  inchar = inb(port_base + RBR_REG_OFFSET);
                  /* echo */
@@ -107,7 +110,7 @@ static void ch382_disable_pll(uint16_t port_base)
     outb(reg, port_base + LCR_REG_OFFSET);
 
     reg = inb(port_base + IER_REG_OFFSET);
-    reg &= ~IER_CK2X_BIT;
+    reg &= (~IER_CK2X_BIT);
     outb(reg, port_base + IER_REG_OFFSET);
     __g_ch382_currunt_clk = CH382_CRYSTAL;
     return;
@@ -122,11 +125,12 @@ void ch382_serial_set_baudrate(uint16_t io_port, uint32_t baudrate)
     /* Setup DLAB */
     reg = inb(io_port + LCR_REG_OFFSET);
     outb((reg | LCR_DLAB_BIT), io_port + LCR_REG_OFFSET);
+    /* Set baudrate */
     divisor = __g_ch382_currunt_clk / 16 / baudrate;
     outb((divisor & 0x00ff), io_port + DLL_REG_OFFSET);
     outb((divisor >> 8), io_port + DLM_REG_OFFSET);
     /* Clear DLAB */
-    reg &= ~LCR_DLAB_BIT;
+    reg &= (~LCR_DLAB_BIT);
     outb(reg, io_port + LCR_REG_OFFSET);
     return;
 }
@@ -138,23 +142,18 @@ void ch382_serial_enable(uint16_t port_base)
 
     /* Disable DLAB */
     reg = inb(port_base + LCR_REG_OFFSET);
-    reg &= ~ LCR_DLAB_BIT;
+    reg &= (~ LCR_DLAB_BIT);
     outb(reg, port_base + LCR_REG_OFFSET);
 
     reg = inb(port_base + IER_REG_OFFSET);
-    reg &= ~0x0f;
-    reg |= IER_LINES_BIT | IER_RECV_BIT | IER_THRE_BIT;
+    reg &= (~0x0f);
+    /* Enable all interrupt */
+    reg |= (IER_MODEM_BIT | IER_LINES_BIT |  \
+           IER_THRE_BIT | IER_RECV_BIT);
     outb(reg, port_base + IER_REG_OFFSET);
 
-    reg = 0;
-    reg |= MCR_OUT2_BIT;
-//    reg |= MCR_DTR_BIT | MCR_RTS_BIT;
+    reg = (MCR_OUT2_BIT | MCR_DTR_BIT | MCR_RTS_BIT);
     outb(reg, port_base + MCR_REG_OFFSET);
-
-//    reg = COM_FCR_TRIGGER_LEVEL_14BYTE | COM_FCR_CLEAR_TRANSMIT_FIFO |
-//          COM_FCR_CLEAR_RECEIVE_FIFO | COM_FCR_FIFO_ENABLE;
-//    outb(reg, port_base + FCR_REG_OFFSET);
-    inb(port_base);
 }
 
 
@@ -162,11 +161,20 @@ void ch383_serial_init(uint16_t port_base, uint32_t baudrate, uint8_t parity)
 {
     uint8_t    reg;
 
+    /* Reset */
+    reg = 0x80;
+    outb(reg, port_base + IER_REG_OFFSET);
+    while(inb(port_base + IER_REG_OFFSET) & 0x80);
+
     /* Enable PLL */
     ch382_enable_pll(port_base);
 
     /* Set baud rate */
     ch382_serial_set_baudrate(port_base, baudrate);
+
+    //reg = (FCR_RECVTG0_BIT | FCR_RECVTG1_BIT | FCR_FIFOEN_BIT);
+    reg = 1;
+    outb(reg, port_base + FCR_REG_OFFSET);
 
     /* set stop bit */
     reg = 0;
@@ -183,38 +191,10 @@ void ch383_serial_init(uint16_t port_base, uint32_t baudrate, uint8_t parity)
     reg |= LCR_EIGHT_BITS;
     outb(reg, port_base + LCR_REG_OFFSET);
 
-    reg = 0x0;
-    outb(reg, port_base + FCR_REG_OFFSET);
-
    ch382_serial_enable(port_base);
 
     return;
 }
-
-
-#define BDF(b, d, f)    ((b << 8) | (d << 3) | f)
-
-
-/////////////////////////////////////
-uint32_t g_bdf;
-uint32_t g_cap_addr;
-void print_ch382()
-{
-  uint8_t reg;
-  static char c;
-  reg = inb(__g_port_base + IIR_REG_OFFSET);
-  uint32_t data = pcie_atomic_read(g_bdf, g_cap_addr + 5);
-  char c0 = ch382_serial_receive(0);
-
-  if ((reg & 0x0f) > 1) {
-     printf("\r\n IIR-reg: %#x, Pending-Reg %#x, Receive: %c \r\n", (uint32_t)reg, data, c0);
-     c = c0;
-   } else  {
-//       printf(".");
-   }
-   return;
-}
-
 
 
 uint32_t arch_msi_address(uint32_t *data, size_t vector, uint32_t processor, uint8_t edgetrigger, uint8_t deassert) {
@@ -231,8 +211,11 @@ void ch382_device_init ()
     uint32_t bdf;
     cfg_header_type0_t cfg;
 
+    /* register interrupt handler */
+    x64_irq_handler_register(49, ch382_interrupt_handler, NULL); // PassThrough IRQ: 42
+    ioapic_unmask_irq(49);
+
     ret = pcie_search_dev(CH382_VENDOR_ID, CH382_DEVICE_ID, &bdf, &cfg);
-    g_bdf = bdf;
     if (ret == 0)
     {
         printf("###### Cap_Pointer:%#x ...\r\n", cfg.capability_pointer);
@@ -248,7 +231,7 @@ void ch382_device_init ()
         }
 
         uint32_t command_reg = pcie_atomic_read(bdf, 1);
-        command_reg |= ((1 << 4) | (0 << 10) | (1 << 8));
+        command_reg |= ((1 << 4) | (0 << 10) | (1 << 8) | 7);
         pcie_atomic_write(bdf, 1, command_reg);
 
 
@@ -299,11 +282,7 @@ void ch382_device_init ()
         return;
     }
 
-    /* register interrupt handler */
-    x64_irq_handler_register(42, ch382_interrupt_handler, NULL);
-
     ch383_serial_init(io_addr, 115200, 1);
-
 
     printf("CH382 REG0: %#x \r\n", inb(io_addr + 0xc0));
     printf("CH382 REG1: %#x \r\n", inb(io_addr + 0xc1));
@@ -312,14 +291,21 @@ void ch382_device_init ()
     printf("CH382 REG4: %#x \r\n", inb(io_addr + 0xc4));
     printf("CH382 REG5: %#x \r\n", inb(io_addr + 0xc5));
     printf("CH382 REG6: %#x \r\n", inb(io_addr + 0xc6));
-    return;
+
+    printf("CH382 REG0: %#x \r\n", inb(io_addr + 0xc0));
+    printf("CH382 REG1: %#x \r\n", inb(io_addr + 0xc1));
+    printf("CH382 REG2: %#x \r\n", inb(io_addr + 0xc2));
+    printf("CH382 REG3: %#x \r\n", inb(io_addr + 0xc3));
+    printf("CH382 REG4: %#x \r\n", inb(io_addr + 0xc4));
+    printf("CH382 REG5: %#x \r\n", inb(io_addr + 0xc5));
+    printf("CH382 REG6: %#x \r\n", inb(io_addr + 0xc6));
 }
 
 
 
 void ch382_serial_send(uint16_t port, char c) {
     port = __g_port_base;
-//    while ((inb(port + LSR_REG_OFFSET) & LSR_THRE_BIT) == 0);
+    while ((inb(port + LSR_REG_OFFSET) & LSR_THRE_BIT) == 0);
     outb(c, port + THR_REG_OFFSET);
     return;
 }
@@ -338,10 +324,10 @@ void ch382_serial_send_str(uint16_t port, char *str) {
 char ch382_serial_receive(uint16_t port) {
     char c;
     port = __g_port_base;
-//    while ((inb(port + LSR_REG_OFFSET) & LSR_DATARDY_BIT) == 0);
-//    while (inb(port + LSR_REG_OFFSET) & LSR_DATARDY_BIT) {
+    while ((inb(port + LSR_REG_OFFSET) & LSR_DATARDY_BIT) == 0);
+    while (inb(port + LSR_REG_OFFSET) & LSR_DATARDY_BIT) {
        c = inb(port + RBR_REG_OFFSET);
-//    }
+    }
     return c;
 }
 
