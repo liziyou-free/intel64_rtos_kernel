@@ -74,7 +74,7 @@ int main (void)
 
     lv_demo_benchmark();
 
-//    x86_timer_init();
+    x86_timer_init();
 
     serial_init(X64_PORT_COM1, 115200, 1);
 
@@ -88,16 +88,9 @@ int main (void)
 
       for (;;) {
           count ++;
-          if (count > 500000000) {
+          if (count > 1000) {
               count = 0;
-              lv_tick_inc(1);
               lvgl_tick_and_handle();
-              print_ch382();
-//              char c = ch382_serial_receive(0);
-//              if (c > '0') {
-//                  x86_serial_send(X64_PORT_COM1, ' ');
-//                  x86_serial_send(X64_PORT_COM1, c);
-//              }
               continue;
           }
       }

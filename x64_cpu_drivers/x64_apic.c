@@ -276,7 +276,7 @@ void intel_ioapic_init (void)
     max_irq_num = (ver_info >> 16) & 0x00ff;
 
     int_cfg.trigger_mode = TRIGGER_RISING_EDGE;
-    int_cfg.mask = 0; //1;  /* defualt mask interrupt */
+    int_cfg.mask = 0;  /* defualt mask interrupt */
     int_cfg.destination_mode = LOGICAL_DESTINATION;  /* use logic id */
     int_cfg.destination = 1;  /* BSP core defualt logic id */
     int_cfg.delivery_mode = DELIVERY_MODE_FIXED;    /* fixed mode */

@@ -11,6 +11,7 @@
 #include "./ch382_driver.h"
 #include "./x64_serial.h"
 #include "../startup/x64_common.h"
+#include "../x64_cpu_drivers/x64_apic.h"
 #include "../x64_cpu_drivers/x64_pcie.h"
 
 
@@ -19,16 +20,16 @@ static uint32_t __g_ch382_currunt_clk = CH382_CRYSTAL;
 static uint16_t __g_port_base;
 
 /////////////////////////////////////
+/////////////////////////////////////
 uint32_t g_bdf;
 uint32_t g_cap_addr;
 void print_ch382()
 {
     uint8_t reg;
     reg = inb(__g_port_base + IIR_REG_OFFSET);
-//    char c =  ch382_serial_receive(0);
-    printf("\r\n IIR-reg: %#x  \r\n", (uint32_t)reg);
-//   printf("\r\n IIR-reg: %#x, Receive: %c \r\n", (uint32_t)reg, c);
-   return;
+    uint32_t data = pcie_atomic_read(g_bdf, g_cap_addr + 5);
+    printf("\r\n IIR-reg: %#x, Pending-Reg %#x, Receive: %c \r\n", (uint32_t)reg, data);
+    return;
 }
 
 
@@ -38,7 +39,7 @@ void print_ch382()
      uint8_t     status;
      uint8_t     cnt;
      uint16_t    port_base;
-
+//     printf("CH382 IRQ\r\n");
      port_base = __g_port_base; //(uint16_t)((uint64_t) p_param);
      cnt = 0;
      while (cnt++ < 10) {
@@ -50,16 +51,16 @@ void print_ch382()
          switch (status & 0x0e) {
          case IIR_MS_INT:
              inb(port_base + MSR_REG_OFFSET);
-             printf("ch382 IIR_MS_INT\r\n");
+//             printf("ch382 IIR_MS_INT\r\n");
              break;
 
          case IIR_RLS_INT:
              inb(port_base + LSR_REG_OFFSET);
-             printf("ch382 IIR_RLS_INT\r\n");
+//             printf("ch382 IIR_RLS_INT\r\n");
              break;
 
          case IIR_THE_INT:
-             printf("ch382 IIR_THE_INT\r\n");
+//             printf("ch382 IIR_THE_INT\r\n");
              /*
               *  ... 用于非阻塞发送
               */
@@ -68,7 +69,7 @@ void print_ch382()
          case IIR_TP_INT:
          case IIR_RAD_INT:
              /* Read all data in fifo */
-             printf("ch382 IIR_RAD_INT\r\n");
+//             printf("ch382 IIR_RAD_INT\r\n");
              do {
                  inchar = inb(port_base + RBR_REG_OFFSET);
                  /* echo */
@@ -152,7 +153,7 @@ void ch382_serial_enable(uint16_t port_base)
            IER_THRE_BIT | IER_RECV_BIT);
     outb(reg, port_base + IER_REG_OFFSET);
 
-    reg = (MCR_OUT2_BIT | MCR_DTR_BIT | MCR_RTS_BIT);
+    reg = (MCR_OUT2_BIT);
     outb(reg, port_base + MCR_REG_OFFSET);
 }
 
@@ -173,7 +174,7 @@ void ch383_serial_init(uint16_t port_base, uint32_t baudrate, uint8_t parity)
     ch382_serial_set_baudrate(port_base, baudrate);
 
     //reg = (FCR_RECVTG0_BIT | FCR_RECVTG1_BIT | FCR_FIFOEN_BIT);
-    reg = 1;
+    reg = 0;
     outb(reg, port_base + FCR_REG_OFFSET);
 
     /* set stop bit */
@@ -211,10 +212,6 @@ void ch382_device_init ()
     uint32_t bdf;
     cfg_header_type0_t cfg;
 
-    /* register interrupt handler */
-    x64_irq_handler_register(49, ch382_interrupt_handler, NULL); // PassThrough IRQ: 42
-    ioapic_unmask_irq(49);
-
     ret = pcie_search_dev(CH382_VENDOR_ID, CH382_DEVICE_ID, &bdf, &cfg);
     if (ret == 0)
     {
@@ -231,7 +228,8 @@ void ch382_device_init ()
         }
 
         uint32_t command_reg = pcie_atomic_read(bdf, 1);
-        command_reg |= ((1 << 4) | (0 << 10) | (1 << 8) | 7);
+        command_reg |= ((1 << 4) | (1 << 8) | 7);
+        command_reg &= (~ (1 << 10));
         pcie_atomic_write(bdf, 1, command_reg);
 
 
@@ -281,6 +279,20 @@ void ch382_device_init ()
         printf("\r\n\r\n No CH382 Device!!! \r\n");
         return;
     }
+
+
+    ioapic_intline_config_t int_cfg;
+    int_cfg.trigger_mode = TRIGGER_LEVEL_ACTIVE_LOW;
+    int_cfg.mask = 0;
+    int_cfg.destination_mode = LOGICAL_DESTINATION;  /* use logic id */
+    int_cfg.destination = 1;  /* BSP core defualt logic id */
+    int_cfg.delivery_mode = DELIVERY_MODE_FIXED;    /* fixed mode */
+    int_cfg.vector = 49;
+    ioapic_config_int_line(49-32, &int_cfg);
+
+    /* register interrupt handler */
+    x64_irq_handler_register(49, ch382_interrupt_handler, NULL); // PassThrough IRQ: 42
+//    ioapic_unmask_irq(49);
 
     ch383_serial_init(io_addr, 115200, 1);
 
