@@ -52,23 +52,58 @@ void x86_timer_init (void)
 
     /* 使能中断线 */
     ioapic_unmask_irq(IRQ2);
+//    ioapic_mask_irq(IRQ2);
     return;
 }
 
 
+void systime_increase(uint64_t tick);
+
 void timer_interrupt_handler (void *p_param)
 {
-    static uint16_t global_tick = 0;
+    static uint64_t ticks = 0;
+
     /* LVGL tick */
     void lv_tick_inc(uint32_t tick_period);
     lv_tick_inc(1);
 
-    global_tick++;
-    if(global_tick == 1000) {
-//        x86_serial_send(0X3F8, '#');
-        global_tick = 0;
-    }
+    systime_increase(1);
+
+//    if ((ticks++) % 1000 == 0) {
+//        ch382_serial_send(0, 'T');
+//        printf("%d s \r\n", ticks / 1000);
+//    }
 }
 
 
 
+
+/***************************************************************
+* System Timestamp
+***************************************************************/
+
+#define TICKS_PEER_SECOND    1000
+
+static uint64_t system_timestamp = 0;
+
+void systime_reset(void)
+{
+    system_timestamp = 0;
+    return;
+}
+
+void systime_increase(uint64_t tick)
+{
+    system_timestamp += tick;
+    return;
+}
+
+uint64_t get_systime(void)
+{
+  return system_timestamp;
+}
+
+uint64_t get_systime_second(void)
+{
+    return system_timestamp / TICKS_PEER_SECOND;
+}

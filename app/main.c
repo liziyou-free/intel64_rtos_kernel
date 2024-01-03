@@ -39,7 +39,6 @@ int main (void)
     phyaddr_info phyaddrinfo = {0, 0};
     volatile long long count = 0;
 
-    /*
     char *p = (char*)malloc(1024*1024);
 
     table_unit_t *addr;
@@ -67,24 +66,27 @@ int main (void)
         dst++;
         src++;
     }
-    */
-
-
-    x64_lvgl_init();
-
-    lv_demo_benchmark();
-
-    x86_timer_init();
 
     serial_init(X64_PORT_COM1, 115200, 1);
 
     x86_serial_send_str(X64_PORT_COM1, "Application Start!\r\n");
 
-    ch382_device_init();
+    x64_lvgl_init();
 
-//    cpu_send_ipi_to_self();
+    lv_demo_benchmark();
 
-    ch382_serial_send_str(0, "Intel-I3-8100 FreedomLi!\r\n");
+//    ch382_device_init();
+
+    x86_timer_init();
+
+    x86_serial_send_str(X64_PORT_COM1, "CoreMark!!!!!!!!!!\r\n");
+
+    int coremark_main(void);
+    coremark_main();
+//
+////    cpu_send_ipi_to_self();
+
+//    ch382_serial_send_str(0, "Intel-I3-8100 FreedomLi!\r\n");
 
       for (;;) {
           count ++;
@@ -96,6 +98,8 @@ int main (void)
       }
     return 0;
 }
+
+
 
 
 void printf_init(void){

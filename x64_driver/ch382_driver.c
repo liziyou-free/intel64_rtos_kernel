@@ -39,7 +39,6 @@ void print_ch382()
      uint8_t     status;
      uint8_t     cnt;
      uint16_t    port_base;
-//     printf("CH382 IRQ\r\n");
      port_base = __g_port_base; //(uint16_t)((uint64_t) p_param);
      cnt = 0;
      while (cnt++ < 10) {
@@ -51,16 +50,13 @@ void print_ch382()
          switch (status & 0x0e) {
          case IIR_MS_INT:
              inb(port_base + MSR_REG_OFFSET);
-//             printf("ch382 IIR_MS_INT\r\n");
              break;
 
          case IIR_RLS_INT:
              inb(port_base + LSR_REG_OFFSET);
-//             printf("ch382 IIR_RLS_INT\r\n");
              break;
 
          case IIR_THE_INT:
-//             printf("ch382 IIR_THE_INT\r\n");
              /*
               *  ... 用于非阻塞发送
               */
@@ -287,30 +283,14 @@ void ch382_device_init ()
     int_cfg.destination_mode = LOGICAL_DESTINATION;  /* use logic id */
     int_cfg.destination = 1;  /* BSP core defualt logic id */
     int_cfg.delivery_mode = DELIVERY_MODE_FIXED;    /* fixed mode */
-    int_cfg.vector = 49;
-    ioapic_config_int_line(49-32, &int_cfg);
+    int_cfg.vector = 43;
+    ioapic_config_int_line(43-32, &int_cfg);
 
     /* register interrupt handler */
-    x64_irq_handler_register(49, ch382_interrupt_handler, NULL); // PassThrough IRQ: 42
-//    ioapic_unmask_irq(49);
+    x64_irq_handler_register(43, ch382_interrupt_handler, NULL); // PassThrough IRQ: 43
+    ioapic_unmask_irq(43);
 
     ch383_serial_init(io_addr, 115200, 1);
-
-    printf("CH382 REG0: %#x \r\n", inb(io_addr + 0xc0));
-    printf("CH382 REG1: %#x \r\n", inb(io_addr + 0xc1));
-    printf("CH382 REG2: %#x \r\n", inb(io_addr + 0xc2));
-    printf("CH382 REG3: %#x \r\n", inb(io_addr + 0xc3));
-    printf("CH382 REG4: %#x \r\n", inb(io_addr + 0xc4));
-    printf("CH382 REG5: %#x \r\n", inb(io_addr + 0xc5));
-    printf("CH382 REG6: %#x \r\n", inb(io_addr + 0xc6));
-
-    printf("CH382 REG0: %#x \r\n", inb(io_addr + 0xc0));
-    printf("CH382 REG1: %#x \r\n", inb(io_addr + 0xc1));
-    printf("CH382 REG2: %#x \r\n", inb(io_addr + 0xc2));
-    printf("CH382 REG3: %#x \r\n", inb(io_addr + 0xc3));
-    printf("CH382 REG4: %#x \r\n", inb(io_addr + 0xc4));
-    printf("CH382 REG5: %#x \r\n", inb(io_addr + 0xc5));
-    printf("CH382 REG6: %#x \r\n", inb(io_addr + 0xc6));
 }
 
 

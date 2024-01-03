@@ -4,3 +4,6 @@
 [submodule "MiddleWare/ACPICA"]
 	path = MiddleWare/ACPICA
 	url = https://github.com/acpica/acpica.git
+[submodule "MiddleWare/Coremark"]
+	path = MiddleWare/Coremark
+	url = https://github.com/eembc/coremark.git

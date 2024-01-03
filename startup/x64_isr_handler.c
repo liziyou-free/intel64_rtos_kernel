@@ -67,7 +67,8 @@ void x64_common_isr (uint64_t inum)
         (x64_irq_handler[inum].pfn_handler)(x64_irq_handler[inum].param);
     }
     else {
-        //for (;;);
+        printf("Exception or Interrupt handler haven't register!");
+        for (;;);
     }
 
     if (inum >=32 ) {

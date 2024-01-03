@@ -28,7 +28,7 @@ void lvgl_tick_and_handle (void)
 #if LVGL_MASTER_VERSION
   lv_timer_handler_run_in_period(1);
 #else
-  lv_timer_handler();
+  lv_task_handler();
 #endif
 }
 
