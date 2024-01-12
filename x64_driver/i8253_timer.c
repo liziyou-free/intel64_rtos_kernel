@@ -69,10 +69,10 @@ void timer_interrupt_handler (void *p_param)
 
     systime_increase(1);
 
-//    if ((ticks++) % 1000 == 0) {
+    if ((ticks++) % 1000 == 0) {
 //        ch382_serial_send(0, 'T');
-//        printf("%d s \r\n", ticks / 1000);
-//    }
+        printf("%d s \r\n", ticks / 1000);
+    }
 }
 
 

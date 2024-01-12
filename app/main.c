@@ -60,6 +60,7 @@ int main (void)
     src = (uint8_t *)test_data;
     for (uint64_t c = 0; c < 0x301000; c++) {
         if (*dst != *src) {
+            x86_serial_send_str(X64_PORT_COM1, "MMU Error!!! \r\n");
             mmu_print_table_poor_bitmap();
             for (;;);
         }
@@ -71,31 +72,16 @@ int main (void)
 
     x86_serial_send_str(X64_PORT_COM1, "Application Start!\r\n");
 
-    x64_lvgl_init();
+    //  cpu_send_ipi_to_self();
 
-    lv_demo_benchmark();
-
-//    ch382_device_init();
+    ch382_device_init();
 
     x86_timer_init();
 
-    x86_serial_send_str(X64_PORT_COM1, "CoreMark!!!!!!!!!!\r\n");
+    for (;;) {
 
-    int coremark_main(void);
-    coremark_main();
-//
-////    cpu_send_ipi_to_self();
+    }
 
-//    ch382_serial_send_str(0, "Intel-I3-8100 FreedomLi!\r\n");
-
-      for (;;) {
-          count ++;
-          if (count > 1000) {
-              count = 0;
-              lvgl_tick_and_handle();
-              continue;
-          }
-      }
     return 0;
 }
 
@@ -119,28 +105,26 @@ void printf_init(void){
 
 
 /******************************************************************************/
+
+//void thread0 (void *p_arg) {
 //
-//void task0 (void *p_arg) {
-//    static int j = 0;
-//    while(1){
-//        j++;
-//        if (j == 500) {
-//            x86_serial_send_str((char*)p_arg);
-//            break;
-//        }
+//    x64_lvgl_init();
+//    lv_demo_benchmark();
+//    x86_serial_send_str(X64_PORT_COM1, (char*)p_arg);
+//    while(1) {
+//        lvgl_tick_and_handle();
 //    }
 //    return;
 //}
 //
 //
-//void task1 (void *p_arg) {
+//void thread1 (void *p_arg) {
 //
 //    static int j = 0;
 //    while(1){
-////        x86_serial_send(*(char*)p_arg);
 //        j++;
 //        if (j < 300) {
-//            x86_serial_send_str((char*)p_arg);
+//            x86_serial_send_str(X64_PORT_COM1, (char*)"task1.\r\n");
 //        } else {
 //             break;
 //        }
@@ -151,7 +135,6 @@ void printf_init(void){
 //
 //void task_exit_hook(void *arg, void *arg1) {
 //
-//    x86_serial_send_str("Task Exit! %s\r\n");
 //    x86_serial_send_str((char *)arg);
 //    x86_serial_send_str((char *)arg1);
 //    for(;;);
@@ -159,19 +142,34 @@ void printf_init(void){
 //}
 //
 //
-///*
-// *                     Performance Considerations
-// * Because the hardware mechanism saves almost all of the CPU state it can be
-// * slower than is necessary.For example,when the CPU loads new segment registers
-// * it does all of the access and permission checks that are involved. As most
-// * modern operating systems don't use segmentation,loading the segment registers
-// * during context switches may be not be required, so for performance reasons t-
-// * hese operating systems tend not to use the hardware context switching mechan-
-// * ism. Due to it not being used as much CPU manufacturers don't optimize CPUs
-// * for this method anymore (AFAIK). In addition the new 64 bit CPU's do not sup-
-// * port hardware context switches when in 64 bit/long mode.
-// */
 //
+//static void thread_init()
+//{
+//    static uint64_t thread_stack0[1024 * 5];  // 40KB
+//    static uint64_t thread_stack1[512];        // 4KB
+//
+//    task_init_list_stack(thread_stack0, thread0, "Lvgl App\r\n",
+//                         task_exit_hook, "lvgl exit", "\r\n");
+//
+//    task_init_list_stack(thread_stack1, thread1, "Serial App\r\n",
+//                         task_exit_hook, "Serial exit", "\r\n");
+//}
+
+
+
+/*
+ *                     Performance Considerations
+ * Because the hardware mechanism saves almost all of the CPU state it can be
+ * slower than is necessary.For example,when the CPU loads new segment registers
+ * it does all of the access and permission checks that are involved. As most
+ * modern operating systems don't use segmentation,loading the segment registers
+ * during context switches may be not be required, so for performance reasons t-
+ * hese operating systems tend not to use the hardware context switching mechan-
+ * ism. Due to it not being used as much CPU manufacturers don't optimize CPUs
+ * for this method anymore (AFAIK). In addition the new 64 bit CPU's do not sup-
+ * port hardware context switches when in 64 bit/long mode.
+ */
+
 //uint32_t *task_init_list_stack(uint32_t *stack_top,
 //                               void(*p_func)(void*),
 //                               void* p_arg,
@@ -238,8 +236,8 @@ void printf_init(void){
 //
 //    return stack_top;
 //}
-//
-//
-//
-//
-//
+
+
+
+
+

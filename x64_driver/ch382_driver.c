@@ -70,6 +70,7 @@ void print_ch382()
                  inchar = inb(port_base + RBR_REG_OFFSET);
                  /* echo */
                  ch382_serial_send(port_base, inchar);
+                 ch382_serial_send(port_base, '@');
              } while (inb(port_base + LSR_REG_OFFSET) & LSR_DATARDY_BIT);
              break;
 

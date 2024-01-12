@@ -196,7 +196,7 @@ copy_data_section:
     ljmp    $X64_GET_SEGMENT_SELECTOR_VALUE(X64_GDT_CODE64_INDEX, \
                                             PRIVILEGE_LEVEL_0, \
                                             TABLE_INDICATOR_GDT), \
-                                            $x64_start
+            $x64_start
 X64_FUNC_END()
 
 
@@ -334,6 +334,9 @@ _gdt_end:
     .quad    _gdt_start                /* GDT base address */
 
 
+mxcsr_mem:
+    .long   0x00001f80
+
 
 /*******************************************************************************
   Build 4-level paging (range: 0 ~ 4GB)
@@ -391,9 +394,6 @@ X64_ASM_DATA(x64_pte_table, 4096)
 g_kernel_stack:
     .fill    STACKSIZE,    1,    0
 
-
-mxcsr_mem:
-    .long   0x00001f80
 
 
 X64_ASM_DATA(test_data, 0x100000)

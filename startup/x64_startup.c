@@ -225,6 +225,8 @@ void x64_arch_init (void)
     disable_intel_8259_intc();
 
 #if X64_USE_APIC_INTC
+//    __asm__ __volatile__("nop":::"eax", "edx", "edi");
+    __asm__ __volatile__("mov $1, %%edi":::"eax", "edx", "edi");
     cpu_local_apic_open();
     intel_local_apic_init(0);
     intel_ioapic_init();
